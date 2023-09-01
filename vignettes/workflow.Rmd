@@ -1,0 +1,25 @@
+---
+title: "workflow"
+author: "Yiluan Song"
+date: "2023-09-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(urbanplanet)
+```
+
+## Read streat tree inventory
+
+```{r cars}
+cityoi <- "AT"
+df_tree <- read_tree_inventory(city = cityoi)
+```
+
+## Order PS data
+```{r}
+setting <- set_ps(api_key = "e297230ef5914b65876bd5d1f1feac5b")
+order_ps_batch(dir = "alldata/PSdata/", df_plant = df_tree, v_site = cityoi, setting = setting)
+```
+
