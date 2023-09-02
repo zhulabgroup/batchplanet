@@ -1,4 +1,4 @@
-down_ps_batch <- function(dir, v_site) {
+down_ps_batch <- function(dir, v_site = NULL, setting) {
   if (is.null(v_site)) {
     v_site <- list.dirs(dir, recursive = F, full.names = F)
   }
@@ -10,8 +10,7 @@ down_ps_batch <- function(dir, v_site) {
       registerDoSNOW(cl)
       foreach(
         i = 1:nrow(df_order),
-        .packages = c("lubridate", "stringr", "planetR", "httr"),
-        .export = c("df_order", "path_ps_site", "planet_order_download_new", "api_key")
+        .packages = c("lubridate", "stringr", "planetR", "httr", "urbanplanet")
       ) %dopar% {
         # Get order id
         month_download <- df_order$month[i]
@@ -36,7 +35,7 @@ down_ps_batch <- function(dir, v_site) {
         while (!orderdone) {
           orderdone <- tryCatch(
             {
-              planet_order_download_new(order_id, exportfolder, api_key = api_key, order_num = i, overwrite_opt = FALSE)
+              planet_order_download_new(order_id, exportfolder, api_key = setting$api_key, order_num = i, overwrite_opt = FALSE)
               orderdone <- T
             },
             error = function(e) {

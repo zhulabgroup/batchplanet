@@ -17,9 +17,34 @@ cityoi <- "AT"
 df_tree <- read_tree_inventory(city = cityoi)
 ```
 
-## Order PS data
+## Download PS data
+Set some parameters. Replace API key with your own here.
 ```{r}
-setting <- set_ps(api_key = "e297230ef5914b65876bd5d1f1feac5b")
+setting <- set_ps(api_key = "PLAKfee698d7594446c3a0f38d403bc15545")
+```
+
+Order. Order IDs saved as rds.
+```{r}
 order_ps_batch(dir = "alldata/PSdata/", df_plant = df_tree, v_site = cityoi, setting = setting)
+```
+
+Here, check your Planet account to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, please do not order the same images repeatedly.
+
+Download. Use Great Lakes R session with 12 cores for this step.
+```{r}
+down_ps_batch(dir= "alldata/PSdata/", v_site=cityoi, setting = setting)
+```
+Here, tar and compress folders for cities downloaded by submitting Slurm jobs and then move  tarred compressed files to Data Den.
+
+## Retrieve time series
+
+Extract time series at tree locations. Use Great Lakes R session with 36 cores for this step.
+```{r}
+proc_ps_ts(dir = "alldata/PSdata/",df_plant=df_tree, v_site = cityoi)
+```
+
+Time series preprocessing, including removing low quality data and calculating EVI.
+```{r}
+proc_evi_ts(dir = "alldata/PSdata/", v_site = cityoi)
 ```
 
