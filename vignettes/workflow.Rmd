@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(urbanplanet)
 ```
 
-## Read streat tree inventory
+## Read street tree inventory
 
 ```{r cars}
 cityoi <- "AT"
