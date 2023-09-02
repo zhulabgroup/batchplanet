@@ -1,4 +1,4 @@
-order_ps_batch <- function(dir, df_plant, v_site, setting) {
+order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
   if (is.null(v_site)) {
     v_site <- df_plant$site %>% unique()
   }
