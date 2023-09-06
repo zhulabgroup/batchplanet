@@ -34,7 +34,7 @@ Download. Use Great Lakes R session with 12 cores for this step.
 ```{r}
 down_ps_batch(dir= "alldata/PSdata/", v_site=cityoi, setting = setting)
 ```
-Here, tar and compress folders for cities downloaded by submitting Slurm jobs and then move  tarred compressed files to Data Den.
+Here, tar and compress folders for cities downloaded by submitting Slurm jobs and then move tarred compressed files to Data Den.
 
 ## Retrieve time series
 

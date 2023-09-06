@@ -21,6 +21,7 @@ Depends:
     doSNOW
 Imports:
     zoo,
-    ptw
+    ptw,
+    imputeTS
 VignetteBuilder: knitr
     
