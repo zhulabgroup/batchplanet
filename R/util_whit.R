@@ -16,7 +16,7 @@
 #'   evi = sin((1:365) / 365 * pi)
 #' ) %>%
 #'   filter(doy <= 20 | doy >= 40) %>% # make some short segments of data missing
-#'   filter(doy <= 40 | doy >= 80) %>% # make some log segments of data missing
+#'   filter(doy <= 40 | doy >= 80) %>% # make some long segments of data missing
 #'   complete(doy = seq(1, 365, by = 1)) %>%
 #'   mutate(evi_sm = util_fill_whit(x = evi, maxgap = 14, lambda = 50, minseg = 2)) %>% # weighted whittaker smoothing allowing gaps %>%
 #'   ggplot() +
