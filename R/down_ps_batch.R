@@ -10,7 +10,7 @@ down_ps_batch <- function(dir, v_site = NULL, setting) {
       registerDoSNOW(cl)
       foreach(
         i = 1:nrow(df_order),
-        .packages = c("lubridate", "stringr", "planetR", "httr", "urbanplanet")
+        .packages = c("lubridate", "stringr", "httr", "urbanplanet")
       ) %dopar% {
         # Get order id
         month_download <- df_order$month[i]
