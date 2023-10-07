@@ -1,6 +1,8 @@
 proc_evi_ts <- function(dir, v_site = NULL) {
   if (is.null(v_site)) {
-    v_site <- list.dirs(dir, recursive = F, full.names = F)
+    v_site <- list.files(str_c(dir, "ts/"), recursive = F, full.names = F) %>%
+      str_remove(".rds") %>%
+      str_remove("ps_")
   }
 
   dir.create(str_c(dir, "evi/"), showWarnings = F)

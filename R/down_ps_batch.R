@@ -1,9 +1,9 @@
-down_ps_batch <- function(dir, v_site = NULL, setting) {
-  if (is.null(v_site)) {
-    v_site <- list.dirs(dir, recursive = F, full.names = F)
+down_ps_batch <- function(dir, v_site = "all", setting) {
+  if (is.null(v_site) | v_site == "all") {
+    v_site <- list.dirs(str_c(dir, "raw/"), recursive = F, full.names = F)
   }
   for (siteoi in v_site) {
-    path_ps_site <- str_c(dir, siteoi, "/")
+    path_ps_site <- str_c(dir, "raw/", siteoi, "/")
     for (year_download in 2017:2022) {
       df_order <- read_rds(str_c(path_ps_site, "orders/", "order_", year_download, ".rds"))
       cl <- makeCluster(nrow(df_order), outfile = "")
