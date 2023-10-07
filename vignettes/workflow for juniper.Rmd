@@ -1,7 +1,7 @@
 ---
-title: "workflow"
+title: "workflow for juniper"
 author: "Yiluan Song"
-date: "2023-09-01"
+date: "2023-10-06"
 output: html_document
 ---
 
@@ -13,8 +13,14 @@ library(urbanplanet)
 ## Read street tree inventory
 
 ```{r}
-cityoi <- "AT"
-df_tree <- read_tree_inventory(city = cityoi)
+df_tree <- misc_read_juniper_coord(version = NULL)
+```
+
+Area too big, so divide them into multiple sites (counties).
+```{r}
+sp_county <- read_county(country = "US")
+# sp_county_sub <- read_county_sub(country = "US", state = "texas") # county subdivision not used
+df_tree_county <- util_coord_in_area(df_tree, sp_county, field = "NAME")
 ```
 
 ## Download PS data
@@ -25,14 +31,14 @@ setting <- set_ps(api_key = "PLAKfee698d7594446c3a0f38d403bc15545")
 
 Order. Order IDs saved as rds.
 ```{r}
-order_ps_batch(dir = "alldata/PSdata/", df_plant = df_tree, v_site = cityoi, setting = setting)
+order_ps_batch(dir = "alldata/juniper_ashei/PSdata/", df_plant = df_tree_county, v_site = NULL, setting = setting)
 ```
 
 Here, check your Planet account to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, please do not order the same images repeatedly.
 
 Download. Use Great Lakes R session with 12 cores for this step.
 ```{r}
-down_ps_batch(dir= "alldata/PSdata/", v_site=cityoi, setting = setting)
+down_ps_batch(dir = "alldata/juniper_ashei/PSdata/", v_site = "all", setting = setting)
 ```
 Here, tar and compress folders for cities downloaded by submitting Slurm jobs and then move tarred compressed files to Data Den.
 
@@ -40,22 +46,17 @@ Here, tar and compress folders for cities downloaded by submitting Slurm jobs an
 
 Extract time series at tree locations. Use Great Lakes R session with 36 cores for this step.
 ```{r}
-proc_ps_ts(dir = "alldata/PSdata/",df_plant=df_tree, v_site = cityoi)
+proc_ps_ts(dir = "alldata/juniper_ashei/PSdata/", df_plant = df_tree, v_site = NULL)
 ```
 
 Time series preprocessing, including removing low quality data and calculating EVI.
 ```{r}
-proc_evi_ts(dir = "alldata/PSdata/", v_site = cityoi)
+proc_evi_ts(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL)
 ```
 
-Read and visualize EVI.
+Read in data and visualize.
 ```{r}
-df_evi <- read_evi(dir = "alldata/PSdata/", v_site = cityoi)
-```
-
-
-## Get day of year for green-up and green-down
-```{r}
-proc_doy (dir = "alldata/PSdata/", v_site = cityoi, v_year = NULL, v_id = NULL, df_thres=NULL,  min_days = 50)
+df_evi <- read_evi(dir = "alldata/PSdata/", v_site = NULL)
+df_evi
 ```
 
