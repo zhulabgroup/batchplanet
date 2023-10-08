@@ -3,7 +3,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL) {
     v_site <- list.dirs(dir, recursive = F, full.names = F)
   }
 
-  cl <- makeCluster(min(36, detectCores()), outfile = "")
+  cl <- makeCluster(min(24, detectCores()), outfile = "")
   registerDoSNOW(cl)
 
   iscomplete <- F
@@ -120,7 +120,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL) {
     } else if (class(iserror) == "try-error") { # restart cluster
       iscomplete <- F
       closeAllConnections()
-      cl <- makeCluster(min(36, detectCores()), outfile = "")
+      cl <- makeCluster(min(24, detectCores()), outfile = "")
       registerDoSNOW(cl)
     }
   }
