@@ -4,7 +4,7 @@ down_ps_batch <- function(dir, v_site = NULL, setting) {
   }
   for (siteoi in v_site) {
     path_ps_site <- str_c(dir, siteoi, "/")
-    for (year_download in 2017:2022) {
+    for (year_download in 2022:2022) {
       df_order <- read_rds(str_c(path_ps_site, "orders/", "order_", year_download, ".rds"))
       cl <- makeCluster(nrow(df_order), outfile = "")
       registerDoSNOW(cl)

@@ -13,7 +13,7 @@ library(urbanplanet)
 ## Read street tree inventory
 
 ```{r cars}
-cityoi <- "SJ"
+cityoi <- "NY"
 df_tree <- read_tree_inventory(city = cityoi)
 ```
 
@@ -38,7 +38,7 @@ Here, tar and compress folders for cities downloaded by submitting Slurm jobs an
 
 ## Retrieve time series
 
-Extract time series at tree locations. Use Great Lakes R session with 36 cores for this step.
+Extract time series at tree locations. Use Great Lakes R session with 36 cores for this step. change to 24
 ```{r}
 proc_ps_ts(dir = "alldata/PSdata/",df_plant=df_tree, v_site = cityoi)
 ```
@@ -48,3 +48,13 @@ Time series preprocessing, including removing low quality data and calculating E
 proc_evi_ts(dir = "alldata/PSdata/", v_site = cityoi)
 ```
 
+Visualize the raster.
+```{r}
+vis_raster(path = "alldata/PSdata/raw/SJ/SJ_2017_1_31/20170111_180817_0e30_3B_AnalyticMS_SR_clip.tif", xmin=585399, xmax=589197, ymin=4143279, ymax=4143420)
+```
+
+Visualize the evi curve.
+```{r}
+cityoi <- "AT"
+vis_evi(dir = "alldata/PSdata/", v_site = cityoi, id = 1, years = c(2017, 2018, 2019, 2020, 2021, 2022))
+```
