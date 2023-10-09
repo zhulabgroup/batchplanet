@@ -3,7 +3,7 @@ order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
     v_site <- df_plant$site %>% unique()
   }
   for (siteoi in v_site) {
-    path_ps_site <- str_c(dir, siteoi, "/")
+    path_ps_site <- str_c(dir, "raw/", siteoi, "/")
     dir.create(str_c(path_ps_site, "orders/"), recursive = T, showWarnings = F)
 
     # Set AOI (many ways to set this!) ultimately just need an extent()
