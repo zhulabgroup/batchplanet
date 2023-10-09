@@ -18,10 +18,11 @@ Depends:
     jsonlite, 
     httr,
     parallel,
-    doSNOW
+    doSNOW,
+    ggplot2
 Imports:
     zoo,
     ptw,
     imputeTS
 VignetteBuilder: knitr
-    
+
