@@ -18,8 +18,7 @@ Depends:
     jsonlite, 
     httr,
     parallel,
-    doSNOW,
-    ggplot2
+    doSNOW
 Imports:
     zoo,
     ptw,

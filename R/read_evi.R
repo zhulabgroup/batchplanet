@@ -7,7 +7,8 @@ read_evi <- function(dir = "alldata/PSdata/", v_site = NULL) {
 
   ls_df_evi <- vector(mode = "list")
   for (siteoi in v_site) {
-    ls_df_evi[[siteoi]] <- read_rds(str_c(dir, "evi/evi_", siteoi, ".rds"))
+    ls_df_evi[[siteoi]] <- read_rds(str_c(dir, "evi/evi_", siteoi, ".rds")) %>%
+      mutate(site = siteoi)
   }
   df_evi <- bind_rows(ls_df_evi)
 

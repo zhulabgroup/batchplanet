@@ -26,7 +26,7 @@ df_tree_county <- util_coord_in_area(df_tree, sp_county, field = "NAME")
 ## Download PS data
 Set some parameters. Replace API key with your own here.
 ```{r}
-setting <- set_ps(api_key = "REMOVED")
+setting <- set_ps(api_key = "REMOVED") # songyl
 ```
 
 Order. Order IDs saved as rds.

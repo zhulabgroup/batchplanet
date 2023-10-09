@@ -1,8 +1,12 @@
-vis_raster <- function(path, xmin, xmax, ymin, ymax) {
-  ras_eg <- terra::rast(path)
-  ras_eg_crop <- ras_eg %>% terra::crop(terra::ext(c(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)))
-  
-  df_ras_eg <- ras_eg_crop %>%
+vis_raster <- function(path, crop_shape = NULL) {
+  ras <- terra::rast(path)
+  if (!is.null(crop_shape)) {
+    ras <- ras %>% terra::crop(crop_shape)
+  }
+
+  # crop_shape <- terra::ext(c(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax)
+
+  df_ras <- ras %>%
     as.data.frame(xy = T) %>%
     as_tibble() %>%
     dplyr::select(
@@ -33,11 +37,11 @@ vis_raster <- function(path, xmin, xmax, ymin, ymax) {
       r <= 1
     ) %>%
     mutate(rgb = rgb(r, g, b, maxColorValue = 1))
-  
-  p_ps_snap <- ggplot(data = df_ras_eg) +
+
+  p_ps_snap <- ggplot(data = df_ras) +
     geom_tile(aes(x = x, y = y, fill = rgb), col = NA) +
     theme_void() +
     scale_fill_identity()
-  
+
   return(p_ps_snap)
 }
