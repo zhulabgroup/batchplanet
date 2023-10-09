@@ -1,6 +1,6 @@
 proc_ps_ts <- function(dir, df_plant, v_site = NULL) {
   if (is.null(v_site)) {
-    v_site <- list.dirs(dir, recursive = F, full.names = F)
+    v_site <- list.dirs(str_c(dir, "raw/"), recursive = F, full.names = F)
   }
 
   cl <- makeCluster(min(24, detectCores()), outfile = "")
