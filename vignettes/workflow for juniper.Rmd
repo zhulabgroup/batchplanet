@@ -56,7 +56,7 @@ proc_evi_ts(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL)
 
 Read in data and visualize.
 ```{r}
-df_evi <- read_evi(dir = "alldata/PSdata/", v_site = NULL)
+df_evi <- read_evi(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL)
 df_evi
 ```
 
