@@ -58,5 +58,6 @@ Read in data and visualize.
 ```{r}
 df_evi <- read_evi(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL)
 df_evi
+vis_evi(df_evi)
 ```
 
