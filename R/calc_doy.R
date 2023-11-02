@@ -34,7 +34,7 @@ proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_year = NULL, v_id
     ls_df_doy_year <-
       foreach(
         yearoi = v_year,
-        .packages = c("tidyverse", "urbanplanet") # ,
+        .packages = c("tidyverse", "batchplanet") # ,
         # .export = c( "v_id")
       ) %dopar% {
         ls_df_doy_id <- vector(mode = "list")
