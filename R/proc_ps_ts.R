@@ -27,7 +27,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, num_cores = 36) {
         dir.create(str_c(dir, "ts"), showWarnings = F)
         if (!file.exists(str_c(dir, "ts/ps_", siteoi, ".rds"))) {
           # read reflectance data
-          files <- list.files(path = str_c(dir, siteoi), pattern = ".*_SR_clip.tif$", recursive = T, full.names = T) %>% sort()
+          files <- list.files(path = str_c(dir,"raw/", siteoi), pattern = ".*_SR_clip.tif$", recursive = T, full.names = T) %>% sort()
           nday <- length(files)
           df_ps <- foreach(
             f = 1:nday,
@@ -53,7 +53,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, num_cores = 36) {
           # other - potentially problematic/unusable data
           #
           # Full description is in Planet's documentation (Page 91, Section 2. UNUSABLE DATA MASK FILE).
-          files <- list.files(path = str_c(dir, siteoi), pattern = ".*_udm2_clip.tif$", recursive = T, full.names = T) %>% sort()
+          files <- list.files(path = str_c(dir,"raw/", siteoi), pattern = ".*_udm2_clip.tif$", recursive = T, full.names = T) %>% sort()
           nday <- length(files)
           df_ps_qa <- foreach(
             f = 1:nday,
@@ -75,7 +75,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, num_cores = 36) {
           }
 
           # get corresponding timing from file names
-          df_time <- list.files(path = str_c(dir, siteoi), pattern = ".*_SR_clip.tif$", recursive = T) %>%
+          df_time <- list.files(path = str_c(dir,"raw/", siteoi), pattern = ".*_SR_clip.tif$", recursive = T) %>%
             sort() %>%
             str_split(pattern = "/", simplify = T) %>%
             data.frame() %>%
