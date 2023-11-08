@@ -30,8 +30,7 @@ vis_doy <- function(df_evi, df_doy, v_site = NULL, v_taxa = NULL, v_id = NULL, v
       year %in% v_year,
       direction == directionoi,
       thres == thresoi
-    ) %>%
-    mutate(date = lubridate::as_date(str_c(year, "-01-01")) + doy - 1)
+    )
 
   # choose year and id
   df_evi_sub <- df_evi %>%
