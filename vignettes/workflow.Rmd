@@ -15,6 +15,8 @@ library(batchplanet)
 ```{r}
 cityoi <- "SJ"
 df_tree <- read_tree_inventory(city = cityoi)
+
+v_taxa <- c("Quercus", "Morus", "Ulmus", "Fraxinus", "Betula", "Acer", "Populus")
 ```
 
 ## Download PS data
@@ -40,12 +42,12 @@ Here, tar and compress folders for cities downloaded by submitting Slurm jobs an
 
 Extract time series at tree locations. Use Great Lakes R session with 36 cores for this step.
 ```{r, eval = F}
-proc_ps_ts(dir = "alldata/PSdata/", df_plant = df_tree, v_site = cityoi)
+proc_ps_ts(dir = "alldata/PSdata/", df_plant = df_tree, v_site = cityoi, v_taxa = v_taxa)
 ```
 
 Time series preprocessing, including removing low quality data and calculating EVI.
 ```{r, eval = F}
-proc_evi_ts(dir = "alldata/PSdata/", v_site = cityoi)
+proc_evi_ts(dir = "alldata/PSdata/", v_site = cityoi, v_taxa = v_taxa)
 ```
 
 Visualize the raster.
@@ -55,11 +57,11 @@ vis_raster(path = "alldata/PSdata/raw/SJ/SJ_2017_1_31/20170116_180730_0e30_3B_An
 
 Read and visualize the evi curve.
 ```{r}
-df_evi <- read_evi(dir = "alldata/PSdata/", v_site = "AT")
-vis_evi(df_evi, v_site = "AT", v_id = 1:5, v_year = 2017:2022)
+df_evi <- read_evi(dir = "alldata/PSdata/", v_site = "AT", v_taxa = "Quercus")
+vis_evi(df_evi, v_site = "AT", v_taxa = "Quercus", v_id = 1:5, v_year = 2017:2022)
 ```
 
 ## Get day of year for green-up and green-down
 ```{r}
-proc_doy(dir = "alldata/PSdata/", v_site = cityoi, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 50)
+proc_doy(dir = "alldata/PSdata/", v_site = cityoi, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 50)
 ```

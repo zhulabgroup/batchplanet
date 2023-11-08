@@ -1,8 +1,10 @@
-proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 50) {
+proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 50) {
   if (is.null(v_site)) {
     v_site <- list.files(str_c(dir, "evi/"), recursive = F, full.names = F) %>%
       str_remove(".rds") %>%
-      str_remove("evi_")
+      str_split("_", simplify = T) %>%
+      as.data.frame() %>%
+      pull(V2)
   }
 
   if (is.null(df_thres)) {
@@ -12,47 +14,59 @@ proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_year = NULL, v_id
   dir.create(str_c(dir, "doy/"), showWarnings = F)
 
   for (siteoi in v_site) {
-    df_ts <- read_rds(str_c(dir, "evi/evi_", siteoi, ".rds"))
-
-    if (is.null(v_year)) {
-      v_year <- df_ts %>%
-        pull(year) %>%
-        unique() %>%
-        sort()
+    if (is.null(v_taxa)) {
+      v_taxa <- list.files(str_c(dir, "evi/"), recursive = F, full.names = F) %>%
+        str_remove(".rds") %>%
+        str_split("_", simplify = T) %>%
+        as.data.frame() %>%
+        pull(V3)
     }
 
-    if (is.null(v_id)) {
-      v_id <- df_ts %>%
-        pull(id) %>%
-        unique() %>%
-        sort()
-    }
+    for (taxaoi in v_taxa) {
+      f_evi <- str_c(dir, "evi/evi_", siteoi, "_", taxaoi, ".rds")
+      df_ts <- read_rds(f_evi)
 
-    cl <- makeCluster(length(v_year), outfile = "")
-    registerDoSNOW(cl)
-
-    ls_df_doy_year <-
-      foreach(
-        yearoi = v_year,
-        .packages = c("tidyverse", "urbanplanet") # ,
-        # .export = c( "v_id")
-      ) %dopar% {
-        ls_df_doy_id <- vector(mode = "list")
-        for (idoi in v_id) {
-          print(str_c(yearoi, " ", idoi))
-          df_ts_sub <- df_ts %>% filter(year == yearoi, id == idoi)
-          ls_df_doy_id[[idoi]] <- calc_doy_ind(df_ts_ind = df_ts_sub, df_thres = df_thres, min_days = min_days) %>%
-            mutate(year = yearoi, id = idoi) %>%
-            dplyr::select(year, id, everything())
-        }
-        df_doy_year <- bind_rows(ls_df_doy_id)
-        df_doy_year
+      if (is.null(v_year)) {
+        v_year <- df_ts %>%
+          pull(year) %>%
+          unique() %>%
+          sort()
       }
 
-    df_doy <- bind_rows(ls_df_doy_year)
-    stopCluster(cl)
+      if (is.null(v_id)) {
+        v_id <- df_ts %>%
+          pull(id) %>%
+          unique() %>%
+          sort()
+      }
 
-    write_rds(df_doy, str_c(dir, "doy/doy_", siteoi, ".rds"))
+      cl <- makeCluster(length(v_year), outfile = "")
+      registerDoSNOW(cl)
+
+      ls_df_doy_year <-
+        foreach(
+          yearoi = v_year,
+          .packages = c("tidyverse", "batchplanet") # ,
+          # .export = c( "v_id")
+        ) %dopar% {
+          ls_df_doy_id <- vector(mode = "list")
+          for (idoi in v_id) {
+            print(str_c(yearoi, " ", idoi))
+            df_ts_sub <- df_ts %>% filter(year == yearoi, id == idoi)
+            ls_df_doy_id[[idoi]] <- calc_doy_ind(df_ts_ind = df_ts_sub, df_thres = df_thres, min_days = min_days) %>%
+              mutate(year = yearoi, id = idoi) %>%
+              dplyr::select(year, id, everything())
+          }
+          df_doy_year <- bind_rows(ls_df_doy_id)
+          df_doy_year
+        }
+
+      df_doy <- bind_rows(ls_df_doy_year)
+      stopCluster(cl)
+
+      f_doy <- str_c(dir, "doy/doy_", siteoi, "_", taxaoi, ".rds")
+      write_rds(df_doy, f_doy)
+    }
   }
 }
 
