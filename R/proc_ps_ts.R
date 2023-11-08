@@ -6,12 +6,11 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = NULL, max_sample =
   cl <- makeCluster(min(num_cores, detectCores()), outfile = "")
   registerDoSNOW(cl)
 
-
   iscomplete <- F
   while (!iscomplete) { # restart when there is error, usually because of cluster connection issues
     iserror <- try({
       for (siteoi in v_site) {
-        for (taxaxoi in v_taxa) {
+        for (taxaoi in v_taxa) {
           set.seed(1)
           # get plant locations
           df_plant_site_taxa <- df_plant %>%

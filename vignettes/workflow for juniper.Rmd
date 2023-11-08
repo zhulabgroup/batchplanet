@@ -38,7 +38,7 @@ Here, check your Planet account to make sure orders are completed. Make sure all
 
 Download. Use Great Lakes R session with 12 cores for this step.
 ```{r, eval = F}
-down_ps_batch(dir = "alldata/juniper_ashei/PSdata/", v_site = "all", setting = setting)
+down_ps_batch(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL, setting = setting)
 ```
 Here, tar and compress folders for cities downloaded by submitting Slurm jobs and then move tarred compressed files to Data Den.
 
@@ -56,8 +56,22 @@ proc_evi_ts(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL, v_taxa = "Juni
 
 Read in data and visualize.
 ```{r}
-df_evi <- read_evi(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL, v_taxa = "Juniper ashei")
+df_evi <- read_evi(dir = "alldata/juniper_ashei/PSdata/evi/", v_site = NULL, v_taxa = "Juniper ashei")
 df_evi
-vis_evi(df_evi)
+vis_ts(df_evi, smooth = T)
+```
+
+Calculate and visualize red to green ratio.
+```{r}
+df_r2g <- df_evi %>% mutate(r2g = red/green)
+vis_ts(df_r2g, var = "r2g", ylab= "R2G", smooth = T)
+```
+
+Any difference in the two versions? First version male trees, second version female trees.
+```{r}
+df_r2g_version <- df_r2g %>% left_join(df_tree %>% distinct(id, version))
+f_male <- vis_ts(df_r2g_version %>% filter(version==1), n_id =10, var = "r2g", ylab= "R2G", smooth = T)
+f_female <- vis_ts(df_r2g_version %>% filter(version==2), n_id =10,  var = "r2g", ylab= "R2G", smooth = T)
+f_male + f_female
 ```
 
