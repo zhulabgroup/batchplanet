@@ -30,14 +30,14 @@ setting <- set_ps(api_key = "REMOVED") # songyl
 ```
 
 Order. Order IDs saved as rds.
-```{r}
+```{r, eval = F}
 order_ps_batch(dir = "alldata/juniper_ashei/PSdata/", df_plant = df_tree_county, v_site = NULL, setting = setting)
 ```
 
 Here, check your Planet account to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, please do not order the same images repeatedly.
 
 Download. Use Great Lakes R session with 12 cores for this step.
-```{r}
+```{r, eval = F}
 down_ps_batch(dir = "alldata/juniper_ashei/PSdata/", v_site = "all", setting = setting)
 ```
 Here, tar and compress folders for cities downloaded by submitting Slurm jobs and then move tarred compressed files to Data Den.
@@ -45,18 +45,18 @@ Here, tar and compress folders for cities downloaded by submitting Slurm jobs an
 ## Retrieve time series
 
 Extract time series at tree locations. Use Great Lakes R session with 36 cores for this step.
-```{r}
-proc_ps_ts(dir = "alldata/juniper_ashei/PSdata/", df_plant = df_tree_county, v_site = NULL)
+```{r, eval = F}
+proc_ps_ts(dir = "alldata/juniper_ashei/PSdata/", df_plant = df_tree_county, v_site = NULL, v_taxa = "Juniper ashei")
 ```
 
 Time series preprocessing, including removing low quality data and calculating EVI.
-```{r}
-proc_evi_ts(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL)
+```{r, eval = F}
+proc_evi_ts(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL, v_taxa = "Juniper ashei")
 ```
 
 Read in data and visualize.
 ```{r}
-df_evi <- read_evi(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL)
+df_evi <- read_evi(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL, v_taxa = "Juniper ashei")
 df_evi
 vis_evi(df_evi)
 ```

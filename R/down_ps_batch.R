@@ -1,5 +1,5 @@
-down_ps_batch <- function(dir, v_site = "all", setting) {
-  if (is.null(v_site) | v_site == "all") {
+down_ps_batch <- function(dir, v_site = NULL, setting) {
+  if (is.null(v_site)) {
     v_site <- list.dirs(str_c(dir, "raw/"), recursive = F, full.names = F)
   }
   for (siteoi in v_site) {

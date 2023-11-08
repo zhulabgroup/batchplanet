@@ -1,6 +1,7 @@
 read_tree_inventory <- function(city, indir = "alldata/tree/") {
   read_tree_inventory_city <- str_c("read_tree_inventory_", city)
-  df_tree <- do.call(read_tree_inventory_city, list(indir = indir, site = city))
+  df_tree <- do.call(read_tree_inventory_city, list(indir = indir, site = city)) %>%
+    rename(taxa = species)
 
   return(df_tree)
 }
@@ -185,4 +186,6 @@ read_tree_inventory_ST <- function(indir, site) {
   trees_df <- read_csv(str_c(indir, "Tree_Inventory_Seattle.csv")) %>%
     dplyr::select(id = OBJECTID, species = SCIENTIFIC_NAME, lat = Y, lon = X) %>% # checked that there is no repeated tree id
     mutate(site = site)
+
+  return(trees_df)
 }

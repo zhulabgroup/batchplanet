@@ -16,7 +16,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = NULL, max_sample =
           # get plant locations
           df_plant_site_taxa <- df_plant %>%
             filter(site == siteoi) %>%
-            filter(str_detect(species, taxaoi)) %>%
+            filter(str_detect(taxa, taxaoi)) %>%
             drop_na(lon, lat) %>%
             sample_n(min((max_sample), nrow(.)))
 

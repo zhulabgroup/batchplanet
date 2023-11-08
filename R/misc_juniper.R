@@ -22,7 +22,8 @@ misc_read_juniper_coord <- function(dir = "alldata/juniper_ashei/", version = NU
         mutate(version = v)
     }
   }
-  df_tree <- bind_rows(ls_df_tree)
+  df_tree <- bind_rows(ls_df_tree) %>% 
+    mutate(taxa = "Juniper ashei")
 
   return(df_tree)
 }
