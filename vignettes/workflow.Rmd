@@ -16,7 +16,7 @@ library(batchplanet)
 cityoi <- "SJ"
 df_tree <- read_tree_inventory(city = cityoi) 
 
-v_taxa <- c("Quercus", "Morus", "Ulmus", "Fraxinus", "Betula", "Acer", "Populus")
+v_taxa <- c("Quercus", "Morus", "Ulmus", "Fraxinus", "Betula", "Acer", "Populus", "vacant")
 ```
 
 ## Download PS data
@@ -51,7 +51,7 @@ proc_evi_ts(dir = "alldata/PSdata/", v_site = cityoi, v_taxa = v_taxa)
 ```
 
 Visualize the raster.
-```{r}
+```{r, eval = F}
 vis_raster(path = "alldata/PSdata/raw/SJ/SJ_2017_1_31/20170116_180730_0e30_3B_AnalyticMS_SR_clip.tif", crop_shape = NULL)
 ```
 
@@ -62,6 +62,12 @@ vis_ts(df_evi, v_site = "AT", v_taxa = "Quercus", v_id = 1:5, v_year = 2017:2022
 ```
 
 ## Get day of year for green-up and green-down
-```{r}
+```{r, eval = F}
 proc_doy(dir = "alldata/PSdata/", v_site = cityoi, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 50)
 ```
+
+```{r}
+df_doy <- read_doy(dir = "alldata/PSdata/doy/", v_site = "AT", v_taxa = "Quercus") 
+df_doy
+```
+

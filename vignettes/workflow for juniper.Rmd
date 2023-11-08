@@ -74,4 +74,3 @@ f_male <- vis_ts(df_r2g_version %>% filter(version==1), n_id =10, var = "r2g", y
 f_female <- vis_ts(df_r2g_version %>% filter(version==2), n_id =10,  var = "r2g", ylab= "R2G", smooth = T)
 f_male + f_female
 ```
-
