@@ -1,4 +1,17 @@
-vis_evi <- function(df_evi, v_site,v_taxa, v_id, v_year) {
+vis_evi <- function(df_evi, v_site=NULL, v_taxa = NULL, v_id=NULL, v_year=NULL) {
+  if (is.null(v_site)) {
+    v_site <- df_evi %>% pull(site) %>% unique()
+  }
+  if (is.null(v_taxa)) {
+    v_taxa <- df_evi %>% pull(taxaxoi) %>% unique()
+  }
+  if (is.null(v_id)) {
+    v_id <- df_evi %>% pull(id) %>% unique() %>% sample(min(3, length(.)))
+  }
+  if (is.null(v_year)) {
+    v_year <- df_evi %>% pull(year) %>% unique()
+  }
+
   # choose year and id
   df_evi_sub <- df_evi %>%
     filter(

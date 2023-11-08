@@ -16,8 +16,8 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = NULL, max_sample =
           # get plant locations
           df_plant_site_taxa <- df_plant %>%
             filter(site == siteoi) %>%
-            filter(str_detect(species, taxaoi)) %>% 
-            drop_na(lon, lat) %>% 
+            filter(str_detect(species, taxaoi)) %>%
+            drop_na(lon, lat) %>%
             sample_n(min((max_sample), nrow(.)))
 
           v_id <- df_plant_site_taxa %>% pull(id)
@@ -32,7 +32,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = NULL, max_sample =
           f_ts <- str_c(dir, "ts/ps_", siteoi, "_", taxaoi, ".rds")
           if (!file.exists(f_ts)) {
             # read reflectance data
-            files <- list.files(path = str_c(dir, siteoi), pattern = ".*_SR_clip.tif$", recursive = T, full.names = T) %>% sort()
+            files <- list.files(path = str_c(dir, "raw/", siteoi), pattern = ".*_SR_clip.tif$", recursive = T, full.names = T) %>% sort()
             nday <- length(files)
             df_ps <- foreach(
               f = 1:nday,
@@ -58,7 +58,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = NULL, max_sample =
             # other - potentially problematic/unusable data
             #
             # Full description is in Planet's documentation (Page 91, Section 2. UNUSABLE DATA MASK FILE).
-            files <- list.files(path = str_c(dir, siteoi), pattern = ".*_udm2_clip.tif$", recursive = T, full.names = T) %>% sort()
+            files <- list.files(path = str_c(dir, "raw/", siteoi), pattern = ".*_udm2_clip.tif$", recursive = T, full.names = T) %>% sort()
             nday <- length(files)
             df_ps_qa <- foreach(
               f = 1:nday,
@@ -80,7 +80,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = NULL, max_sample =
             }
 
             # get corresponding timing from file names
-            df_time <- list.files(path = str_c(dir, siteoi), pattern = ".*_SR_clip.tif$", recursive = T) %>%
+            df_time <- list.files(path = str_c(dir, "raw/", siteoi), pattern = ".*_SR_clip.tif$", recursive = T) %>%
               sort() %>%
               str_split(pattern = "/", simplify = T) %>%
               data.frame() %>%

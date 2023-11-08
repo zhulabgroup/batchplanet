@@ -46,7 +46,7 @@ Here, tar and compress folders for cities downloaded by submitting Slurm jobs an
 
 Extract time series at tree locations. Use Great Lakes R session with 36 cores for this step.
 ```{r}
-proc_ps_ts(dir = "alldata/juniper_ashei/PSdata/", df_plant = df_tree, v_site = NULL)
+proc_ps_ts(dir = "alldata/juniper_ashei/PSdata/", df_plant = df_tree_county, v_site = NULL)
 ```
 
 Time series preprocessing, including removing low quality data and calculating EVI.
@@ -56,7 +56,8 @@ proc_evi_ts(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL)
 
 Read in data and visualize.
 ```{r}
-df_evi <- read_evi(dir = "alldata/PSdata/", v_site = NULL)
+df_evi <- read_evi(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL)
 df_evi
+vis_evi(df_evi)
 ```
 
