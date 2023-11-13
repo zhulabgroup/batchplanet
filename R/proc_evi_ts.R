@@ -10,7 +10,7 @@ proc_evi_ts <- function(dir, v_site = NULL, v_taxa = NULL) {
   dir.create(str_c(dir, "evi/"), showWarnings = F)
   for (siteoi in v_site) {
     if (is.null(v_taxa)) {
-      v_taxa <- list.files(str_c(dir, "ts/"), recursive = F, full.names = F) %>%
+      v_taxa <- list.files(str_c(dir, "ts/"), pattern = siteoi, recursive = F, full.names = F) %>%
         str_remove(".rds") %>%
         str_split("_", simplify = T) %>%
         as.data.frame() %>%
