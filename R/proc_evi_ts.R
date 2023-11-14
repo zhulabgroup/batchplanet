@@ -1,7 +1,6 @@
 proc_evi_ts <- function(dir, v_site = NULL, v_taxa = NULL) {
   if (is.null(v_site)) {
     v_site <- list.files(str_c(dir, "ts/"), recursive = F, full.names = F) %>%
-      str_remove(".rds") %>%
       str_split("_", simplify = T) %>%
       as.data.frame() %>%
       pull(V2)
