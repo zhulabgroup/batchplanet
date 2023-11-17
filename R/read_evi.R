@@ -1,7 +1,7 @@
 read_evi <- function(dir = "alldata/PSdata/evi/", v_site = NULL, v_taxa = NULL) {
   if (is.null(v_site)) {
     v_site <- list.files(dir, recursive = F, full.names = F) %>%
-      str_remove(".rds") %>%
+      str_remove(".rds$") %>%
       str_split("_", simplify = T) %>%
       as.data.frame() %>%
       pull(V2)
@@ -13,7 +13,7 @@ read_evi <- function(dir = "alldata/PSdata/evi/", v_site = NULL, v_taxa = NULL) 
     
     if (is.null(v_taxa)) {
       v_taxa <- list.files(dir, recursive = F, full.names = F) %>%
-        str_remove(".rds") %>%
+        str_remove(".rds$") %>%
         str_split("_", simplify = T) %>%
         as.data.frame() %>%
         pull(V3)

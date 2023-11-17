@@ -56,21 +56,35 @@ proc_evi_ts(dir = "alldata/juniper_ashei/PSdata/", v_site = NULL, v_taxa = "Juni
 
 Read in data and visualize.
 ```{r}
-df_evi <- read_evi(dir = "alldata/juniper_ashei/PSdata/evi/", v_site = NULL, v_taxa = "Juniper ashei")
-df_evi
-vis_ts(df_evi, smooth = T)
+df_index <- read_evi(dir = "alldata/juniper_ashei/PSdata/evi/", v_site = NULL, v_taxa = "Juniper ashei") %>% 
+  select(-site) %>% 
+  mutate(r2g = red/green) %>% 
+  mutate(yellow = (red+green)/blue) %>% filter(yellow <=10)#/(green/blue)*(red-blue+1))
+df_index
+df_index_version <- df_index %>% left_join(df_tree %>% distinct(id, version))
+write_csv(df_index_version, "alldata/juniper_ashei/indices.csv")
 ```
 
 Calculate and visualize red to green ratio.
 ```{r}
-df_r2g <- df_evi %>% mutate(r2g = red/green)
-vis_ts(df_r2g, var = "r2g", ylab= "R2G", smooth = T)
+vis_ts(df_index, var = "r2g", ylab= "R/G", smooth = T)
 ```
 
 Any difference in the two versions? First version male trees, second version female trees.
 ```{r}
-df_r2g_version <- df_r2g %>% left_join(df_tree %>% distinct(id, version))
-f_male <- vis_ts(df_r2g_version %>% filter(version==1), n_id =10, var = "r2g", ylab= "R2G", smooth = T)
-f_female <- vis_ts(df_r2g_version %>% filter(version==2), n_id =10,  var = "r2g", ylab= "R2G", smooth = T)
+f_male <- vis_ts(df_index_version %>% filter(version==1), n_id =3, var = "r2g", ylab= "R/G", smooth = T, seed = 2)
+f_female <- vis_ts(df_index_version %>% filter(version==2), n_id =3,  var = "r2g", ylab= "R/G", smooth = T, seed = 2)
+f_male + f_female
+```
+
+Calculate and visualize yellow.
+```{r}
+vis_ts(df_index, var = "yellow", ylab= "yellow", smooth = T)
+```
+
+Any difference in the two versions? First version male trees, second version female trees.
+```{r}
+f_male <- vis_ts(df_index_version %>% filter(version==1), n_id =3, var = "yellow", ylab= "yellow", smooth = T, seed = NULL)
+f_female <- vis_ts(df_index_version %>% filter(version==2), n_id =3,  var = "yellow", ylab= "yellow", smooth = T, seed = NULL)
 f_male + f_female
 ```
