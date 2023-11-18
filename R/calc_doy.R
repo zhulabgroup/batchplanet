@@ -1,4 +1,4 @@
-proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 50) {
+proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 365) {
   if (is.null(v_site)) {
     v_site <- list.files(str_c(dir, "evi/"), recursive = F, full.names = F) %>%
       str_remove(".rds") %>%
@@ -52,11 +52,22 @@ proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_ye
                   sort()
               }
               
+              df_ts_year <- df_ts  %>% 
+                filter(year == yearoi | year == (yearoi - 1) | year == (yearoi + 1)) %>%
+                filter(doy != 366) %>%
+                mutate(doy = ifelse(doy > 274 & year == yearoi - 1, doy - 365, doy)) %>%
+                mutate(year = ifelse(doy <= 0 & year == yearoi - 1, year + 1, year)) %>%
+                mutate(doy = ifelse(doy < 91 & year == yearoi + 1, doy + 365, doy)) %>%
+                mutate(year = ifelse(doy > 365 & year == yearoi + 1, year - 1, year)) %>% 
+                filter(year==yearoi)
+              
               ls_df_doy_id <- vector(mode = "list")
               for (idoi in v_id) {
                 print(str_c(yearoi, " ", idoi))
-                df_ts_sub <- df_ts %>% filter(year == yearoi, id == idoi)
-                ls_df_doy_id[[idoi]] <- calc_doy_ind(df_ts_ind = df_ts_sub, df_thres = df_thres, min_days = min_days) %>%
+                df_ts_id <- df_ts_year %>% 
+                  filter(id == idoi)
+                
+                ls_df_doy_id[[idoi]] <- calc_doy_ind(df_ts_ind = df_ts_id, df_thres = df_thres, min_days = min_days) %>%
                   mutate(year = yearoi, id = idoi) %>%
                   dplyr::select(year, id, everything())
               }
@@ -74,27 +85,26 @@ proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_ye
   }
 }
 
-calc_doy_ind <- function(df_ts_ind, df_thres = NULL, min_days = 50) {
+calc_doy_ind <- function(df_ts_ind, df_thres = NULL, min_days = 365) {
   if (is.null(df_thres)) {
     df_thres <- set_thres()
   }
 
   df_evi <- df_ts_ind %>%
-    complete(doy = c((274 - 365):(365 + 151))) %>%
+    complete(doy = c(-90:(365 + 90))) %>%
+    mutate(evi_sm = util_fill_whit(x = evi, maxgap = 30, lambda = 50, minseg = 2))%>%
     arrange(doy) %>%
     filter(doy != 366)
 
   valid_days <- df_evi %>%
-    drop_na() %>%
-    filter(doy >= 1 & doy <= 365) %>%
+    drop_na(evi_sm) %>%
+    # filter(doy >= 1 & doy <= 365) %>%
     nrow()
 
   if (valid_days < min_days) {
     df_up <- df_down <- NULL
     print("too few data points")
   } else {
-    df_evi <- df_evi %>%
-      mutate(evi_sm = util_fill_whit(x = evi, maxgap = Inf, lambda = 50, minseg = 2))
 
     flatbetter <- util_flat(df_evi$evi_sm, k = 50)
 

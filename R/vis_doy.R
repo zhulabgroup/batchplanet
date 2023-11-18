@@ -47,7 +47,7 @@ vis_doy <- function(df_evi, df_doy, v_site = NULL, v_taxa = NULL, v_id = NULL, v
       group_by(site, taxa, lon, lat, id, year) %>%
       complete(doy = seq(1, 365, by = 1)) %>%
       mutate(date = lubridate::as_date(str_c(year, "-01-01")) + doy - 1) %>%
-      mutate(value = util_fill_whit(x = value, maxgap = Inf, lambda = 50, minseg = 2))
+      mutate(value = util_fill_whit(x = value, maxgap = 30, lambda = 50, minseg = 2))
   }
 
   # visualize

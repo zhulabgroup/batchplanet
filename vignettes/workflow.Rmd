@@ -13,7 +13,7 @@ library(batchplanet)
 ## Read street tree inventory
 
 ```{r}
-cityoi <- "DT"
+cityoi <- "NY"
 df_tree <- read_tree_inventory(city = cityoi)
 
 v_taxa <- c("Quercus", "Morus", "Ulmus", "Fraxinus", "Betula", "Acer", "Populus", "Vacant")
