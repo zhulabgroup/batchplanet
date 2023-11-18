@@ -63,7 +63,7 @@ vis_ts(df_evi, v_site = cityoi, v_taxa = "Quercus", v_id = NULL, n_id = 5, v_yea
 
 ## Get day of year for green-up and green-down
 ```{r, eval = F}
-proc_doy(dir = "alldata/PSdata/", v_site = cityoi, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 50)
+proc_doy(dir = "alldata/PSdata/", v_site = cityoi, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 365)
 ```
 
 ```{r}
