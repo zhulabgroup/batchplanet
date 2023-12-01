@@ -1,4 +1,4 @@
-proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 365) {
+proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 300) {
   if (is.null(v_site)) {
     v_site <- list.files(str_c(dir, "evi/"), recursive = F, full.names = F) %>%
       str_remove(".rds") %>%

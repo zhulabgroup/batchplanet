@@ -6,16 +6,7 @@ order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
     path_ps_site <- str_c(dir, "raw/", siteoi, "/")
     dir.create(str_c(path_ps_site, "orders/"), recursive = T, showWarnings = F)
 
-    # Set AOI (many ways to set this!) ultimately just need an extent()
-    df_plant_site <- df_plant %>%
-      filter(site == siteoi) %>%
-      drop_na(lon, lat)
-    bbox <- sf::st_bbox(c(
-      xmin = min(df_plant_site$lon) - 0.0005,
-      xmax = max(df_plant_site$lon) + 0.0005,
-      ymin = min(df_plant_site$lat) - 0.0005,
-      ymax = max(df_plant_site$lat) + 0.0005
-    ))
+    bbox <- set_bbox(df_plant, siteoi)
 
     for (year_download in 2017:2023) {
       df_order <- data.frame(year = integer(0), month = integer(0), id = character(0), images = integer(0))

@@ -13,8 +13,9 @@ library(batchplanet)
 ## Read street tree inventory
 
 ```{r}
-cityoi <- "NY"
+cityoi <- "AT"
 df_tree <- read_tree_inventory(city = cityoi)
+set_bbox(df_plant = df_tree, siteoi= cityoi)
 
 v_taxa <- c("Quercus", "Morus", "Ulmus", "Fraxinus", "Betula", "Acer", "Populus", "Vacant")
 ```
@@ -57,8 +58,8 @@ vis_raster(path = "alldata/PSdata/raw/SJ/SJ_2017_1_31/20170116_180730_0e30_3B_An
 
 Read and visualize the evi curve.
 ```{r}
-df_evi <- read_evi(dir = "alldata/PSdata/evi/", v_site = cityoi, v_taxa = "Quercus")
-vis_ts(df_evi, v_site = cityoi, v_taxa = "Quercus", v_id = NULL, n_id = 5, v_year = 2017:2022, smooth = T)
+df_evi <- read_evi(dir = "alldata/PSdata/evi/", v_site = "NY", v_taxa = "Acer")
+vis_ts(df_evi, v_site = "NY", v_taxa = "Acer", v_id = NULL, n_id = 5, v_year = 2017:2022, smooth = T)
 ```
 
 ## Get day of year for green-up and green-down
@@ -67,7 +68,13 @@ proc_doy(dir = "alldata/PSdata/", v_site = cityoi, v_taxa = NULL, v_year = NULL,
 ```
 
 ```{r}
-df_doy <- read_doy(dir = "alldata/PSdata/doy/", v_site = "AT", v_taxa = "Quercus")
+df_doy <- read_doy(dir = "alldata/PSdata/doy/", v_site = "NY", v_taxa = "Acer")
 df_doy
-vis_doy(df_evi, df_doy, v_site = "AT", v_taxa = "Quercus", v_id = NULL, n_id = 5, v_year = 2017:2022, smooth = T)
+vis_doy(df_evi, df_doy, v_site = "NY", v_taxa = "Acer", v_id = NULL, n_id = 5, v_year = 2017:2022, smooth = T)
 ```
+
+## Read Landsat 8 LST
+```{r, eval = F}
+proc_mat_ts(dir = "alldata/LSTdata/", df_plant = df_tree, v_site = cityoi, v_taxa = v_taxa)
+```
+
