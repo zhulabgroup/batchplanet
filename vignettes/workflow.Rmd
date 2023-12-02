@@ -11,10 +11,13 @@ library(batchplanet)
 ```
 
 ## Read street tree inventory
+```{r, eval = F}
+read_tree_inventory_all(v_site = c("NY", "SJ", "HT", "DT", "DV", "ST", "AT", "TP"))
+```
 
 ```{r}
 cityoi <- "AT"
-df_tree <- read_tree_inventory(city = cityoi)
+df_tree <- read_tree_inventory(city = cityoi, preload = T)
 set_bbox(df_plant = df_tree, siteoi= cityoi)
 
 v_taxa <- c("Quercus", "Morus", "Ulmus", "Fraxinus", "Betula", "Acer", "Populus", "Vacant")
