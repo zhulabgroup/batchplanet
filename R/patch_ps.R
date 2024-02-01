@@ -62,7 +62,6 @@ planet_search_new <- function(bbox = bbox,
     )
   )
 
-
   # filter by cloud cover
   cloud_cover_filter <- list(
     type = jsonlite::unbox("RangeFilter"),
@@ -170,50 +169,15 @@ planet_search_new <- function(bbox = bbox,
   }
 }
 
-
-
 planet_order_request_new <-
   function(api_key,
            bbox,
-           date_start,
-           date_end,
-           list_dates = NULL,
-           cloud_lim,
-           ground_control,
-           quality,
+           items,
            item_name,
            product_bundle,
-           asset,
+           harmonized = F,
            order_name = exportfolder,
            mostrecent) {
-    # SEARCH FOR IMAGES
-
-    if (is.null(list_dates) == FALSE) {
-      print("Search from date list")
-      items <- planet_search_new(
-        bbox = bbox,
-        list_dates = list_dates,
-        cloud_lim = cloud_lim,
-        item_name = item_name,
-        asset = asset,
-        api_key = api_key
-      )
-    } else {
-      print("Search from yday and year ranges")
-      items <- planet_search_new(
-        bbox = bbox,
-        date_end = date_end,
-        date_start = date_start,
-        cloud_lim = cloud_lim,
-        ground_control = ground_control,
-        quality = quality,
-        item_name = item_name,
-        asset = asset,
-        api_key = api_key,
-        list_dates = list_dates
-      )
-    }
-
     if (mostrecent > 0) {
       items <- sort(items, decreasing = T)[1:mostrecent]
       print(paste("Selected", mostrecent, "most recent images."))
@@ -258,6 +222,12 @@ planet_order_request_new <-
     # json structure needs specific nesting, double nested for tools hence the list(list())
     clip <- list(aoi = aoi)
     tools <- list(list(clip = clip))
+
+    if (harmonized) {
+      # tool for harmonization
+      harmonize <- list(target_sensor = jsonlite::unbox("Sentinel-2"))
+      tools <- list(list(clip = clip), list(harmonize = harmonize))
+    }
 
     # Build request body and convert to json
     order_name <- jsonlite::unbox(order_name)

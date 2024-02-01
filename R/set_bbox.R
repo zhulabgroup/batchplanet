@@ -1,4 +1,4 @@
-set_bbox <- function (df_plant, siteoi) {
+set_bbox <- function(df_plant, siteoi) {
   # Set AOI (many ways to set this!) ultimately just need an extent()
   df_plant_site <- df_plant %>%
     filter(site == siteoi) %>%
@@ -9,6 +9,6 @@ set_bbox <- function (df_plant, siteoi) {
     ymin = min(df_plant_site$lat) - 0.0005,
     ymax = max(df_plant_site$lat) + 0.0005
   ))
-  
+
   return(bbox)
 }

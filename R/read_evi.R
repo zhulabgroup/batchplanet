@@ -10,7 +10,7 @@ read_evi <- function(dir = "alldata/PSdata/evi/", v_site = NULL, v_taxa = NULL) 
   ls_df_evi_site <- vector(mode = "list")
   for (siteoi in v_site) {
     ls_df_evi_taxa <- vector(mode = "list")
-    
+
     if (is.null(v_taxa)) {
       v_taxa <- list.files(dir, recursive = F, full.names = F) %>%
         str_remove(".rds$") %>%
@@ -19,7 +19,7 @@ read_evi <- function(dir = "alldata/PSdata/evi/", v_site = NULL, v_taxa = NULL) 
         pull(V3)
     }
     for (taxaoi in v_taxa) {
-      f_evi <- list.files(dir, pattern = str_c(siteoi, "_", taxaoi), full.names = T) 
+      f_evi <- list.files(dir, pattern = str_c(siteoi, "_", taxaoi), full.names = T)
       ls_df_evi_taxa[[taxaoi]] <- read_rds(f_evi) %>%
         mutate(taxa = taxaoi)
     }

@@ -1,15 +1,15 @@
-read_tree_inventory_all <- function (v_site , indir = "alldata/tree/") {
+read_tree_inventory_all <- function(v_site, indir = "alldata/tree/") {
   ls_df_tree <- vector(mode = "list")
   for (siteoi in v_site) {
-    ls_df_tree[[siteoi]] <- read_tree_inventory(siteoi, indir = indir) 
+    ls_df_tree[[siteoi]] <- read_tree_inventory(siteoi, indir = indir)
     print(siteoi)
   }
-  
+
   df_tree <- bind_rows(ls_df_tree)
-  
+
   f_tree <- str_c(indir, "df_tree.rds")
-  write_rds (df_tree, f_tree)
-  
+  write_rds(df_tree, f_tree)
+
   return(f_tree)
 }
 
@@ -21,8 +21,8 @@ read_tree_inventory <- function(city, indir = "alldata/tree/", preload = F) {
   }
   if (preload) {
     f_tree <- str_c(indir, "df_tree.rds")
-    df_tree <- read_rds(f_tree) %>% 
-      filter(site ==city)
+    df_tree <- read_rds(f_tree) %>%
+      filter(site == city)
   }
 
   return(df_tree)

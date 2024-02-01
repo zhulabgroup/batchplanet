@@ -35,10 +35,10 @@ proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_ye
               unique() %>%
               sort()
           }
-          
+
           cl <- makeCluster(length(v_year), outfile = "")
           registerDoSNOW(cl)
-          
+
           ls_df_doy_year <-
             foreach(
               yearoi = v_year,
@@ -51,22 +51,22 @@ proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_ye
                   unique() %>%
                   sort()
               }
-              
-              df_ts_year <- df_ts  %>% 
+
+              df_ts_year <- df_ts %>%
                 filter(year == yearoi | year == (yearoi - 1) | year == (yearoi + 1)) %>%
                 filter(doy != 366) %>%
                 mutate(doy = ifelse(doy > 274 & year == yearoi - 1, doy - 365, doy)) %>%
                 mutate(year = ifelse(doy <= 0 & year == yearoi - 1, year + 1, year)) %>%
                 mutate(doy = ifelse(doy < 91 & year == yearoi + 1, doy + 365, doy)) %>%
-                mutate(year = ifelse(doy > 365 & year == yearoi + 1, year - 1, year)) %>% 
-                filter(year==yearoi)
-              
+                mutate(year = ifelse(doy > 365 & year == yearoi + 1, year - 1, year)) %>%
+                filter(year == yearoi)
+
               ls_df_doy_id <- vector(mode = "list")
               for (idoi in v_id) {
                 print(str_c(yearoi, " ", idoi))
-                df_ts_id <- df_ts_year %>% 
+                df_ts_id <- df_ts_year %>%
                   filter(id == idoi)
-                
+
                 ls_df_doy_id[[idoi]] <- calc_doy_ind(df_ts_ind = df_ts_id, df_thres = df_thres, min_days = min_days) %>%
                   mutate(year = yearoi, id = idoi) %>%
                   dplyr::select(year, id, everything())
@@ -74,10 +74,10 @@ proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_ye
               df_doy_year <- bind_rows(ls_df_doy_id)
               df_doy_year
             }
-          
+
           df_doy <- bind_rows(ls_df_doy_year)
           stopCluster(cl)
-          
+
           write_rds(df_doy, f_doy)
         }
       }
@@ -91,10 +91,9 @@ calc_doy_ind <- function(df_ts_ind, df_thres = NULL, min_days = 365) {
   }
 
   df_evi <- df_ts_ind %>%
-    complete(doy = c(-90:(365 + 90))) %>%
-    mutate(evi_sm = util_fill_whit(x = evi, maxgap = 30, lambda = 50, minseg = 2))%>%
     arrange(doy) %>%
-    filter(doy != 366)
+    complete(doy = c(-90:(365 + 90))) %>%
+    mutate(evi_sm = util_fill_whit(x = evi, maxgap = 60, lambda = 50, minseg = 2))
 
   valid_days <- df_evi %>%
     drop_na(evi_sm) %>%
@@ -105,7 +104,6 @@ calc_doy_ind <- function(df_ts_ind, df_thres = NULL, min_days = 365) {
     df_up <- df_down <- NULL
     print("too few data points")
   } else {
-
     flatbetter <- util_flat(df_evi$evi_sm, k = 50)
 
     ### green down
