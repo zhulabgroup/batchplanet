@@ -17,7 +17,7 @@ read_tree_inventory_all(v_site = v_site)
 ```
 
 ```{r}
-cityoi <- "AT"
+cityoi <- "NY"
 df_tree <- read_tree_inventory(city = cityoi, preload = T)
 set_bbox(df_plant = df_tree, siteoi = cityoi)
 
@@ -27,7 +27,7 @@ v_taxa <- c("Quercus", "Morus", "Ulmus", "Fraxinus", "Betula", "Acer", "Populus"
 ## Download PS data
 Set some parameters. Replace API key with your own here.
 ```{r}
-setting <- set_ps(api_key = "REMOVED") # songyl
+setting <- set_ps(api_key = "REMOVED", harmonized = T) # songyl
 ```
 
 Order. Order IDs saved as rds.

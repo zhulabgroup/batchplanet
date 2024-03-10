@@ -6,7 +6,8 @@ order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
     n_plant <- df_plant %>%
       filter(site == siteoi) %>%
       drop_na(lon, lat) %>%
-      n()
+      nrow()
+    
     if (n_plant > 0) {
       path_ps_site <- str_c(dir, "raw/", siteoi, "/")
       dir.create(str_c(path_ps_site, "orders/"), recursive = T, showWarnings = F)
@@ -49,8 +50,8 @@ order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
           if (length(out) > 0) {
             item_num <- length(images)
             group_num <- ceiling(item_num / 450)
-            split_num <- ceiling(31 / group_num)
-            image_group <- split(images, floor((seq(1:length(images)) - 0.0001) / split_num))
+            id_images <- cut(seq_along(images), breaks = group_num, labels = FALSE)
+            image_group <- split(images, id_images)
             for (g in 1:length(image_group)) {
               orderdone <- F
               while (!orderdone) {
