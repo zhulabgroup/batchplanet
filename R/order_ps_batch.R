@@ -48,10 +48,8 @@ order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
             }
           )
           if (length(out) > 0) {
-            item_num <- length(images)
-            group_num <- ceiling(item_num / 450)
-            id_images <- cut(seq_along(images), breaks = group_num, labels = FALSE)
-            image_group <- split(images, id_images)
+            group_id <- ceiling(seq_along(images) / 450)
+            image_group <- split(images, group_id)
             for (g in 1:length(image_group)) {
               orderdone <- F
               while (!orderdone) {
