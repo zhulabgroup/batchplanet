@@ -1,4 +1,4 @@
-order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
+order_ps_batch <- function(dir, df_plant, v_site = NULL, setting, v_year = 2017:2023) {
   if (is.null(v_site)) {
     v_site <- df_plant$site %>% unique()
   }
@@ -14,7 +14,7 @@ order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
 
       bbox <- set_bbox(df_plant, siteoi)
 
-      for (year_download in 2017:2023) {
+      for (year_download in v_year) {
         df_order <- data.frame(year = integer(0), month = integer(0), id = character(0), images = integer(0))
         for (month_download in 1:12) {
           # Date range of interest
@@ -77,7 +77,7 @@ order_ps_batch <- function(dir, df_plant, v_site = NULL, setting) {
 
               if (!is.null(order_id)) {
                 df_order <- df_order %>%
-                  bind_rows(data.frame(year = year_download, month = month_download, id = order_id, images = item_num))
+                  bind_rows(data.frame(year = year_download, month = month_download, id = order_id, images = length(image_group[[g]])))
               }
             }
           }
