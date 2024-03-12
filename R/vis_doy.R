@@ -54,7 +54,7 @@ vis_doy <- function(df_evi, df_doy, v_site = NULL, v_taxa = NULL, v_id = NULL, v
   p <- ggplot() +
     geom_line(data = df_evi_sub, aes(x = date, y = value, group = as.factor(id))) +
     geom_vline(data = df_doy_sub, aes(xintercept = date), col = "dark green") +
-    xlim(min(df_doy_sub$date, na.rm = T), max(df_doy_sub$date, na.rm = T)) +
+    xlim(min(df_evi_sub$date, na.rm = T), max(df_evi_sub$date, na.rm = T)) +
     ylim(0, 1) +
     labs(
       # title = paste("EVI Trend for ID:", id, "and Years:", paste(years, collapse = ", ")),
