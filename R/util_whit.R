@@ -52,7 +52,7 @@ util_whit <- function(x, lambda, w, minseg = 2) {
       if (max_id - min_id + 1 < minseg) { # this non-NA segment is too short
         x[min_id:max_id] <- -9999
       } else {
-        x[min_id:max_id] <- ptw::whit1(x[min_id:max_id], lambda, w[min_id:max_id]) # whitman smoothing for this non-NA segment
+        x[min_id:max_id] <- ptw::whit1(x[min_id:max_id], lambda, w[min_id:max_id]) # whittaker smoothing for this non-NA segment
       }
     }
   }
