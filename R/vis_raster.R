@@ -1,4 +1,4 @@
-vis_raster <- function(path, crop_shape = NULL) {
+vis_raster <- function(path, crop_shape = NULL, bright = 5) {
   ras <- terra::rast(path)
   if (!is.null(crop_shape)) {
     ras <- ras %>% terra::crop(crop_shape)
@@ -27,9 +27,9 @@ vis_raster <- function(path, crop_shape = NULL) {
       r > 0
     ) %>%
     mutate(
-      b = b * 5,
-      g = g * 5,
-      r = r * 5,
+      b = b * bright,
+      g = g * bright,
+      r = r * bright,
     ) %>%
     filter(
       b <= 1,
