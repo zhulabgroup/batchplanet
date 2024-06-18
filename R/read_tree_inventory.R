@@ -211,3 +211,54 @@ read_tree_inventory_ST <- function(indir, site) {
 
   return(trees_df)
 }
+
+read_tree_inventory_BV <- function(indir, site) {
+  # Source?
+  species_name <- read_csv(str_c(indir, "Tree_Inventory_Bellevue/species_reference.csv"))
+  trees_df <- st_read(dsn = str_c(indir, "Tree_Inventory_Bellevue/CITYTREE.shp")) %>%
+    st_transform(shapefile, crs = 4326) %>%
+    cbind(st_coordinates(.)) %>%
+    left_join(species_name, c("SpeciesNbr" = "species_id")) %>%
+    distinct(id = CityTreeID, species = species, lon = X, lat = Y) %>%
+    filter(!is.na(species)) %>%
+    mutate(site = site) 
+  # original crs: NAD83(2011) / Washington North (ftUS)
+  # remove NA species_name - reduce from 11725 to 4252
+  return(trees_df)
+}
+
+read_tree_inventory_SL <- function(indir, site) {
+  # Source?
+  add_df <- read_csv(str_c(indir, "Tree_Inventory_Salem/address reference.csv")) 
+  trees_df <- read_csv(str_c(indir, "Tree_Inventory_Salem/Tree_Inventory_Salem.csv")) %>%
+    bind_cols(add_df)
+  # check <- trees_df %>%
+  #   mutate(
+  #     extracted_number = as.numeric(sub(" .*", "", address)),
+  #     extracted_street = sub("^[0-9]+\\s+(.*?)\\s+Salem, MA$", "\\1", address)
+  #   ) %>%
+  #   mutate(
+  #     number_match = Street_Number == extracted_number,
+  #     street_match = Street_Name == extracted_street
+  #   ) %>%
+  #   subset(number_match==FALSE | street_match==FALSE)
+  trees_df <-  trees_df %>% # check
+    filter(!(is.na(Genus) & is.na(Species))) %>%
+    filter(!(is.na(lon) | is.na(lat))) %>%
+    mutate(species = paste(Genus, Species, sep = " ")) %>%
+    distinct(species = species, lon = lon, lat = lat) %>%
+    mutate(id = row_number(), site = site)
+  # original crs: NAD83(2011) / Washington North (ftUS)
+  # remove NA species_name - reduce from 11725 to 4252
+  return(trees_df)
+}
+
+read_tree_inventory_BM <- function(indir, site) {
+  # Opentree
+  trees_df <- read_csv(str_c(indir, "Tree_Inventory_Bozeman.csv")) %>%
+    filter(!(is.na(Genus) & is.na(Species)))%>%
+    dplyr::select(id = OBJECTID, species = Botanical_Name, lat = Y, lon = X) %>% # checked that there is no repeated tree id
+    mutate(site = site)
+  
+  return(trees_df)
+}

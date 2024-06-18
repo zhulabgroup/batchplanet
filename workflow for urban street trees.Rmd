@@ -19,8 +19,8 @@ read_tree_inventory_all(v_site = v_site)
 ```
 
 ```{r}
-cityoi <- "SL"
-df_tree <- read_tree_inventory(city = cityoi, preload = F)
+cityoi <- "BM"
+df_tree <- read_tree_inventory(city = "BM", preload = F)
 set_bbox(df_plant = df_tree, siteoi = cityoi)
 
 v_taxa <- c("Quercus", "Morus", "Ulmus", "Fraxinus", "Betula", "Acer", "Populus", "Vacant")
