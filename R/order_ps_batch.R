@@ -1,5 +1,5 @@
 #' @export
-order_ps_batch <- function(dir, df_plant, v_site = NULL, setting, v_year = 2017:2023) {
+order_ps_batch <- function(dir, df_plant, v_site = NULL, setting, v_year = 2017:(Sys.Date() %>% lubridate::year())) {
   if (is.null(v_site)) {
     v_site <- df_plant$site %>% unique()
   }

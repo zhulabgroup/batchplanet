@@ -28,7 +28,7 @@ misc_read_juniper_coord <- function(dir = "alldata/juniper_ashei/", version = NU
         read_csv(str_c(dir, "Jan24/green_trees_latlon.csv")) %>% mutate(group = "green"),
         read_csv(str_c(dir, "Jan24/orange_trees_latlon.csv")) %>% mutate(group = "orange")) %>% 
         mutate(id = row_number() %>% as.character()) %>%
-        distinct(id, lon , lat ) %>%
+        distinct(id, lon , lat, group ) %>%
         as_tibble() %>%
         mutate(version = v)
     }

@@ -1,5 +1,5 @@
 #' @export
-vis_ts <- function(df_ts, v_site = NULL, v_taxa = NULL, v_id = NULL, v_year = NULL, n_id = 3, var = "evi", ylab = "EVI", smooth = F, seed = 1) {
+vis_ts <- function(df_ts, v_site = NULL, v_taxa = NULL, v_id = NULL, v_year = NULL, n_id = 3, var = "evi", ylab = "EVI", smooth = F, seed = 1, facet = NULL) {
   if (is.null(v_site)) {
     v_site <- df_ts %>%
       pull(site) %>%
@@ -37,14 +37,27 @@ vis_ts <- function(df_ts, v_site = NULL, v_taxa = NULL, v_id = NULL, v_year = NU
 
   if (smooth) {
     df_ts_sub <- df_ts_sub %>%
-      group_by(site, taxa, lon, lat, id, year) %>%
+      {
+        if (!is.null(facet) && facet != "") {
+          group_by(., site, taxa, lon, lat, year, !!sym(facet))
+        } else {
+          group_by(., site, taxa, lon, lat, year)
+        }
+      } %>%
       complete(doy = seq(1, 365, by = 1)) %>%
       mutate(date = lubridate::as_date(str_c(year, "-01-01")) + doy - 1) %>%
       ungroup() %>%
-      group_by(site, taxa, lon, lat, id) %>%
+      {
+        if (!is.null(facet) && facet != "") {
+          group_by(., site, taxa, lon, lat, id, !!sym(facet))
+        } else {
+          group_by(., site, taxa, lon, lat, id)
+        }
+      } %>%
       mutate(value = util_fill_whit(x = value, maxgap = 30, lambda = 50, minseg = 2)) %>%
       ungroup()
   }
+  
   # visualize
   p <- ggplot(df_ts_sub, aes(x = date, y = value, col = id, group = as.factor(id))) +
     geom_line() +
@@ -56,6 +69,10 @@ vis_ts <- function(df_ts, v_site = NULL, v_taxa = NULL, v_id = NULL, v_year = NU
     ) +
     guides(col = "none") +
     theme_minimal()
+  
+  if (!is.null(facet)) {
+    p <- p + facet_wrap(vars(!!sym(facet)), nrow = 1)
+  }
 
   return(p)
 }
