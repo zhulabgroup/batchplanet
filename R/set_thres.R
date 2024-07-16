@@ -1,3 +1,4 @@
+#' @export
 set_thres <- function(taxa = NULL) {
   # possible green up and green down thresholds
   thres_up <- seq(from = 0, to = 1, by = 0.1) %>% round(1)

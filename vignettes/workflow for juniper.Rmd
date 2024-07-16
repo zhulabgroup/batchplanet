@@ -13,7 +13,8 @@ library(batchplanet)
 ## Read Juniper tree inventory
 
 ```{r}
-df_tree <- misc_read_juniper_coord(version = NULL)
+df_tree <- misc_read_juniper_coord(version = 3)
+vis_coord(df_tree)
 ```
 
 Area too big, so divide them into multiple sites (counties).
@@ -21,12 +22,15 @@ Area too big, so divide them into multiple sites (counties).
 sp_county <- read_county(country = "US")
 # sp_county_sub <- read_county_sub(country = "US", state = "texas") # county subdivision not used
 df_tree_county <- util_coord_in_area(df_tree, sp_county, field = "NAME")
+head(df_tree_county)
 ```
 
 ## Download PS data
 Set some parameters. Replace API key with your own here.
 ```{r}
-setting <- set_ps(api_key = "REMOVED") # songyl
+setting <- set_ps(api_key = "REMOVED",
+                  harmonized = T) # songyl
+setting
 ```
 
 Order. Order IDs saved as rds.

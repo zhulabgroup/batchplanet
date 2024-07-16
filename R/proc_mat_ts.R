@@ -1,3 +1,4 @@
+#' @export
 proc_mat_ts <- function(dir, df_plant, v_site = NULL, v_taxa = NULL, max_sample = 2000) {
   if (is.null(v_site)) {
     v_site <- list.dirs(str_c(dir, "mat/"), recursive = F, full.names = F)

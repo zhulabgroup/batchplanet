@@ -1,3 +1,4 @@
+#' @export
 down_ps_batch <- function(dir, v_site = NULL, setting, v_year = 2017:2023) {
   if (is.null(v_site)) {
     v_site <- list.dirs(str_c(dir, "raw/"), recursive = F, full.names = F)

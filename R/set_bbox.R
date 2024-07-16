@@ -1,3 +1,4 @@
+#' @export
 set_bbox <- function(df_plant, siteoi) {
   # Set AOI (many ways to set this!) ultimately just need an extent()
   df_plant_site <- df_plant %>%

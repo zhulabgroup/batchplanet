@@ -1,3 +1,4 @@
+#' @export
 planet_search_new <- function(bbox = bbox,
                               date_end = NULL,
                               date_start = NULL,
@@ -169,6 +170,7 @@ planet_search_new <- function(bbox = bbox,
   }
 }
 
+#' @export
 planet_order_request_new <-
   function(api_key,
            bbox,
@@ -264,6 +266,7 @@ planet_order_request_new <-
     return(order_id)
   }
 
+#' @export
 planet_order_download_new <- function(order_id, order_name, api_key, order_num, overwrite_opt = FALSE) {
   # GET order for download
   # If you lose the order_id, don't redo the request, log onto planet and find it in the orders menu

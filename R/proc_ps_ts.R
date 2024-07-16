@@ -1,3 +1,4 @@
+#' @export
 proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = "all", max_sample = 2000, num_cores = 36) {
   if (is.null(v_site)) {
     v_site <- list.dirs(str_c(dir, "raw/"), recursive = F, full.names = F)

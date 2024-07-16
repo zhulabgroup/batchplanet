@@ -1,3 +1,4 @@
+#' @export
 read_ts <- function(dir = "alldata/PSdata/", v_site = NULL) {
   if (is.null(v_site)) {
     v_site <- list.files(str_c(dir, "ts/"), recursive = F, full.names = F) %>%

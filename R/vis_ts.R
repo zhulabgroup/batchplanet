@@ -1,3 +1,4 @@
+#' @export
 vis_ts <- function(df_ts, v_site = NULL, v_taxa = NULL, v_id = NULL, v_year = NULL, n_id = 3, var = "evi", ylab = "EVI", smooth = F, seed = 1) {
   if (is.null(v_site)) {
     v_site <- df_ts %>%

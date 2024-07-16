@@ -1,3 +1,4 @@
+#' @export
 util_flat <- function(ts, doy = 1:length(ts), k = 50) {
   ls_fit <- vector(mode = "list")
 

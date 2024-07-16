@@ -1,3 +1,4 @@
+#' @export
 read_tree_inventory_all <- function(v_site, indir = "alldata/tree/") {
   ls_df_tree <- vector(mode = "list")
   for (siteoi in v_site) {
@@ -13,6 +14,7 @@ read_tree_inventory_all <- function(v_site, indir = "alldata/tree/") {
   return(f_tree)
 }
 
+#' @export
 read_tree_inventory <- function(city, indir = "alldata/tree/", preload = F) {
   if (!preload) {
     read_tree_inventory_city <- str_c("read_tree_inventory_", city)

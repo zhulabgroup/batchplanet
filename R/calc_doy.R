@@ -1,3 +1,4 @@
+#' @export
 proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_year = NULL, v_id = NULL, df_thres = NULL, min_days = 300) {
   if (is.null(v_site)) {
     v_site <- list.files(str_c(dir, "evi/"), recursive = F, full.names = F) %>%
@@ -85,6 +86,7 @@ proc_doy <- function(dir = "alldata/PSdata/", v_site = NULL, v_taxa = NULL, v_ye
   }
 }
 
+#' @export
 calc_doy_ind <- function(df_ts_ind, df_thres = NULL, min_days = 365) {
   if (is.null(df_thres)) {
     df_thres <- set_thres()

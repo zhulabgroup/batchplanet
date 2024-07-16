@@ -1,3 +1,4 @@
+#' @export
 vis_raster <- function(path, crop_shape = NULL, bright = 5) {
   ras <- terra::rast(path)
   if (!is.null(crop_shape)) {

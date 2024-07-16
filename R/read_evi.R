@@ -1,3 +1,4 @@
+#' @export
 read_evi <- function(dir = "alldata/PSdata/evi/", v_site = NULL, v_taxa = NULL) {
   if (is.null(v_site)) {
     v_site <- list.files(dir, recursive = F, full.names = F) %>%

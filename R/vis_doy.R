@@ -1,3 +1,4 @@
+#' @export
 vis_doy <- function(df_evi, df_doy, v_site = NULL, v_taxa = NULL, v_id = NULL, v_year = NULL, smooth = T, n_id = 10, thresoi = 0.5, directionoi = "up") {
   if (is.null(v_site)) {
     v_site <- df_doy %>%
