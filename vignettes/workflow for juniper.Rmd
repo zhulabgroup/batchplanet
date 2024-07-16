@@ -90,6 +90,7 @@ vis_ts(df_index_version, n_id = 3, var = "yellow", ylab = "yellow", smooth = T, 
 The chunk below applies to version 3.
 Any difference in the two groups? First group green trees, second group orange trees.
 ```{r, eval = F}
-vis_ts(df_index_version , v_site = "Burnet", v_year = 2021: 2024, n_id = 50, var = "r2g", ylab = "R/G", smooth = T, facet = "group")
-vis_ts(df_index_version,  v_site = "Burnet",v_year = 2021: 2024, n_id = 50, var = "yellow", ylab = "yellow", smooth = T,facet = "group")
+vis_ts(df_index_version , v_year = 2021: 2024, n_id = 50, var = "evi", ylab = "EVI", smooth = T, facet = "group")
+vis_ts(df_index_version , v_year = 2021: 2024, n_id = 50, var = "r2g", ylab = "R/G", smooth = T, facet = "group")
+vis_ts(df_index_version, v_year = 2021: 2024, n_id = 50, var = "yellow", ylab = "yellow", smooth = T,facet = "group")
 ```
