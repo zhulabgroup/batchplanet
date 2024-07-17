@@ -28,8 +28,10 @@ head(df_tree_county)
 ## Download PS data
 Set some parameters. Replace API key with your own here.
 ```{r}
-setting <- set_ps(api_key = "REMOVED", # songyl
-                  harmonized = T)
+setting <- set_ps(
+  api_key = "REMOVED", # songyl
+  harmonized = T
+)
 setting
 ```
 
@@ -62,17 +64,16 @@ Read in data and save.
 ```{r}
 df_index <- read_evi(dir = "alldata/juniper_ashei/PSdata/evi/", v_site = NULL, v_taxa = "Juniper ashei") %>%
   # select(-site) %>%
-  mutate(r2g = red / green) %>%
+  mutate(g2b = green / blue) %>%
   mutate(yellow = (red + green) / blue) %>%
-  filter(yellow <= 10) # /(green/blue)*(red-blue+1))
-df_index
+  mutate(ebi = yellow / (green / blue) * (red - blue + 1))
 df_index_version <- df_index %>% left_join(df_tree %>% distinct(id, version, group))
 write_csv(df_index_version, "alldata/juniper_ashei/Jan24/indices.csv")
 ```
 
-Calculate and visualize red to green ratio.
+Calculate and visualize green to blue ratio.
 ```{r}
-vis_ts(df_index, var = "r2g", ylab = "R/G", smooth = T)
+vis_ts(df_index, var = "g2b", ylab = "G/B", smooth = T)
 ```
 
 Calculate and visualize yellow.
@@ -83,14 +84,15 @@ vis_ts(df_index, var = "yellow", ylab = "yellow", smooth = T)
 The two chunks below applies to version 1 and version 2.
 Any difference in the two versions? First version male trees, second version female trees.
 ```{r, eval = F}
-vis_ts(df_index_version, n_id = 3, var = "r2g", ylab = "R/G", smooth = T, facet = "version")
+vis_ts(df_index_version, n_id = 3, var = "g2b", ylab = "G/B", smooth = T, facet = "version")
 vis_ts(df_index_version, n_id = 3, var = "yellow", ylab = "yellow", smooth = T, seed = NULL, facet = "version")
 ```
 
 The chunk below applies to version 3.
 Any difference in the two groups? First group green trees, second group orange trees.
 ```{r, eval = F}
-vis_ts(df_index_version , v_year = 2021: 2024, n_id = 50, var = "evi", ylab = "EVI", smooth = T, facet = "group")
-vis_ts(df_index_version , v_year = 2021: 2024, n_id = 50, var = "r2g", ylab = "R/G", smooth = T, facet = "group")
-vis_ts(df_index_version, v_year = 2021: 2024, n_id = 50, var = "yellow", ylab = "yellow", smooth = T,facet = "group")
+vis_ts(df_index_version, v_year = 2021:2024, n_id = 50, var = "evi", ylab = "EVI", smooth = T, facet = "group")
+vis_ts(df_index_version, v_year = 2021:2024, n_id = 50, var = "g2b", ylab = "G/B", smooth = T, facet = "group")
+vis_ts(df_index_version, v_year = 2021:2024, n_id = 50, var = "yellow", ylab = "yellow", smooth = T, facet = "group")
 ```
+a
