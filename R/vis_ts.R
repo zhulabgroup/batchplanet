@@ -57,7 +57,7 @@ vis_ts <- function(df_ts, v_site = NULL, v_taxa = NULL, v_id = NULL, v_year = NU
       mutate(value = util_fill_whit(x = value, maxgap = 30, lambda = 50, minseg = 2)) %>%
       ungroup()
   }
-  
+
   # visualize
   p <- ggplot(df_ts_sub, aes(x = date, y = value, col = id, group = as.factor(id))) +
     geom_line() +
@@ -69,7 +69,7 @@ vis_ts <- function(df_ts, v_site = NULL, v_taxa = NULL, v_id = NULL, v_year = NU
     ) +
     guides(col = "none") +
     theme_minimal()
-  
+
   if (!is.null(facet)) {
     p <- p + facet_wrap(vars(!!sym(facet)), nrow = 1)
   }

@@ -29,9 +29,9 @@ proc_evi_ts <- function(dir, v_site = NULL, v_taxa = NULL) {
           doy = format(time, "%j") %>% as.integer(),
           hour = format(strptime(time, "%Y-%m-%d %H:%M:%S"), "%H") %>% as.integer()
         ) %>%
+        filter(sun_elevation > 0) %>% # remove night time images, but there should not be any in this data product
         filter(red > 0, green > 0, blue > 0) %>%
         filter(clear == 1, snow == 0, shadow == 0, haze_light == 0, haze_heavy == 0, cloud == 0, confidence >= 80) %>%
-        # select(id, time, lon, lat, blue, green, red, nir) %>%
         group_by(id, lon, lat, date, year, doy) %>%
         summarise(
           blue = mean(blue),

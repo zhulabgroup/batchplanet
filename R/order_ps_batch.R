@@ -8,7 +8,7 @@ order_ps_batch <- function(dir, df_plant, v_site = NULL, setting, v_year = 2017:
       filter(site == siteoi) %>%
       drop_na(lon, lat) %>%
       nrow()
-    
+
     if (n_plant > 0) {
       path_ps_site <- str_c(dir, "raw/", siteoi, "/")
       dir.create(str_c(path_ps_site, "orders/"), recursive = T, showWarnings = F)

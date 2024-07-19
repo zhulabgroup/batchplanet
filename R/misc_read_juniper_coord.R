@@ -22,13 +22,14 @@ misc_read_juniper_coord <- function(dir = "alldata/juniper_ashei/", version = NU
         as_tibble() %>%
         mutate(version = v)
     }
-    
-    if (v ==3) {
-      ls_df_tree[[v]] <- bind_rows (
+
+    if (v == 3) {
+      ls_df_tree[[v]] <- bind_rows(
         read_csv(str_c(dir, "Jan24/green_trees_latlon.csv")) %>% mutate(group = "green"),
-        read_csv(str_c(dir, "Jan24/orange_trees_latlon.csv")) %>% mutate(group = "orange")) %>% 
+        read_csv(str_c(dir, "Jan24/orange_trees_latlon.csv")) %>% mutate(group = "orange")
+      ) %>%
         mutate(id = row_number() %>% as.character()) %>%
-        distinct(id, lon , lat, group ) %>%
+        distinct(id, lon, lat, group) %>%
         as_tibble() %>%
         mutate(version = v)
     }
