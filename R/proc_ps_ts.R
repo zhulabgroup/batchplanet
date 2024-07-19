@@ -82,17 +82,26 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = "all", max_sample 
                   df_ps_mask_f %>% drop_na()
                 }
 
-                # get corresponding timing from file names
-                df_time <- list.files(path = str_c(dir, "raw/", siteoi), pattern = ".*_SR_.*clip.tif$", recursive = T) %>%
-                  sort() %>%
-                  str_split(pattern = "/", simplify = T) %>%
-                  data.frame() %>%
-                  dplyr::select(filename = X2) %>%
-                  rowwise() %>%
-                  mutate(time = strptime(str_c(str_split(filename, pattern = "_")[[1]][1], str_split(filename, pattern = "_")[[1]][2]), format = "%Y%m%d%H%M%OS")) %>%
-                  ungroup() %>%
-                  mutate(f = row_number()) %>%
-                  select(-filename)
+                # read json metadata
+                meta_files <- str_replace_all(files, "_3B_udm2_clip.tif", "_metadata.json")
+                nday <- length(meta_files)
+                df_ps_meta <- foreach(
+                  f = 1:nday,
+                  .packages = c("jsonlite", "tidyverse"),
+                  .combine = "rbind"
+                ) %dopar% {
+                  meta_file <- meta_files[f]
+                  metadata <- fromJSON(meta_file)
+
+                  df_ps_meta_f <- data.frame(
+                    time = metadata$properties$acquired %>% lubridate::as_datetime(),
+                    sun_elevation = metadata$properties$sun_elevation,
+                    f
+                  )
+
+                  print(str_c("meta: ", f, " out of ", nday))
+                  df_ps_meta_f %>% drop_na()
+                }
 
                 # assign id to each plant
                 df_coord <- sf::st_coordinates(sf_plant_site) %>%
@@ -103,7 +112,7 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = "all", max_sample 
                 # join data
                 df_ps_full <- df_ps %>%
                   left_join(df_ps_qa, by = c("id", "f")) %>%
-                  left_join(df_time, by = "f") %>%
+                  left_join(df_ps_meta, by = "f") %>%
                   left_join(df_coord, by = "id") %>%
                   mutate(
                     red = red * 0.0001, # scaling following Dixon et al's code
@@ -111,9 +120,6 @@ proc_ps_ts <- function(dir, df_plant, v_site = NULL, v_taxa = "all", max_sample 
                     blue = blue * 0.0001,
                     nir = nir * 0.0001
                   ) %>%
-                  # mutate(evi=2.5* (nir-red) / (nir + 6*red - 7.5*blue + 1),
-                  #        gndvi=(nir-green)/(nir+green),
-                  #        ebi= (red + green + blue) / (green / blue * (red - blue + 1))) %>%
                   select(-f) %>%
                   select(id, everything())
 

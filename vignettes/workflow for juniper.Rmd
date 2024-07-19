@@ -66,7 +66,12 @@ df_index <- read_evi(dir = "alldata/juniper_ashei/PSdata/evi/", v_site = NULL, v
   # select(-site) %>%
   mutate(g2b = green / blue) %>%
   mutate(yellow = (red + green) / blue) %>%
-  mutate(ebi = yellow / (green / blue) * (red - blue + 1))
+  mutate(ebi = yellow / (green / blue) * (red - blue + 1)) %>% 
+  rowwise() %>% 
+  mutate(orange = percentage_green_to_orange(c(red, green, blue), thres = 0)) %>% 
+  mutate(hex = rgb_to_hex(c(red, green, blue)) ) %>% 
+  ungroup() 
+  
 df_index_version <- df_index %>% left_join(df_tree %>% distinct(id, version, group))
 write_csv(df_index_version, "alldata/juniper_ashei/Jan24/indices.csv")
 ```
