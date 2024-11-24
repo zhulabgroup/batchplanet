@@ -32,10 +32,10 @@ read_tree_inventory <- function(city, indir = "alldata/tree/", preload = F) {
 
 read_tree_inventory_DT <- function(indir, site) {
   # Data requested from DT P&R, shared by Dan Katz
-  trees_df <- st_read(dsn = str_c(indir, "Tree_Inventory_Detroit/dvy46298.shp")) %>%
-    st_set_crs(st_crs("+proj=lcc +lat_0=41.5 +lon_0=-84.3666666666667 +lat_1=42.1 +lat_2=43.6666666666667 +x_0=4000000 +y_0=0 +ellps=GRS80 +units=ft +no_defs")) %>%
-    st_transform(st_crs("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")) %>%
-    cbind(st_coordinates(.)) %>%
+  trees_df <- sf::st_read(dsn = str_c(indir, "Tree_Inventory_Detroit/dvy46298.shp")) %>%
+    sf::st_set_crs(st_crs("+proj=lcc +lat_0=41.5 +lon_0=-84.3666666666667 +lat_1=42.1 +lat_2=43.6666666666667 +x_0=4000000 +y_0=0 +ellps=GRS80 +units=ft +no_defs")) %>%
+    sf::st_transform(st_crs("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")) %>%
+    cbind(sf::st_coordinates(.)) %>%
     distinct(id = ID, species = SPP, lon = X, lat = Y) %>%
     mutate(site = site)
   # ESRI:102290: NAD 1983 HARN StatePlane Michigan South FIPS 2113
@@ -43,24 +43,26 @@ read_tree_inventory_DT <- function(indir, site) {
 
   return(trees_df)
 }
+
 read_tree_inventory_DV <- function(indir, site) {
   # Data from OpenTrees.org
   trees_df <- read_csv(str_c(indir, "Tree_Inventory_Denver.csv")) %>%
-    dplyr::select(id = SITE_ID, species = SPECIES_BO, time = INVENTORY_DATE, lat = Y_LAT, lon = X_LONG) %>%
+    select(id = SITE_ID, species = SPECIES_BO, time = INVENTORY_DATE, lat = Y_LAT, lon = X_LONG) %>%
     arrange(desc(time)) %>%
     distinct(id, species, .keep_all = T) %>%
-    dplyr::select(-time) %>%
+    select(-time) %>%
     filter(lon != 0) %>%
     mutate(site = site)
 
   return(trees_df)
 }
+
 read_tree_inventory_TP <- function(indir, site) {
   # Data from https://www.opentreemap.org/tampa/map/
   trees_df <- read_csv(str_c(indir, "Tree_Inventory_Tampa.csv")) %>%
-    dplyr::select(id = `Tree Id`, genus = Genus, species = Species, lat = `Point Y`, lon = `Point X`) %>% # checked that there is no repeated tree id
+    select(id = `Tree Id`, genus = Genus, species = Species, lat = `Point Y`, lon = `Point X`) %>% # checked that there is no repeated tree id
     mutate(species = paste0(genus, " ", species)) %>%
-    dplyr::select(-genus) %>%
+    select(-genus) %>%
     mutate(site = site)
 
   return(trees_df)
@@ -68,7 +70,7 @@ read_tree_inventory_TP <- function(indir, site) {
 read_tree_inventory_HT <- function(indir, site) {
   # Data from  https://koordinates.com/layer/25245-houston-texas-street-tree-inventory/data/
   trees_df <- read_csv(str_c(indir, "Tree_Inventory_Houston/houston-texas-street-tree-inventory.csv")) %>%
-    dplyr::select(species_common = Species, X = Shape_X, Y = Shape_Y) %>%
+    select(species_common = Species, X = Shape_X, Y = Shape_Y) %>%
     rowwise() %>%
     mutate(common = case_when(
       str_detect(species_common, ", spp.") ~ str_replace(species_common, ", spp.", ""), # for coarse common names, e.g., "Oak, spp."
@@ -77,19 +79,13 @@ read_tree_inventory_HT <- function(indir, site) {
     )) %>%
     ungroup() %>%
     distinct(X, Y, .keep_all = T) %>% # in case same tree is sampled repeatedly
-    mutate(id = row_number())
-
-  # reproject to WGS84
-  pts <- SpatialPoints(trees_df[, c("X", "Y")],
-    proj4string = CRS("+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs")
-  )
-  pts_reproj <- spTransform(
-    pts,
-    CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
-  )
-
-  trees_df <- cbind(trees_df %>% dplyr::select(-X, -Y), coordinates(pts_reproj)) %>%
-    rename(lat = Y, lon = X)
+    mutate(id = row_number()) %>% 
+    sf::st_as_sf(coords = c("X", "Y"), crs = "+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs") %>%
+    sf::st_transform(crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0") %>%
+    cbind(sf::st_coordinates(.)) %>%
+    rename(lat = Y, lon = X) %>%
+    sf::st_drop_geometry() %>% 
+    mutate(site = site)
 
   # Use taxize to match common name with scientific name
   if (!file.exists(str_c(indir, "Tree_Inventory_Houston/species_reference.csv"))) {
@@ -185,27 +181,20 @@ read_tree_inventory_AT <- function(indir, site) {
 
   return(trees_df)
 }
+
 read_tree_inventory_SJ <- function(indir, site) {
   trees_df <- read_csv(str_c(indir, "Tree_Inventory_SanJose/Tree_Inventory_SanJose.csv")) %>%
-    dplyr::select(id = OBJECTID, species = NAMESCIENTIFIC, Y = Y, X = X) # checked that there is no repeated tree id
-
-  # shape <- readOGR(dsn = "/data/ZHULAB/phenology/occurrence/StreetTrees/Tree_Inventory_SanJose/Street_Tree.shp")
-  # proj4string(shape)
-  projection_sj <- "+proj=lcc +lat_0=36.5 +lon_0=-120.5 +lat_1=38.4333333333333 +lat_2=37.0666666666667 +x_0=2000000.0001016 +y_0=500000.0001016 +datum=NAD83 +units=us-ft +no_defs"
-  pts <- SpatialPoints(trees_df[, c("X", "Y")],
-    proj4string = CRS(projection_sj)
-  )
-  pts_reproj <- spTransform(
-    pts,
-    CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
-  )
-
-  trees_df <- cbind(trees_df %>% dplyr::select(-X, -Y), coordinates(pts_reproj)) %>%
+    select(id = OBJECTID, species = NAMESCIENTIFIC, Y = Y, X = X) %>% # checked that there is no repeated tree id 
+  sf::st_as_sf(coords = c("X", "Y"), crs =  "+proj=lcc +lat_0=36.5 +lon_0=-120.5 +lat_1=38.4333333333333 +lat_2=37.0666666666667 +x_0=2000000.0001016 +y_0=500000.0001016 +datum=NAD83 +units=us-ft +no_defs") %>% 
+    sf::st_transform(crs = "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0") %>% 
+    cbind(sf::st_coordinates(.)) %>% 
     rename(lat = Y, lon = X) %>%
+    sf::st_drop_geometry() %>% 
     mutate(site = site)
 
   return(trees_df)
 }
+
 read_tree_inventory_ST <- function(indir, site) {
   trees_df <- read_csv(str_c(indir, "Tree_Inventory_Seattle.csv")) %>%
     dplyr::select(id = OBJECTID, species = SCIENTIFIC_NAME, lat = Y, lon = X) %>% # checked that there is no repeated tree id
