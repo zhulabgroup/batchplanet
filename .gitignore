@@ -1,6 +1,9 @@
 # Secret
 .env
 
+# Test data folder
+test_data
+
 # History files
 .Rhistory
 .Rapp.history
