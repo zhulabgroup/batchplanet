@@ -1,3 +1,6 @@
+# Secret
+.env
+
 # History files
 .Rhistory
 .Rapp.history

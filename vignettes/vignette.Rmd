@@ -33,14 +33,21 @@ visualize_coordinates(df_coordinates) # Multiple sites across continental US
 visualize_coordinates(df_coordinates %>% filter(site == "HARV")) # Zoom in to one site HARV
 ```
 
-Make sure your data have the columns: `id` (unique id for each point of interest), `lon`, `lat`. You may have the columns `site` if you have concentrated coordinates at dispersed sites, like in our example. You may also have other columns the you can use to group coordinates later on. 
+Make sure your data have the columns: `id` (unique id for each point of interest), `lon`, `lat`. You may have the columns `site` if you have concentrated coordinates at dispersed sites, like in our example. You may also have other columns the you can use to group coordinates later on.
 
 ## 2 Download PS data
 
 ### 2.1 Set downloading parameters
-Replace API key with your own here.
+
 ```{r}
-setting <- set_ps(api_key = "[your API key]", harmonized = T)
+setting <- set_planetscope_parameters(
+  api_key = set_api_key(),
+  cloud_lim = 1,
+  item_name = "PSScene",
+  asset = "ortho_analytic_4b_sr",
+  product_bundle = "analytic_sr_udm2",
+  harmonized = T
+)
 dir_data <- "inst/extdata/"
 ```
 

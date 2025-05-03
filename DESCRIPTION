@@ -24,7 +24,6 @@ Depends:
     tidyverse
 Imports:
     sf,
-    patchwork,
     jsonlite, 
     httr,
     parallel,
