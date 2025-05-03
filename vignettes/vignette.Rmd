@@ -33,7 +33,7 @@ visualize_coordinates(df_coordinates) # Multiple sites across continental US
 visualize_coordinates(df_coordinates %>% filter(site == "HARV")) # Zoom in to one site HARV
 ```
 
-Make sure your data have the columns: `id` (unique id for each point of interest), `lon`, `lat`. You may have the columns `site` if you have concentrated coordinates at dispersed sites, like in our example. You may also have other columns the you can use to group coordinates later on.
+Make sure your data have the columns: `id` (unique id for each point of interest), `lon`, `lat`. You may have the columns `site` if you have concentrated coordinates at dispersed sites, like in our example. You may also a column `group` you can use to group coordinates later on.
 
 ## 2 Download PS data
 
@@ -58,7 +58,7 @@ dir_data <- readline("Enter the path to your data folder: ") %>%
 ### 2.2 Order
 We are ordering images from two sites in one year as an example. Order IDs saved as rds.
 ```{r, eval = F}
-order_planetscope_batch(dir = dir_data, df_coordinates = df_coordinates, var_site = "site", v_site = c("HARV", "SJER"), v_year = 2025, setting = setting)
+order_planetscope_imagery_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting)
 ```
 Here, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
 

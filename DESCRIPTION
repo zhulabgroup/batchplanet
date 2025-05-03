@@ -21,9 +21,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends:
     R (>= 3.3),
-    tidyverse
+    tidyverse,
+    sf
 Imports:
-    sf,
+    dotenv,
     jsonlite, 
     httr,
     parallel,
