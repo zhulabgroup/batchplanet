@@ -26,10 +26,8 @@ Install the development version from GitHub:
 ```r
 # Install devtools if not already installed
 install.packages("devtools")
-devtools::install_github("yourusername/BatchPlanet")
+devtools::install_github("zhulabgroup/phenology-batchplanet")
 ```
-
-_Replace `yourusername/BatchPlanet` with the appropriate repository path._
 
 ***
 
