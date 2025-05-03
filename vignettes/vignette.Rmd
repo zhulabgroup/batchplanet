@@ -1,0 +1,172 @@
+---
+title: "NEON Site Analysis Workflow"
+author: "Yiluan Song, Ken Reid"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+
+This workflow demonstrates the analysis capabilities of the batchplanet package using NEON site data. We'll explore various functions for processing and visualizing coordinate based data.
+
+## Load Required Packages
+
+```{r load-packages}
+library(batchplanet)
+```
+
+## 1 Read coordinate data
+
+First, let's read and visualize a set of example coordinate data. 
+
+```{r read-coords}
+# Read the metadata file
+df_coords <- read_csv("inst/extdata/example_neon_coordinates.csv", show_col_types = FALSE)
+
+# Basic coordinate visualization using vis_coords.R
+vis_coords(df_coords) # Multiple sites across continental US
+vis_coords(df_coords %>% filter(site == "HARV")) # Zoom in to one site HARV
+```
+
+Make sure your data have the columns: lon, lat, site.
+
+## 2 Download PS data
+
+### 2.1 Set downloading parameters
+Replace API key with your own here.
+```{r}
+setting <- set_ps(api_key = "[your API key]", harmonized = T)
+dir_data <- "inst/extdata/"
+```
+
+### 2.2 Order
+We are ordering images from two sites in one year as an example. Order IDs saved as rds.
+```{r, eval = F}
+order_satellite_batch(dir = dir_data, df_locations = df_coords, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting)
+```
+Here, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
+
+### 2.3 Download
+If you are using HPC, this step will use multiple cores to download. Use up to 12 cores to download data from 12 months in parallel.
+```{r, eval = F}
+down_satellite_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting, num_cores = 3)
+```
+Here, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
+
+### 2.4 Visualize
+
+## 3 Retrieve and process time series
+
+### 3.1 Retrieve time series
+
+Extract time series at tree locations. If you are using HPC, use multiple cores for this step. Each core reads a map layer in parallel.
+```{r, eval = F}
+process_satellite_ts(dir = dir_data, df_points = df_coords, v_site = c("HARV", "SJER"), group_var = "genus", v_group = c("Acer", "Quercus"), num_cores = 20)
+```
+
+Read in data and visualize.
+```{r}
+df_ts <- read_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), group_var = "genus", prod_type = "ts")
+visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "site", smooth = F)
+```
+
+### 3.2 Time series preprocessing
+Removing low quality data and calculating EVI.
+```{r, eval = F}
+process_index_ts(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"))
+```
+
+Read in data and visualize.
+```{r}
+df_evi <- read_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Quercus"), group_var = "genus", prod_type = "evi")
+visualize_time_series(df_evi, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
+```
+
+### 3.3 Calculate and Visualize Phenological Metrics
+
+Now let's calculate day of year metrics.
+
+```{r calc-doy}
+set_thresholds()
+df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
+
+proc_doy(dir = data_dir, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, min_days = 20, num_cores = 1)
+```
+
+```{r}
+v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJER.06310")
+# Read and visualize the DOY results
+df_doy_sample <- read_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", group_var = "genus", prod_type = "doy") %>%
+  filter(id %in% v_id)
+
+df_evi_sample <- read_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", group_var = "genus", prod_type = "evi") %>%
+  filter(id %in% v_id)
+
+visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
+```
+
+## 5. Misc Time Series Processing Tools
+
+We can use the Whittaker smoothing function from `util_whit.R` for more sophisticated time series processing:
+
+```{r whittaker}
+t <- 1:365
+
+# Double logistic function: leaf-on and leaf-off phases
+double_logistic <- function(t, L = 0.1, U = 0.6, k1 = 0.1, k2 = 0.1, t1 = 120, t2 = 280) {
+  L + (U - L) * (1 / (1 + exp(-k1 * (t - t1)))) * (1 / (1 + exp(k2 * (t - t2))))
+}
+
+# Generate simulate_ts values using double logistic
+simulate_ts <- double_logistic(t)
+
+# Add Gaussian noise
+set.seed(42)
+simulate_ts <- simulate_ts + rnorm(length(t), mean = 0, sd = 0.1)
+
+# Introduce missing data (e.g., cloud cover)
+missing_idx <- sample(1:length(t), size = round(0.2 * length(t))) # 10% missing
+simulate_ts[missing_idx] <- NA
+
+smoothed_ts <- util_fill_whit(
+  x = simulate_ts,
+  maxgap = 30,
+  lambda = 50,
+  minseg = 2
+)
+
+# Compare original and smoothed time series
+df_smooth_compare <- data.frame(
+  original = simulate_ts,
+  smoothed = smoothed_ts
+) %>%
+  pivot_longer(cols = c(original, smoothed)) %>%
+  mutate(timestep = row_number())
+
+df_smooth_compare %>%
+  ggplot(aes(x = timestep, y = value, color = name)) +
+  geom_line() +
+  theme_minimal() +
+  labs(
+    x = "Timestep",
+    y = "Value",
+    color = ""
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The `util_flat.R` function helps identify time series that don't show significant seasonal variation:
+
+```{r flat-check}
+# Check if a time series is flat
+example_flat_check <- util_flat(
+  ts = simulate_ts,
+  k = 50
+)
+
+print(paste("Time series has significant seasonal variation:", !example_flat_check))
+```

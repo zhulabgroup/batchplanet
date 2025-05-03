@@ -1,26 +1,43 @@
 Package: batchplanet
-Title: What the Package Does (One Line, Title Case)
-Version: 0.1
+Title: Streamlined Processing and Analysis of PlanetScope and Satellite Imagery Data
+Version: 0.1.0
 Authors@R: 
-    person("Yiluan", "Song", , "songyl@umich.edu", role = c("aut", "cre"),
+    person("Yiluan", "Song", email = "songyl@umich.edu", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: 
+    Batchplanet is an R package that provides a comprehensive suite of tools for processing, 
+    analyzing, and visualizing remote sensing data—particularly PlanetScope imagery. The package 
+    includes functions to read and validate spatial datasets (e.g., county and subdivision shapefiles), 
+    set custom thresholds for monitoring, and generate bounding boxes for targeted areas. 
+    It streamlines workflows for ordering and downloading imagery via the Planet API, and it offers robust 
+    routines for processing satellite time series data, computing indices, and calculating 
+    day-of-year (DOY) metrics for green-up and green-down events. Additionally, Batchplanet leverages 
+    efficient parallel processing and state-of-the-art smoothing techniques (e.g., Whittaker smoothing) 
+    to handle large environmental datasets, making it a valuable tool for researchers in remote sensing 
+    and ecological monitoring.
 License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends:
     R (>= 3.3),
-    tidyverse,
+    tidyverse
+Imports:
     sf,
     patchwork,
     jsonlite, 
     httr,
     parallel,
-    doSNOW
-Imports:
+    doSNOW,
     zoo,
     ptw,
     imputeTS,
-    segmented
+    segmented,
+    ggthemes,
+    viridis,
+    ggmap,
+    ggspatial,
+    GGally,
+    lubridate,
+    terra
 VignetteBuilder: knitr
