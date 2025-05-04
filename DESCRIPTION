@@ -22,13 +22,13 @@ RoxygenNote: 7.3.2
 Depends:
     R (>= 3.3),
     tidyverse,
-    sf
+    sf,
+    doSNOW,
+    parallel
 Imports:
     dotenv,
     jsonlite, 
     httr,
-    parallel,
-    doSNOW,
     zoo,
     ptw,
     imputeTS,

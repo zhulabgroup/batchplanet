@@ -12,7 +12,7 @@ order_planetscope_imagery(
   product_bundle,
   harmonized = FALSE,
   order_name = exportfolder,
-  mostrecent
+  mostrecent = 0
 )
 }
 \arguments{

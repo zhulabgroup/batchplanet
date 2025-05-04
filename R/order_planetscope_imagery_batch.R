@@ -80,7 +80,7 @@ order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
 #' @return Invisibly returns NULL after saving the order summary.
 order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, setting) {
   # Initialize an empty data frame to accumulate order details
-  df_order <- data.frame(year = integer(0), month = integer(0), id = character(0), images = integer(0))
+  df_order <- data.frame(year = integer(0), month = integer(0), order_name = character(0), order_id = character(0), num_images = integer(0))
 
   # Loop over each month of the year
   for (monthoi in 1:12) {
@@ -146,7 +146,7 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
 
         if (!is.null(order_id)) {
           df_order <- df_order %>%
-            bind_rows(data.frame(year = yearoi, month = monthoi, id = order_id, images = length(image_group[[g]])))
+            bind_rows(data.frame(year = yearoi, month = monthoi, order_name = order_name, order_id = order_id, num_images = length(image_group[[g]])))
         }
       }
     }
@@ -156,7 +156,7 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
   # Save the accumulated order summary as an RDS file
   if (nrow(df_order) > 0) {
     dir.create(file.path(dir_site, "orders"), showWarnings = FALSE)
-    write_rds(df_order, file.path(dir_site, "orders", paste0("order_", yearoi, ".rds")))
+    write_rds(df_order, file.path(dir_site, "orders", str_c("order_", yearoi, ".rds")))
   }
 
   invisible(NULL)
