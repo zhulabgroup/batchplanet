@@ -65,7 +65,7 @@ Here, check your [Planet account](https://www.planet.com/account/) to make sure 
 ### 2.3 Download
 If you are using HPC, this step will use multiple cores to download. Use up to 12 cores to download data from 12 months in parallel.
 ```{r, eval = F}
-down_satellite_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting, num_cores = 3)
+down_planetscope_imagery_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting, num_cores = 3)
 ```
 Here, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
 

@@ -84,20 +84,24 @@ search_planetscope_imagery <- function(bbox,
 #' bbox <- list(xmin = -77.05, ymin = 38.80, xmax = -76.90, ymax = 39.00)
 #' geojson <- build_geojson_from_bbox(bbox)
 #'
+build_geojson_from_bbox <- function(bbox) {
+  list(
+    type = jsonlite::unbox("Polygon"),
+    coordinates = list(list(
+      c(bbox$xmin, bbox$ymin),
+      c(bbox$xmin, bbox$ymax),
+      c(bbox$xmax, bbox$ymax),
+      c(bbox$xmax, bbox$ymin),
+      c(bbox$xmin, bbox$ymin)
+    ))
+  )
+}
+
 build_geometry_filter <- function(bbox) {
   list(
     type = jsonlite::unbox("GeometryFilter"),
     field_name = jsonlite::unbox("geometry"),
-    config = list(
-      type = jsonlite::unbox("Polygon"),
-      coordinates = list(list(
-        c(bbox$xmin, bbox$ymin),
-        c(bbox$xmin, bbox$ymax),
-        c(bbox$xmax, bbox$ymax),
-        c(bbox$xmax, bbox$ymin),
-        c(bbox$xmin, bbox$ymin)
-      ))
-    )
+    config = build_geojson_from_bbox(bbox)
   )
 }
 
@@ -237,7 +241,7 @@ extract_imagery_id <- function(initial_res, api_key, asset) {
   permissions[!is.na(permissions$id), ]
 
   if (unique(permissions$permission) == "download") {
-    message(paste("Found", nrow(permissions), "suitable", item_name, asset, "images with DOWNLOAD permissions."))
+    message(paste("Found", nrow(permissions), "suitable", asset, "images with DOWNLOAD permissions."))
 
     if (nrow(permissions) > 0) {
       return(permissions$id)
