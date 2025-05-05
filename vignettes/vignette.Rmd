@@ -175,10 +175,10 @@ The `util_flat.R` function helps identify time series that don't show significan
 
 ```{r flat-check}
 # Check if a time series is flat
-example_flat_check <- util_flat(
+example_seasonality <- determine_seasonality(
   ts = simulate_ts,
   k = 50
 )
 
-print(paste("Time series has significant seasonal variation:", !example_flat_check))
+print(paste("Time series has significant seasonal variation: ", example_flat_check))
 ```
