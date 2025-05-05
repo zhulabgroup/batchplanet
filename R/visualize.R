@@ -76,3 +76,47 @@ visualize_time_series <- function(df_ts,
 
   return(p)
 }
+
+#' Visualize Coordinates from a Dataframe
+#'
+#' Creates a scatter plot of coordinate data.
+#'
+#' @param df_points Data frame containing longitude and latitude columns.
+#' @param save_plot Logical. If TRUE, saves the plot to disk.
+#' @param plot_path Character. Directory where the plot will be saved (default: "plots").
+#' @param color_palette Character. The palette option for styling (default: "colorblind").
+#'
+#' @return A ggplot object displaying the coordinate points.
+#' @export
+visualize_coordinates <- function(df_coordinates) {
+  # Validate required columns
+  if (!all(c("lon", "lat") %in% names(df_coordinates))) {
+    stop("Data frame must contain 'lon' and 'lat' columns.")
+  }
+  
+  p <- ggplot(df_coordinates, aes(x = lon, y = lat)) +
+    geom_point(size = 0.5) +
+    labs(x = "Longitude", y = "Latitude")
+  
+  p <- apply_plot_style(p)
+  
+  return(p)
+}
+
+#' Adds the default style layers to a ggplot object.
+#'
+#' @param p A ggplot object.
+#' @param color_palette A character string specifying the color palette.
+#' @param include_scales Logical. Whether to include color/fill scales.
+#'
+#' @return A ggplot object with the style layers applied.
+apply_plot_style <- function(p) {
+  p <- p +
+    theme_minimal() +
+    theme(text = element_text(size = 12)) +
+    theme(legend.position = "none") +
+    scale_color_viridis_d(option = "viridis") +
+    scale_fill_viridis_d(option = "viridis")
+  
+  return(p)
+}
