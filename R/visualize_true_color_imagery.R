@@ -1,3 +1,50 @@
+#' Visualize Multi-Band Raster Data
+#'
+#' Creates an RGB composite visualization of a multi-band raster.
+#'
+#' @param path Character. Path to the raster file.
+#' @param crop_shape Optional. An `sf` or `SpatVector` object to crop the raster.
+#' @param brightness Numeric. Brightness multiplier (default: 1).
+#' @param bands Character vector. Names of the RGB bands (default: c("red", "green", "blue")).
+#' @param save_plot Logical. If TRUE, saves the plot.
+#' @param plot_path Character. Directory in which to save the plot (default: "plots").
+#' @param color_palette Character. The palette option for styling (default: "colorblind").
+#'
+#' @return A ggplot object displaying the RGB composite.
+#' @export
+visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness = 5) {
+  ras <- terra::rast(file) %>%
+    terra::project("EPSG:4326")
+
+  df_ras <- ras %>%
+    as.data.frame(xy = T) %>%
+    as_tibble() %>%
+    select(
+      b = blue,
+      g = green,
+      r = red,
+      x,
+      y
+    ) %>%
+    mutate(across(c(r, g, b), ~ . * 0.0001 * brightness)) %>%
+    mutate(across(c(r, g, b), ~ pmax(., 0))) %>%
+    mutate(across(c(r, g, b), ~ pmin(., 1))) %>%
+    mutate(rgb = rgb(r, g, b, maxColorValue = 1))
+
+  p <- ggplot(df_ras) +
+    geom_tile(aes(x = x, y = y, fill = rgb)) +
+    scale_fill_identity() +
+    labs(x = "Longitude", y = "Latitude") +
+    theme_minimal()
+
+  if (!is.null(df_coordinates)) {
+    p <- p +
+      geom_point(data = df_coordinates, aes(x = lon, y = lat), pch = 1, alpha = 0.8, color = "yellow")
+  }
+
+  return(p)
+}
+
 #' @export
 run_raster_viewer_app <- function(dir, df_coordinates = NULL) {
   library(shiny)

@@ -1,51 +1,3 @@
-#' Visualize Multi-Band Raster Data
-#'
-#' Creates an RGB composite visualization of a multi-band raster.
-#'
-#' @param path Character. Path to the raster file.
-#' @param crop_shape Optional. An `sf` or `SpatVector` object to crop the raster.
-#' @param brightness Numeric. Brightness multiplier (default: 1).
-#' @param bands Character vector. Names of the RGB bands (default: c("red", "green", "blue")).
-#' @param save_plot Logical. If TRUE, saves the plot.
-#' @param plot_path Character. Directory in which to save the plot (default: "plots").
-#' @param color_palette Character. The palette option for styling (default: "colorblind").
-#'
-#' @return A ggplot object displaying the RGB composite.
-#' @export
-visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness = 5) {
-  ras <- terra::rast(file) %>%
-    terra::project("EPSG:4326")
-
-  df_ras <- ras %>%
-    as.data.frame(xy = T) %>%
-    as_tibble() %>%
-    select(
-      b = blue,
-      g = green,
-      r = red,
-      x,
-      y
-    ) %>%
-    mutate(across(c(r, g, b), ~ . * 0.0001 * brightness)) %>%
-    mutate(across(c(r, g, b), ~ pmax(., 0))) %>%
-    mutate(across(c(r, g, b), ~ pmin(., 1))) %>%
-    mutate(rgb = rgb(r, g, b, maxColorValue = 1))
-
-  p <- ggplot(df_ras) +
-    geom_tile(aes(x = x, y = y, fill = rgb)) +
-    scale_fill_identity() +
-    labs(x = "Longitude", y = "Latitude") +
-    theme_minimal()
-
-  if (!is.null(df_coordinates)) {
-    p <- p +
-      geom_point(data = df_coordinates, aes(x = lon, y = lat), pch = 1, alpha = 0.8, color = "yellow")
-  }
-
-  return(p)
-}
-
-
 #' Visualize Time Series
 #'
 #' Creates a customizable time series plot with improved labeling and annotations.
@@ -95,9 +47,12 @@ visualize_time_series <- function(df_ts,
       ungroup()
   }
 
-  p <- ggplot() +
-    geom_point(data = df_ts, aes(x = x_var, y = value, color = id_shuffle, group = id_shuffle)) +
-    labs(x = "Date", y = ylab, color = "ID")
+  p <- ggplot(df_ts, aes(
+    x = x_var, y = value, color = id_shuffle, group = id_shuffle,
+    text = str_c("ID: ", id_shuffle, "<br>Time: ", x_var, "<br>Value: ", value)
+  )) +
+    geom_point() +
+    labs(x = "Time", y = ylab, color = "ID")
 
   if (smooth) {
     p <- p +
@@ -111,9 +66,23 @@ visualize_time_series <- function(df_ts,
         date_start = as.Date(str_c(year, "-01-01")) + start - 1,
         date_end = as.Date(str_c(year, "-01-01")) + end - 1
       )
+    y_min <- min(df_ts$value, na.rm = TRUE)
+    y_max <- max(df_ts$value, na.rm = TRUE)
+
     p <- p +
-      geom_vline(data = df_doy, aes(xintercept = date_doy), col = "dark green") +
-      geom_rect(data = df_doy, aes(xmin = date_start, xmax = date_end, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "dark green")
+      geom_segment(
+        data = df_doy,
+        aes(x = date_doy, xend = date_doy, y = y_min, yend = y_max),
+        col = "dark green", ,
+        inherit.aes = F
+      ) +
+      geom_rect(
+        data = df_doy,
+        aes(xmin = date_start, xmax = date_end, ymin = y_min, ymax = y_max),
+        alpha = 0.1,
+        fill = "dark green",
+        inherit.aes = F
+      )
   }
 
   if (!is.null(facet_var)) {
@@ -122,7 +91,13 @@ visualize_time_series <- function(df_ts,
 
   p <- apply_plot_style(p)
 
-  return(p)
+  g <- plotly::ggplotly(p, tooltip = "text")
+  # Disable hoverinfo for the DOY layers (background layers)
+  for (i in 2:length(g$x$data)) {
+    g$x$data[[i]]$hoverinfo <- "skip" # Skip hover for all layers except the first one
+  }
+
+  g
 }
 
 #' Visualize Coordinates from a Dataframe
@@ -142,13 +117,16 @@ visualize_coordinates <- function(df_coordinates) {
     stop("Data frame must contain 'lon' and 'lat' columns.")
   }
 
-  p <- ggplot(df_coordinates, aes(x = lon, y = lat)) +
+  p <- ggplot(df_coordinates, aes(
+    x = lon, y = lat,
+    text = str_c("ID: ", id, "<br>Longitude: ", lon, "<br>Latitude: ", lat)
+  )) +
     geom_point(size = 0.5) +
     labs(x = "Longitude", y = "Latitude")
 
   p <- apply_plot_style(p)
 
-  return(p)
+  plotly::ggplotly(p, tooltip = "text")
 }
 
 #' Adds the default style layers to a ggplot object.
