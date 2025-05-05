@@ -19,7 +19,7 @@ visualize_coordinates <- function(df_coordinates) {
     geom_point(size = 0.5) +
     labs(x = "Longitude", y = "Latitude")
 
-  p <- util_plot_style(p)
+  p <- apply_plot_style(p)
 
   return(p)
 }

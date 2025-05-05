@@ -15,8 +15,8 @@ Default is 1:length(ts).}
 \item{k}{Numeric. Penalty parameter for the AIC calculation. Default is 50.}
 }
 \value{
-Logical. TRUE if the straight-line model (with no breakpoints) is preferred;
-FALSE otherwise. If the computation produces NA, it defaults to FALSE.
+Logical. FALSE if the straight-line model (with no breakpoints) is preferred;
+TRUE otherwise.
 }
 \description{
 This function fits a simple linear regression model and segmented regression
