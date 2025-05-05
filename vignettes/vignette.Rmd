@@ -89,7 +89,7 @@ visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_va
 ### 3.2 Time series preprocessing
 Removing low quality data and calculating EVI.
 ```{r, eval = F}
-clean_planetscope_time_series(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), num_cores = 3, calculate_evi = T)
+clean_planetscope_time_series_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), num_cores = 3, calculate_evi = T)
 ```
 
 Read in data and visualize.
@@ -103,10 +103,9 @@ visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", s
 Now let's calculate day of year metrics.
 
 ```{r calc-doy}
-set_thresholds()
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
-proc_doy(dir = data_dir, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, min_days = 20, num_cores = 1)
+calculate_phenological_metrics_batch(dir = data_dir, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, min_days = 20, check_seaonality = F, num_cores = 1)
 ```
 
 ```{r}
@@ -115,7 +114,7 @@ v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJ
 df_doy_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "doy") %>%
   filter(id %in% v_id)
 
-df_evi_sample <- read_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", group_var = "genus", prod_type = "evi") %>%
+df_evi_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "clean") %>%
   filter(id %in% v_id)
 
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
