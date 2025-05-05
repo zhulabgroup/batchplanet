@@ -33,7 +33,7 @@ visualize_coordinates(df_coordinates) # Multiple sites across continental US
 visualize_coordinates(df_coordinates %>% filter(site == "HARV")) # Zoom in to one site HARV
 ```
 
-Make sure your data have the columns: `id` (unique id for each point of interest), `lon`, `lat`. You may have the columns `site` if you have concentrated coordinates at dispersed sites, like in our example. You may also a column `group` you can use to group coordinates later on.
+Make sure your data have the columns: `id` (unique id for each point of interest), `lon`, `lat`. You may have a character column `site` if you have concentrated coordinates at dispersed sites, like in our example. You may also a character column `group` you can use to group coordinates later on.
 
 ## 2 Download PS data
 
@@ -77,7 +77,7 @@ Here, you might have downloaded a large amount of images. Consider archiving the
 
 Extract time series at tree locations. If you are using HPC, use multiple cores for this step. Each core reads a map layer in parallel.
 ```{r, eval = F}
-process_satellite_ts(dir = dir_data, df_points = df_coords, v_site = c("HARV", "SJER"), group_var = "genus", v_group = c("Acer", "Quercus"), num_cores = 20)
+retrieve_planetscope_time_series_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), max_sample = 2000, num_cores = 10)
 ```
 
 Read in data and visualize.
@@ -144,7 +144,7 @@ simulate_ts <- simulate_ts + rnorm(length(t), mean = 0, sd = 0.1)
 missing_idx <- sample(1:length(t), size = round(0.2 * length(t))) # 10% missing
 simulate_ts[missing_idx] <- NA
 
-smoothed_ts <- util_fill_whit(
+smoothed_ts <- whittaker_smoothing_filling(
   x = simulate_ts,
   maxgap = 30,
   lambda = 50,
@@ -152,16 +152,16 @@ smoothed_ts <- util_fill_whit(
 )
 
 # Compare original and smoothed time series
-df_smooth_compare <- data.frame(
+df_compare <- data.frame(
   original = simulate_ts,
   smoothed = smoothed_ts
 ) %>%
-  pivot_longer(cols = c(original, smoothed)) %>%
   mutate(timestep = row_number())
 
-df_smooth_compare %>%
-  ggplot(aes(x = timestep, y = value, color = name)) +
-  geom_line() +
+ggplot(df_compare) +
+  geom_point(aes(x = timestep, y = original, color = "original")) +
+  geom_line(aes(x = timestep, y = smoothed, color = "smoothed"), linewidth = 2, alpha = 0.75) +
+  scale_color_manual(values = c("original" = "black", "smoothed" = "dark green")) +
   theme_minimal() +
   labs(
     x = "Timestep",
