@@ -15,7 +15,7 @@ This workflow demonstrates the analysis capabilities of the _batchplanet_ packag
 
 ## Load Required Packages
 
-```{r load-packages}
+```{r}
 library(batchplanet)
 ```
 
@@ -23,7 +23,7 @@ library(batchplanet)
 
 First, let's read and visualize a set of example coordinate data. 
 
-```{r read-coords}
+```{r}
 # Read the data file wilth coordinates
 df_coordinates <- read_csv(system.file("extdata", "example_neon_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
 head(df_coordinates)
@@ -80,10 +80,9 @@ visualize_true_color_imagery(
 )
 ```
 
-```{r}
+```{r, eval = F}
 run_raster_viewer_app(dir = dir_data, df_coordinates = df_coordinates)
 ```
-
 
 ## 3 Retrieve and process time series
 
@@ -116,7 +115,7 @@ visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", s
 
 Now let's calculate day of year metrics.
 
-```{r calc-doy}
+```{r}
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
 calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, min_days = 20, check_seasonality = F, var_index = "evi", extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 1)
@@ -136,7 +135,7 @@ visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi"
 
 ## 4 Misc Time Series Processing Tools
 
-```{r whittaker}
+```{r}
 t <- 1:365
 
 # Double logistic function: leaf-on and leaf-off phases
@@ -182,12 +181,12 @@ ggplot(df_compare) +
   theme(legend.position = "bottom")
 ```
 
-```{r flat-check}
+```{r}
 # Check if a time series is flat
 example_seasonality <- determine_seasonality(
   ts = simulate_ts,
   k = 50
 )
 
-print(paste("Time series has significant seasonal variation: ", example_flat_check))
+print(str_c("Time series has significant seasonal variation: ", example_flat_check))
 ```
