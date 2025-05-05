@@ -30,7 +30,7 @@ head(df_coordinates)
 
 # Basic coordinate visualization using vis_coords.R
 visualize_coordinates(df_coordinates) # Multiple sites across continental US
-visualize_coordinates(df_coordinates %>% filter(site == "HARV")) # Zoom in to one site HARV
+visualize_coordinates(df_coordinates %>% filter(site == "SJER")) # Zoom in to one site SJER
 ```
 
 Make sure your data have the columns: `id` (unique id for each point of interest), `lon`, `lat`. You may have a character column `site` if you have concentrated coordinates at dispersed sites, like in our example. You may also a character column `group` you can use to group coordinates later on.
@@ -68,7 +68,22 @@ download_planetscope_imagery_batch(dir = dir_data, v_site = c("HARV", "SJER"), v
 ```
 Here, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
 
-### 2.4 Visualize
+### 2.4 Visualize true color imagery
+
+```{r}
+df_coordinates_SJER <- df_coordinates %>% filter(site == "SJER")
+
+visualize_true_color_imagery(
+  file = system.file("extdata", "raw/SJER/SJER_2025_60_90/20250318_190514_92_24d3_3B_AnalyticMS_SR_harmonized_clip.tif", package = "batchplanet"),
+  df_coordinates = df_coordinates_SJER,
+  brightness = 5
+)
+```
+
+```{r}
+run_raster_viewer_app(dir = dir_data, df_coordinates = df_coordinates)
+```
+
 
 ## 3 Retrieve and process time series
 

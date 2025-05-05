@@ -34,9 +34,9 @@ Imports:
     imputeTS,
     segmented,
     viridis,
-    ggmap,
     ggspatial,
-    GGally,
     lubridate,
-    terra
+    terra,
+    shiny,
+    shinyWidgets
 VignetteBuilder: knitr
