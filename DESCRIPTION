@@ -33,7 +33,6 @@ Imports:
     ptw,
     imputeTS,
     segmented,
-    ggthemes,
     viridis,
     ggmap,
     ggspatial,

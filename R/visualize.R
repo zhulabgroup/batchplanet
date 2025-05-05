@@ -93,13 +93,13 @@ visualize_coordinates <- function(df_coordinates) {
   if (!all(c("lon", "lat") %in% names(df_coordinates))) {
     stop("Data frame must contain 'lon' and 'lat' columns.")
   }
-  
+
   p <- ggplot(df_coordinates, aes(x = lon, y = lat)) +
     geom_point(size = 0.5) +
     labs(x = "Longitude", y = "Latitude")
-  
+
   p <- apply_plot_style(p)
-  
+
   return(p)
 }
 
@@ -117,6 +117,6 @@ apply_plot_style <- function(p) {
     theme(legend.position = "none") +
     scale_color_viridis_d(option = "viridis") +
     scale_fill_viridis_d(option = "viridis")
-  
+
   return(p)
 }

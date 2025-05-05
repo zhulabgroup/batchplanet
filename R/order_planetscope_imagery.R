@@ -298,13 +298,13 @@ set_bbox <- function(df_coords, location, buffer = 0.0005) {
   df_location <- df_coords %>%
     filter(site == {{ location }}) %>%
     drop_na(lon, lat)
-  
+
   # Check if any valid coordinates are found
   if (nrow(df_location) == 0) {
     warning("No valid coordinates found for location: ", location)
     return(NULL)
   }
-  
+
   # Compute the minimum and maximum longitude and latitude, and apply the buffer.
   bbox <- sf::st_bbox(c(
     xmin = min(df_location$lon) - buffer,
@@ -312,6 +312,6 @@ set_bbox <- function(df_coords, location, buffer = 0.0005) {
     ymin = min(df_location$lat) - buffer,
     ymax = max(df_location$lat) + buffer
   ))
-  
+
   return(bbox)
 }

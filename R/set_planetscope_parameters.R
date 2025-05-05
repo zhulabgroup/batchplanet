@@ -91,3 +91,32 @@ set_api_key <- function(change_key = F) {
 
   invisible(key)
 }
+
+#' @export
+set_data_directory <- function(change_directory = F) {
+  # Create .env file if it doesn't exist
+  if (!file.exists(".env")) {
+    file.create(".env")
+  }
+  dotenv::load_dot_env(".env")
+  dir <- Sys.getenv("data_directory", unset = NA) # Get env variable
+
+  if (is.na(dir) || dir == "") { # If missing, prompt user
+    dir <- readline("Enter the path to the data folder: ") %>%
+      normalizePath(mustWork = TRUE)
+    write(str_c("data_directory", "=", dir), file = ".env", append = TRUE) # Save to .env
+  } else {
+    if (change_directory) {
+      # If the user opts to change the dir, ask for a new dir
+      new_dir <- readline("Enter the path to the new data folder: ") %>%
+        normalizePath(mustWork = TRUE)
+      # Replace or add the new dir in the .env file
+      dir_lines <- readLines(".env")
+      dir_lines <- gsub("^data_directory=.*", str_c("data_directory=", new_dir), dir_lines)
+      writeLines(dir_lines, ".env")
+      dir <- new_dir # Update the dir variable
+    }
+  }
+
+  return(dir)
+}

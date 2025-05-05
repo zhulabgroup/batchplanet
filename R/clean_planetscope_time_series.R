@@ -36,15 +36,10 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
     f_ts <- file.path(dir, "ts", file)
     df_ts <- read_rds(f_ts)
 
-    # Warn and return NULL if the file is missing or contains no data
-    if (is.null(df_ts) || nrow(df_ts) == 0) {
-      warning("Skipping: No data found for ", f_ts)
-      return(NULL)
-    } else {
-      df_clean <- clean_planetscope_time_series(df_ts, calculate_evi)
-      f_clean <- file.path(dir, "clean", file %>% str_replace("ts_", "clean_"))
-      write_rds(df_clean, f_clean)
-    }
+    df_clean <- clean_planetscope_time_series(df_ts, calculate_evi)
+
+    f_clean <- file.path(dir, "clean", file %>% str_replace("ts_", "clean_"))
+    write_rds(df_clean, f_clean)
   }
   stopCluster(cl)
 }

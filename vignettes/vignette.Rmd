@@ -39,7 +39,7 @@ Make sure your data have the columns: `id` (unique id for each point of interest
 
 ### 2.1 Set downloading parameters
 
-```{r, eval = F}
+```{r}
 setting <- set_planetscope_parameters(
   api_key = set_api_key(),
   cloud_lim = 1,
@@ -50,9 +50,8 @@ setting <- set_planetscope_parameters(
 )
 ```
 
-```{r, eval = F}
-dir_data <- readline("Enter the path to your data folder: ") %>%
-  normalizePath(mustWork = TRUE)
+```{r}
+dir_data <- set_dir_dataectory()
 ```
 
 ### 2.2 Order
@@ -105,7 +104,7 @@ Now let's calculate day of year metrics.
 ```{r calc-doy}
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
-calculate_phenological_metrics_batch(dir = data_dir, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, min_days = 20, check_seaonality = F, num_cores = 1)
+calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, min_days = 20, check_seasonality = F, var_index = "evi", extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 1)
 ```
 
 ```{r}
