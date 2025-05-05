@@ -43,7 +43,7 @@ visualize_time_series <- function(df_ts,
   if (smooth) {
     df_ts <- df_ts %>%
       group_by(id) %>%
-      mutate(value_smooth = util_fill_whit(value, lambda = lambda)) %>%
+      mutate(value_smooth = whittaker_smoothing_filling(value, lambda = lambda)) %>%
       ungroup()
   }
 

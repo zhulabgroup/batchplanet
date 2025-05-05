@@ -89,13 +89,13 @@ visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_va
 ### 3.2 Time series preprocessing
 Removing low quality data and calculating EVI.
 ```{r, eval = F}
-process_index_ts(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"))
+clean_planetscope_time_series(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), num_cores = 3, calculate_evi = T)
 ```
 
 Read in data and visualize.
 ```{r}
-df_evi <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Quercus"), product_type = "evi")
-visualize_time_series(df_evi, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
+df_clean <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Quercus"), product_type = "clean")
+visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
 ```
 
 ### 3.3 Calculate and Visualize Phenological Metrics
