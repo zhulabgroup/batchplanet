@@ -72,8 +72,13 @@ setting <- set_planetscope_parameters(
 ```
 
 Use the `set_data_directory()` function to specify a directory to store the downloaded data and later store processed data. It is recommended to use symbolic link to a directory on your HPC system. This way, you can easily access the data from your local machine without being limited by the storage space on your local machine. Please still closely monitor the storage space on your local machine or HPC system as the data can be large. For example, all images for New York City since 2017 can be over 1TB.
-```{r}
+```{r, eval = F}
 dir_data <- set_data_directory()
+```
+
+For demonstration purpose, we are going to set the data directory to the package's extdata folder, but you should use `set_data_directory()` as above when you carry our your own analysis.
+```{r}
+dir_data <- system.file("extdata", package = "batchplanet")
 ```
 
 ### 2.2 Order
@@ -129,8 +134,8 @@ download_planetscope_imagery_batch(dir = dir_data, v_site = c("HARV", "SJER"), v
 If you would like to customize your batch downloading process, you may use the function `download_planetscope_imagery()` to download images from a single order. You can find the order ID saved in the `raw/` folder, or you can find it in the past orders in your Planet account, if you did not use `order_planetscope_imagery_batch()` to order images.
 ```{r, eval = F}
 download_planetscope_imagery(
-  order_id = order_id, 
-  exportfolder = file.path(dir_data, "raw", "SJER" , "SJER_2025_60_90")
+  order_id = order_id,
+  exportfolder = file.path(dir_data, "raw", "SJER", "SJER_2025_60_90"),
   api_key = setting$api_key,
   overwrite = F
 )
@@ -141,7 +146,7 @@ At this point, you might have downloaded a large amount of images. Consider arch
 ### 2.4 Visualize true color imagery
 
 The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness. Again, you have the option to overlay the coordinates on the images.
-```{r, eval = F}
+```{r}
 visualize_true_color_imagery_batch(dir = dir_data, df_coordinates = df_coordinates)
 ```
 
@@ -172,12 +177,12 @@ This function will create a folder `ts/` in the data directory you specified and
 retrieve_planetscope_time_series_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), max_sample = 2000, num_cores = 10)
 ```
 
-If you would like to customize your time series retrieval process, you may use the function `retrieve_planetscope_time_series()`.
+If you would like to customize your time series retrieval process, you may use the function `retrieve_planetscope_time_series()` for a single folder `dir_site` and a set of coordinates you specify. 
 ```{r, eval = F}
-df_coordinates_example <- df_coordinates %>% filter(site == "SJER")
+df_coordinates_example <- df_coordinates %>% filter(site == "SJER", group == "Quercus")
 df_ts_example <- retrieve_planetscope_time_series(
   dir_site = file.path(dir_data, "raw", "SJER"),
-  sf_coordinates = df_coordinates_example %>% sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(4326)), 
+  sf_coordinates = df_coordinates_example %>% sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(4326)),
   num_cores = 10
 )
 ```
@@ -240,10 +245,10 @@ The `extend_to_previous_year` and `extend_to_next_year` parameters specify the n
 
 The function will create a folder `doy/` in the data directory you specified and save DOY data with files names in the format of `doy_<site>_<group>.rds`.
 
-```{r}
+```{r, eval = F}
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
-calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 1)
+calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 3)
 ```
 
 This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `inst/extdata/clean/` folder of the package. You can also customize your own workflow using the `calculate_phenological_metrics()` function that takes a data frame of time series data and a data frame of thresholds and returns a data frame with the calculated phenological metrics.
