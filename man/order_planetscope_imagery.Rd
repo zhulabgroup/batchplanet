@@ -10,8 +10,8 @@ order_planetscope_imagery(
   items,
   item_name,
   product_bundle,
-  harmonized = FALSE,
-  order_name = exportfolder,
+  harmonized,
+  order_name,
   mostrecent = 0
 )
 }

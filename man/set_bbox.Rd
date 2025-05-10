@@ -4,16 +4,16 @@
 \alias{set_bbox}
 \title{Apply Default Plot Style}
 \usage{
-set_bbox(df_coords, location, buffer = 5e-04)
+set_bbox(df_coordinates, siteoi, buffer = 5e-04)
 }
 \arguments{
+\item{buffer}{Numeric. A buffer distance (in degrees) to expand the bounding box. Default is 0.0005.}
+
 \item{df_coords}{A data frame containing coordinate data. Must include the columns \code{site},
 \code{lon}, and \code{lat}.}
 
 \item{location}{Character. The location identifier (i.e., the value in the \code{site} column)
 for which to generate the bounding box.}
-
-\item{buffer}{Numeric. A buffer distance (in degrees) to expand the bounding box. Default is 0.0005.}
 }
 \value{
 An object of class \code{bbox} (from the \strong{sf} package) representing the bounding box
