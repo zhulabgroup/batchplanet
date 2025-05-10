@@ -19,7 +19,7 @@
 #'   geom_line(col = "blue")
 #' }
 #' @export
-whittaker_smoothing_filling <- function(x, maxgap = Inf, lambda, minseg = 2) {
+whittaker_smoothing_filling <- function(x, lambda, maxgap = Inf, minseg = 2) {
   # Replace short gaps with a placeholder (-9999)
   x <- imputeTS::na_replace(x, fill = -9999, maxgap = maxgap)
   # Create a weight vector: 1 where x_fill is valid, 0 where it's the placeholder

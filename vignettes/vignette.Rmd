@@ -177,8 +177,11 @@ df_evi_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Q
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
 ```
 
-## 4 Misc Time Series Processing Tools
+## 4 Miscellaneous time series processing tools
 
+This package also provides tools for time series processing. These tools are not specific to PlanetScope data and can be used with any time series data, especially those with seasonality.
+
+We set up a simulated time series with a double logistic function, which resembles the greenness of deciduous trees. We add noise to the time series and introduce some missing data.
 ```{r}
 t <- 1:365
 
@@ -197,11 +200,17 @@ simulate_ts <- simulate_ts + rnorm(length(t), mean = 0, sd = 0.1)
 # Introduce missing data (e.g., cloud cover)
 missing_idx <- sample(1:length(t), size = round(0.2 * length(t))) # 10% missing
 simulate_ts[missing_idx] <- NA
+```
 
+The `whittaker_smoothing_filling()` function is used to smooth the time series and fill in missing values within one step. Under the hood, it uses a weighted Whittaker smoothing (the `whit1` funtion from the `ptw` package), but we assign zero weight to any missing value and equal weight to all other values, such that the missing values are filled with the smoothed values.
+
+The `lambda` parameter controls the smoothness of the output. A larger value results in a smoother output, while a smaller value retains more of the original signal. It is recommended to try different values and visualize the time series before and after smoothing. The `maxgap` parameter specifies the maximum gap size for filling missing values. Any consecutive missing values larger than `maxgap` will not be filled. The `minseg` parameter specifies the minimum segment length for smoothing. Segments shorter than this length will be treated as missing and then either left missing or filled with smoothed values, depending on `maxgap`. This option allows us to avoid smoothing over very short segments of data that may not be representative of the overall trend.
+
+```{r}
 smoothed_ts <- whittaker_smoothing_filling(
   x = simulate_ts,
-  maxgap = 30,
   lambda = 50,
+  maxgap = 30,
   minseg = 2
 )
 
@@ -224,6 +233,8 @@ ggplot(df_compare) +
   ) +
   theme(legend.position = "bottom")
 ```
+
+The `determine_seasonality()` function is used to check if a time series from one year (or one life cycle) has seasonal variations or has no significant variations. In practice, we can use this function to distinguish if the greenness of a tree within a year has seasonal variations (e.g., deciduous trees) or remains relatively constant (e.g., evergreen trees). Under the hood, the function fits a simple linear regression model and segmented regression models with 1 to 3 breakpoints to a given time series. It then compares their Akaike Information Criterion (AIC) values (with a penalty parameter k) to assess whether a simple linear regression (i.e., non-segmented) model is preferred. The `k` parameter controls the penalty for the number of breakpoints in the calculation of AIC. A larger `k` means that the favored model is more likely to be a simple linear regression model, such that we are more conservative in concluding that the time series has seasonal variations.
 
 ```{r}
 # Check if a time series is flat
