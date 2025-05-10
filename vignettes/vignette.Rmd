@@ -87,7 +87,28 @@ The function will create a folder `raw/` in the data directory you specified, an
 ```{r, eval = F}
 order_planetscope_imagery_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting)
 ```
+
 If you would like to customize your batch downloading process, you may use the functions `search_planetscope_imagery()` and `order_planetscope_imagery()` to search and order images for a single site and time period. Be careful not to order too many images at once, as the Planet API has an internal limit. The `order_planetscope_imagery_batch()` function is designed to handle multiple sites and years in a more streamlined manner.
+```{r, eval = F}
+images <- search_planetscope_imagery(
+  api_key = setting$api_key,
+  bbox = set_bbox(df_coordinates, "SJER"),
+  date_end = "2025-03-31",
+  date_start = "2025-03-01",
+  item_name = setting$item_name,
+  asset = setting$asset,
+  cloud_lim = setting$cloud_lim
+)
+order_id <- order_planetscope_imagery(
+  api_key = setting$api_key,
+  bbox = set_bbox(df_coordinates, "SJER"),
+  items = images,
+  item_name = setting$item_name,
+  product_bundle = setting$product_bundle,
+  harmonized = setting$harmonized,
+  order_name = "SJER_2025_60_90"
+)
+```
 
 After successful ordering, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
 
@@ -106,6 +127,14 @@ download_planetscope_imagery_batch(dir = dir_data, v_site = c("HARV", "SJER"), v
 ```
 
 If you would like to customize your batch downloading process, you may use the function `download_planetscope_imagery()` to download images from a single order. You can find the order ID saved in the `raw/` folder, or you can find it in the past orders in your Planet account, if you did not use `order_planetscope_imagery_batch()` to order images.
+```{r, eval = F}
+download_planetscope_imagery(
+  order_id = order_id, 
+  exportfolder = file.path(dir_data, "raw", "SJER" , "SJER_2025_60_90")
+  api_key = setting$api_key,
+  overwrite = F
+)
+```
 
 At this point, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
 
@@ -143,6 +172,16 @@ This function will create a folder `ts/` in the data directory you specified and
 retrieve_planetscope_time_series_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), max_sample = 2000, num_cores = 10)
 ```
 
+If you would like to customize your time series retrieval process, you may use the function `retrieve_planetscope_time_series()`.
+```{r, eval = F}
+df_coordinates_example <- df_coordinates %>% filter(site == "SJER")
+df_ts_example <- retrieve_planetscope_time_series(
+  dir_site = file.path(dir_data, "raw", "SJER"),
+  sf_coordinates = df_coordinates_example %>% sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(4326)), 
+  num_cores = 10
+)
+```
+
 You can read in processed data using the `read_data_product()` function. To read in time series retrieved from raw imagery, set `product_type = "ts"`. The function will read in all time series data from the `ts/` folder and combine them into one data frame. You can specify the sites and groups you want to read in using the `v_site` and `v_group` parameters. If you do not specify these parameters, the function will read in all time series data.
 
 You can visualize time series data using the `visualize_time_series()` function. You can specify the variable you want to plot, which needs to be a column in the supplies data frame, and the corresponding y-axis label. The optional `facet_var` parameter allows you to specify the variable you want to use for faceting the plot (e.g., site, group, or id). The `smooth` parameter allows you to specify whether you want to smooth the time series data or not. If `smooth = TRUE`, the function will use a weighted Whittaker smoothing method to smooth and fill the time series data (see Section 4.1). This function is not specific to PlanetScope data and can be used with any time series data, as long as the data frame has `date` or `time` at regular intervals, as well as the variable you want to plot.
@@ -170,6 +209,10 @@ clean_planetscope_time_series_batch(dir = dir_data, v_site = c("HARV", "SJER"), 
 ```
 
 To process a single set of time series in a data frame, you can use the `clean_planetscope_time_series()` function.
+```{r}
+df_ts_example <- read_rds(system.file("extdata", "ts/ts_SJER_Quercus.rds", package = "batchplanet"))
+df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = T)
+```
 
 Similar to Section 3.2, you can read in cleaned time series data using the `read_data_product()` function, with `product_type = "clean"`. You can then visualize the cleaned time series data using the `visualize_time_series()` function. The cleaned time series data will have a new column `evi` that we can visualize, if you set `calculate_evi = T` in the previous step.
 
@@ -202,7 +245,14 @@ df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
 calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 1)
 ```
+
 This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `inst/extdata/clean/` folder of the package. You can also customize your own workflow using the `calculate_phenological_metrics()` function that takes a data frame of time series data and a data frame of thresholds and returns a data frame with the calculated phenological metrics.
+
+```{r}
+df_clean_example <- read_rds(system.file("extdata", "clean/clean_SJER_Quercus.rds", package = "batchplanet"))
+df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
+df_doy_example <- calculate_phenological_metrics(df_index = df_clean_example, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F)
+```
 
 Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}

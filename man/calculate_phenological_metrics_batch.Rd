@@ -9,9 +9,9 @@ calculate_phenological_metrics_batch(
   v_site = NULL,
   v_group = NULL,
   df_thres = NULL,
+  var_index = "evi",
   min_days = 300,
   check_seasonality = T,
-  var_index = "evi",
   extend_to_previous_year = 275,
   extend_to_next_year = 90,
   num_cores = 3

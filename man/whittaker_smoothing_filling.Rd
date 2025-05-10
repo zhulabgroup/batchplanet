@@ -4,14 +4,14 @@
 \alias{whittaker_smoothing_filling}
 \title{Whittaker Smoothing Wrapper}
 \usage{
-whittaker_smoothing_filling(x, maxgap = Inf, lambda, minseg = 2)
+whittaker_smoothing_filling(x, lambda, maxgap = Inf, minseg = 2)
 }
 \arguments{
 \item{x}{Numeric vector. The time series signal to be smoothed.}
 
-\item{maxgap}{Numeric. Maximum number of consecutive NAs to interpolate (default: Inf).}
-
 \item{lambda}{Numeric. Smoothing parameter; larger values result in a smoother output.}
+
+\item{maxgap}{Numeric. Maximum number of consecutive NAs to interpolate (default: Inf).}
 
 \item{minseg}{Numeric. Minimum segment length for smoothing (default: 2).}
 }

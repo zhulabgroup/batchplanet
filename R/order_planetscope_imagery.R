@@ -183,8 +183,8 @@ order_planetscope_imagery <- function(api_key,
                                       items,
                                       item_name,
                                       product_bundle,
-                                      harmonized = FALSE,
-                                      order_name = exportfolder,
+                                      harmonized,
+                                      order_name,
                                       mostrecent = 0) {
   if (mostrecent > 0) {
     items <- sort(items, decreasing = TRUE)[1:mostrecent]
@@ -293,24 +293,24 @@ build_order_tools <- function(bbox, harmonized = FALSE) {
 #' }
 #'
 #' @export
-set_bbox <- function(df_coords, location, buffer = 0.0005) {
+set_bbox <- function(df_coordinates, siteoi, buffer = 0.0005) {
   # Filter the coordinate data for the specified location and remove any rows with missing values.
-  df_location <- df_coords %>%
-    filter(site == {{ location }}) %>%
+  df_coordinates_site <- df_coordinates %>%
+    filter(site == {{ siteoi }}) %>%
     drop_na(lon, lat)
 
   # Check if any valid coordinates are found
-  if (nrow(df_location) == 0) {
-    warning("No valid coordinates found for location: ", location)
+  if (nrow(df_coordinates_site) == 0) {
+    warning("No valid coordinates found for location: ", siteoi)
     return(NULL)
   }
 
   # Compute the minimum and maximum longitude and latitude, and apply the buffer.
   bbox <- sf::st_bbox(c(
-    xmin = min(df_location$lon) - buffer,
-    xmax = max(df_location$lon) + buffer,
-    ymin = min(df_location$lat) - buffer,
-    ymax = max(df_location$lat) + buffer
+    xmin = min(df_coordinates_site$lon) - buffer,
+    xmax = max(df_coordinates_site$lon) + buffer,
+    ymin = min(df_coordinates_site$lat) - buffer,
+    ymax = max(df_coordinates_site$lat) + buffer
   ))
 
   return(bbox)
