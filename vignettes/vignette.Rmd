@@ -27,7 +27,7 @@ library(batchplanet)
 ## 1 Read coordinate data
 In order to download PlanetScope imagery, you need to provide coordinates of points of interest. For this example, we will use a sample data file retrieved from the [National Ecological Observatory Network (NEON)](https://www.neonscience.org/) [plant phenology observations data product](https://data.neonscience.org/data-products/DP1.10055.001).
 ```{r}
-# Read the data file wilth coordinates
+# Read the data file with coordinates
 df_coordinates <- read_csv(system.file("extdata", "example_neon_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
 head(df_coordinates)
 ```
@@ -84,11 +84,10 @@ You can specify the sites (must exist in your `site` column of the coordinates d
 
 The function will create a folder `raw/` in the data directory you specified, and multiple subfolders for different sites you specified. In each subfolder, the function will save the order IDs in rds files for later use.
 
-If you would like to customize your batch downloading process, you may use the functions `search_planetscope_imagery()` and `order_planetscope_imagery()` to search and order images for a single site and time period. Be careful not to order too many images at once, as the Planet API has an internal limit. The `order_planetscope_imagery_batch()` function is designed to handle multiple sites and years in a more streamlined manner.
-
 ```{r, eval = F}
 order_planetscope_imagery_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting)
 ```
+If you would like to customize your batch downloading process, you may use the functions `search_planetscope_imagery()` and `order_planetscope_imagery()` to search and order images for a single site and time period. Be careful not to order too many images at once, as the Planet API has an internal limit. The `order_planetscope_imagery_batch()` function is designed to handle multiple sites and years in a more streamlined manner.
 
 After successful ordering, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
 
@@ -102,15 +101,20 @@ After successful ordering, check your [Planet account](https://www.planet.com/ac
 
 Use the `download_planetscope_imagery_batch()` function to download the ordered images. This function will save downloaded images to the folder `raw/` in the data directory. If you do not specify `v_site` and `v_year`, the function will download all ordered images in the `raw/` folder. This step uses multiple cores to download. Use `num_cores = 12` to download data from 12 months in parallel. `overwrite = F` prevents overwriting existing images.
 
-If you would like to customize your batch downloading process, you may use the function `download_planetscope_imagery()` to download images from a single order. You can find the order ID saved in the `raw/` folder, or you can find it in the past orders in your Planet account, if you did not use `order_planetscope_imagery_batch()` to order images.
-
 ```{r, eval = F}
 download_planetscope_imagery_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting, num_cores = 3, overwrite = F)
 ```
 
+If you would like to customize your batch downloading process, you may use the function `download_planetscope_imagery()` to download images from a single order. You can find the order ID saved in the `raw/` folder, or you can find it in the past orders in your Planet account, if you did not use `order_planetscope_imagery_batch()` to order images.
+
 At this point, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
 
 ### 2.4 Visualize true color imagery
+
+The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness. Again, you have the option to overlay the coordinates on the images.
+```{r, eval = F}
+visualize_true_color_imagery_batch(dir = dir_data, df_coordinates = df_coordinates)
+```
 
 You can visualize the true color imagery of single images using the `visualize_true_color_imagery()` function. You can overlay the coordinates from the relevant site on the imagery (optional). You can specify the brightness of the image using the `brightness` parameter.
 ```{r}
@@ -123,48 +127,84 @@ visualize_true_color_imagery(
 )
 ```
 
-The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness. Again, you have the option to overlay the coordinates on the images.
-```{r, eval = F}
-visualize_true_color_imagery_batch(dir = dir_data, df_coordinates = df_coordinates)
-```
-
 ## 3 Retrieve and process time series
 
 ### 3.1 Retrieve time series
 
-Extract time series at tree locations. If you are using HPC, use multiple cores for this step. Each core reads a map layer in parallel.
+The `retrieve_planetscope_time_series_batch()` function retrieves time series data from the downloaded PlanetScope imagery. This function uses coordinates from the `df_coordinates` data frame to extract reflectance values across all images at the relevant site.
+
+The `v_site` and `v_group` parameters allow you to specify the sites and groups of coordinates you want to extract time series data for. Here, we extract time series for two sites (HARV and SJER) and trees from two genera (_Acer_ spp. and _Quercus_ spp.). The `max_sample` parameter limits the number of samples to be extracted from each site and group. When the number of coordinates is larger than `max_sample`, the function will randomly sample coordinates to extract time series data. The grouping option and `max_sample` are useful when you have a large number of coordinates and want to limit the computing time. We recommend limiting the number of coordinates per group per site to around 2000. If you do not specify `v_site` and `v_group`, the function will extract time series data for all sites available and treat all coordinates as one group.
+
+The `num_cores` parameter allows you to use multiple cores for this step, which can significantly speed up the process. Use as many as you can afford, as each core reads a map layer in parallel.
+
+This function will create a folder `ts/` in the data directory you specified and save time series data with files names in the format of `ts_<site>_<group>.rds`.
+
 ```{r, eval = F}
 retrieve_planetscope_time_series_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), max_sample = 2000, num_cores = 10)
 ```
 
-Read in data and visualize.
+You can read in processed data using the `read_data_product()` function. To read in time series retrieved from raw imagery, set `product_type = "ts"`. The function will read in all time series data from the `ts/` folder and combine them into one data frame. You can specify the sites and groups you want to read in using the `v_site` and `v_group` parameters. If you do not specify these parameters, the function will read in all time series data.
+
+You can visualize time series data using the `visualize_time_series()` function. You can specify the variable you want to plot, which needs to be a column in the supplies data frame, and the corresponding y-axis label. The optional `facet_var` parameter allows you to specify the variable you want to use for faceting the plot (e.g., site, group, or id). The `smooth` parameter allows you to specify whether you want to smooth the time series data or not. If `smooth = TRUE`, the function will use a weighted Whittaker smoothing method to smooth and fill the time series data (see Section 4.1). This function is not specific to PlanetScope data and can be used with any time series data, as long as the data frame has `date` or `time` at regular intervals, as well as the variable you want to plot.
 ```{r}
 df_ts <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), product_type = "ts")
 visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "site", smooth = F)
 ```
 
-### 3.2 Time series preprocessing
-Removing low quality data and calculating EVI.
+### 3.2 Clean time series
+
+The `clean_planetscope_time_series_batch()` function removes low quality data in the retrieved time series. We keep data points that meet all of the following criteria:
+- The sun elevation angle is greater than 0 degrees (i.e., daytime images).
+- The reflectance values for all bands (blue, green, red, and near-infrared) are greater than 0.
+- The pixel was clear, had no snow, ice, shadow, haze, or cloud.
+- The usable data mask had algorithmic confidence in classification ≥ 80% for the pixel.
+
+The `calculate_evi` option allows you to calculate the Enhanced Vegetation Index (EVI) for the time series data and filter for EVI values between 0 and 1. The equation for EVI is as follows:
+$$
+EVI = 2.5 \times \frac{NIR - Red}{NIR + 6 \times Red - 7.5 \times Blue + 1}
+$$
+The function will create a folder `clean/` in the data directory you specified and save cleaned time series data with files names in the format of `clean_<site>_<group>.rds`.
+
 ```{r, eval = F}
 clean_planetscope_time_series_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), num_cores = 3, calculate_evi = T)
 ```
 
-Read in data and visualize.
+To process a single set of time series in a data frame, you can use the `clean_planetscope_time_series()` function.
+
+Similar to Section 3.2, you can read in cleaned time series data using the `read_data_product()` function, with `product_type = "clean"`. You can then visualize the cleaned time series data using the `visualize_time_series()` function. The cleaned time series data will have a new column `evi` that we can visualize, if you set `calculate_evi = T` in the previous step.
+
 ```{r}
 df_clean <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Quercus"), product_type = "clean")
 visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
 ```
 
-### 3.3 Calculate and Visualize Phenological Metrics
+### 3.3 Calculate and phenological metrics
 
-Now let's calculate day of year metrics.
+When analyzing time series with seasonality, we often need to calculate the day of year when critical transitions occur. In the field of phenology, we are often interested in the time of 50% green-up and 50% green-down, which reflect the start and end of the growing season. We use the `calculate_phenological_metrics_batch()` function to calculate the day of year (DOY) for the increase and decrease of the specified index at specified thresholds.
+
+> For individual trees at NEON sites monitored for phenology, we used the EVI time series to identify the green-up phases empirically. The end of a green-up phase (usually in the summer) was determined as the day of year when EVI reaches the maximum in the growing season. The start of a green-up phase (usually in the winter) was then determined as the day of year when EVI is at the minimum, prior to the end of the green-up phase. We then determined the timing of green-up at the 50% threshold (usually in the spring). This empirical method of defining green-up/down time has been widely applied to remote-sensing data in order to be compatible with different plant functional types with various seasonality that exhibit intra-annual changes in greenness. [Song et al., (2025)](https://doi.org/10.1016/j.srs.2025.100205)
+
+`df_thres` is a data frame that specifies the thresholds for calculating phenological metrics. You can generate this data frame using the `set_thresholds()` function. The `thres_up` and `thres_down` columns can be set to `NULL` if you do not want to calculate phenological metrics for the increase or decrease of the specified index.
+
+The `var_index` parameter specifies the variable you want to use for calculating phenological metrics (e.g., EVI).
+
+The `min_days` parameter specifies the minimum number of days with valid data at a pixel in a life cycle, for phenological metrics to be estimated for the pixel in the life cycle. This is useful when you want to reduce the impacts of missing data points on the estimation of phenological metrics. Here, we set it to 20 days for demonstration as we demonstrate with data in the first three months of 2025, but when you have more than one year of data, you can set it to a larger number (e.g., 300 days) to ensure that the phenological metrics are estimated for pixels with sufficient data.
+
+The `check_seasonality` parameter allows you to choose if you only extract phenological metrics for pixel and life cycles with significant seasonal variations (see Section 4.2). Here, we set it to `F` again as we do not demonstrate with a full year of data, but we recommend setting it to `T` when you would like to exclude pixels with no significant seasonal variations, such as some evergreen trees that show little seasonal variations in greenness, and get more reliable phenological metrics.
+
+The `extend_to_previous_year` and `extend_to_next_year` parameters specify the number of days to extend the time series to include data from previous and next years, respectively.
+> We extended the time series in each year from day 275 (Oct 2) in the previous calendar year to day 90 (Mar 30) in the following year (spanning 546 days) in order to include at least one full growing season with green-up and green-down. This step was necessary for the detection of green-up day when EVI increases from the minimum before the New Year, and the detection of green-down day when EVI decreases to the minimum after the New Year. [Song et al., (2025)](https://doi.org/10.1016/j.srs.2025.100205)
+
+The function will create a folder `doy/` in the data directory you specified and save DOY data with files names in the format of `doy_<site>_<group>.rds`.
 
 ```{r}
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
-calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, min_days = 20, check_seasonality = F, var_index = "evi", extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 1)
+calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 1)
 ```
+This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `inst/extdata/clean/` folder of the package. You can also customize your own workflow using the `calculate_phenological_metrics()` function that takes a data frame of time series data and a data frame of thresholds and returns a data frame with the calculated phenological metrics.
 
+Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}
 v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJER.06310")
 # Read and visualize the DOY results
