@@ -5,35 +5,35 @@
 \title{Search for Satellite Imagery}
 \usage{
 search_planetscope_imagery(
+  api_key,
   bbox,
   date_end = NULL,
   date_start = NULL,
-  cloud_lim = 0.1,
-  ground_control = TRUE,
-  quality = "standard",
   item_name = "PSScene",
   asset = "ortho_analytic_4b_sr",
-  api_key = "test"
+  cloud_lim = 0.1,
+  ground_control = TRUE,
+  quality = "standard"
 )
 }
 \arguments{
+\item{api_key}{Character. The API key.}
+
 \item{bbox}{List. A list with \code{xmin}, \code{ymin}, \code{xmax}, and \code{ymax}.}
 
 \item{date_end}{Character. End date ("YYYY-MM-DD") for the search.}
 
 \item{date_start}{Character. Start date ("YYYY-MM-DD") for the search.}
 
+\item{item_name}{Character. Imagery item type (default: "PSScene").}
+
+\item{asset}{Character. Asset type (default: "ortho_analytic_4b_sr").}
+
 \item{cloud_lim}{Numeric. Maximum allowed cloud cover (default: 0.1).}
 
 \item{ground_control}{Logical. Whether ground control is required (default: TRUE).}
 
 \item{quality}{Character. Quality filter (default: "standard").}
-
-\item{item_name}{Character. Imagery item type (default: "PSScene").}
-
-\item{asset}{Character. Asset type (default: "ortho_analytic_4b_sr").}
-
-\item{api_key}{Character. The API key.}
 
 \item{list_dates}{Optional vector of dates for filtering.}
 }

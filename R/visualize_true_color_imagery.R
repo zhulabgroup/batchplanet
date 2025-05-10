@@ -46,7 +46,7 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
 }
 
 #' @export
-run_raster_viewer_app <- function(dir, df_coordinates = NULL) {
+visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL) {
   library(shiny)
   library(shinyWidgets)
 

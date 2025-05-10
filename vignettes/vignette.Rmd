@@ -77,21 +77,42 @@ dir_data <- set_data_directory()
 ```
 
 ### 2.2 Order
-We are ordering images from two sites in one year as an example. Order IDs saved as rds.
+
+Use the `order_planetscope_imagery_batch()` function to order PlanetScope imagery over multiple sites and years. This function first searches for all the images that meets the criteria you specified, and then orders the images.
+
+You can specify the sites (must exist in your `site` column of the coordinates data frame) and years (after 2014) you want to order images for. Here, we order images from two sites in one year as an example. If you do not specify `v_site` and `v_year`, the function will order images for all sites and years in the coordinates data frame.
+
+The function will create a folder `raw/` in the data directory you specified, and multiple subfolders for different sites you specified. In each subfolder, the function will save the order IDs in rds files for later use.
+
+If you would like to customize your batch downloading process, you may use the functions `search_planetscope_imagery()` and `order_planetscope_imagery()` to search and order images for a single site and time period. Be careful not to order too many images at once, as the Planet API has an internal limit. The `order_planetscope_imagery_batch()` function is designed to handle multiple sites and years in a more streamlined manner.
+
 ```{r, eval = F}
 order_planetscope_imagery_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting)
 ```
-Here, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
+
+After successful ordering, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
+
+> Why would you see failed orders?
+> - You have exceeded your Planet account limit. If you have exceeded your limit, you can either wait for the limit to reset or contact Planet support to increase your limit.
+> - The order is too large. You can try to order images for a smaller area or a shorter time period.
+> - There were errors in the query, such as invalid coordinates. You can preview the images in your Planet Account.
+> - Sometimes an order may fail due to temporary issues with the Planet API. In this case, you can try reordering the images after a few hours or days. Instead of reordering the entire batch, you can reorder only the failed sites and years.
 
 ### 2.3 Download
-If you are using HPC, this step will use multiple cores to download. Use up to 12 cores to download data from 12 months in parallel.
+
+Use the `download_planetscope_imagery_batch()` function to download the ordered images. This function will save downloaded images to the folder `raw/` in the data directory. If you do not specify `v_site` and `v_year`, the function will download all ordered images in the `raw/` folder. This step uses multiple cores to download. Use `num_cores = 12` to download data from 12 months in parallel. `overwrite = F` prevents overwriting existing images.
+
+If you would like to customize your batch downloading process, you may use the function `download_planetscope_imagery()` to download images from a single order. You can find the order ID saved in the `raw/` folder, or you can find it in the past orders in your Planet account, if you did not use `order_planetscope_imagery_batch()` to order images.
+
 ```{r, eval = F}
 download_planetscope_imagery_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting, num_cores = 3, overwrite = F)
 ```
-Here, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
+
+At this point, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
 
 ### 2.4 Visualize true color imagery
 
+You can visualize the true color imagery of single images using the `visualize_true_color_imagery()` function. You can overlay the coordinates from the relevant site on the imagery (optional). You can specify the brightness of the image using the `brightness` parameter.
 ```{r}
 df_coordinates_SJER <- df_coordinates %>% filter(site == "SJER")
 
@@ -102,8 +123,9 @@ visualize_true_color_imagery(
 )
 ```
 
+The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness. Again, you have the option to overlay the coordinates on the images.
 ```{r, eval = F}
-run_raster_viewer_app(dir = dir_data, df_coordinates = df_coordinates)
+visualize_true_color_imagery_batch(dir = dir_data, df_coordinates = df_coordinates)
 ```
 
 ## 3 Retrieve and process time series

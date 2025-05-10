@@ -6,23 +6,23 @@
 \usage{
 set_planetscope_parameters(
   api_key,
-  cloud_lim = 1,
   item_name = "PSScene",
   asset = "ortho_analytic_4b_sr",
   product_bundle = "analytic_sr_udm2",
+  cloud_lim = 1,
   harmonized = TRUE
 )
 }
 \arguments{
 \item{api_key}{Character. API key for authentication.}
 
-\item{cloud_lim}{Numeric. Cloud coverage limit (between 0 and 1, default: 1).}
-
 \item{item_name}{Character. Name of the satellite data product (default: "PSScene").}
 
 \item{asset}{Character. Type of asset to retrieve (default: "ortho_analytic_4b_sr").}
 
 \item{product_bundle}{Character. Product bundle selection (default: "analytic_sr_udm2").}
+
+\item{cloud_lim}{Numeric. Cloud coverage limit (between 0 and 1, default: 1).}
 
 \item{harmonized}{Logical. Indicates whether to harmonize data (default: TRUE).}
 }

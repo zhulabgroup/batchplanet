@@ -29,15 +29,15 @@
 #' }
 #'
 #' @export
-search_planetscope_imagery <- function(bbox,
+search_planetscope_imagery <- function(api_key,
+                                       bbox,
                                        date_end = NULL,
                                        date_start = NULL,
-                                       cloud_lim = 0.1,
-                                       ground_control = TRUE,
-                                       quality = "standard",
                                        item_name = "PSScene",
                                        asset = "ortho_analytic_4b_sr",
-                                       api_key = "test") {
+                                       cloud_lim = 0.1,
+                                       ground_control = TRUE,
+                                       quality = "standard") {
   message(str_c("Searching for satellite imagery from ", date_start, " to ", date_end))
   # Build filters
   geometry_filter <- build_geometry_filter(bbox)
