@@ -71,7 +71,7 @@ setting <- set_planetscope_parameters(
 )
 ```
 
-Use the `set_planetscope_parameters()` function to specify a directory to store the downloaded data and later store processed data. It is recommended to use symbolic link to a directory on your HPC system. This way, you can easily access the data from your local machine without being limited by the storage space on your local machine. Please still closely monitor the storage space on your local machine or HPC system as the data can be large. For example, all images for New York City since 2017 can be over 1TB.
+Use the `set_data_directory()` function to specify a directory to store the downloaded data and later store processed data. It is recommended to use symbolic link to a directory on your HPC system. This way, you can easily access the data from your local machine without being limited by the storage space on your local machine. Please still closely monitor the storage space on your local machine or HPC system as the data can be large. For example, all images for New York City since 2017 can be over 1TB.
 ```{r}
 dir_data <- set_data_directory()
 ```
