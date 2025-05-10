@@ -20,10 +20,10 @@
 #'
 #' @export
 set_planetscope_parameters <- function(api_key,
-                                       cloud_lim = 1,
                                        item_name = "PSScene",
                                        asset = "ortho_analytic_4b_sr",
                                        product_bundle = "analytic_sr_udm2",
+                                       cloud_lim = 1,
                                        harmonized = TRUE) {
   # Validate API Key: must be a non-empty character string.
   if (missing(api_key) || !is.character(api_key) || nchar(api_key) == 0) {
@@ -54,10 +54,10 @@ set_planetscope_parameters <- function(api_key,
   # Construct and return the parameter list.
   params <- list(
     api_key = api_key,
-    cloud_lim = cloud_lim,
     item_name = item_name,
     asset = asset,
     product_bundle = product_bundle,
+    cloud_lim = cloud_lim,
     harmonized = harmonized
   )
 

@@ -11,45 +11,67 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Overview
 
-This workflow demonstrates the analysis capabilities of the _batchplanet_ package using NEON data.
+This workflow demonstrates the features of the _batchplanet_ package. It provides a step-by-step guide to downloading PlanetScope imagery, processing time series data, and calculating phenological metrics. The package is designed to work with the PlanetScope API and is particularly useful for researchers and practitioners in environmental studies and remote sensing.
 
-## Load Required Packages
+Who should use this package?
+- If you prioritize reproducibility and control over data.
+- If you prefer using R to python.
+- If you want to download PlanetScope imagery over multiple sites and over a long time (optional but recommended).
+- If you use high-performance computing (optional).
+- If you want to retrieve and process time series from PlanetScope data (optional).
 
 ```{r}
 library(batchplanet)
 ```
 
 ## 1 Read coordinate data
-
-First, let's read and visualize a set of example coordinate data. 
-
+In order to download PlanetScope imagery, you need to provide coordinates of points of interest. For this example, we will use a sample data file retrieved from the [National Ecological Observatory Network (NEON)](https://www.neonscience.org/) [plant phenology observations data product](https://data.neonscience.org/data-products/DP1.10055.001).
 ```{r}
 # Read the data file wilth coordinates
 df_coordinates <- read_csv(system.file("extdata", "example_neon_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
 head(df_coordinates)
+```
+You should create your own data frame with coordinates. Make sure your data frame for coordinates have the columns: `id` (unique id for each point of interest), `lon` for longitude, and `lat` for latitude. You may have a character column `site` if you have clustered coordinates at dispersed sites. You may also a character column `group` you can use to group coordinates later on.
 
-# Basic coordinate visualization using vis_coords.R
+What do we mean by "clustered coordinates at dispersed sites?" Use the function `visualize_coordinates()` to visualize the coordinates. Our sample coordinates are dispersed across 47 NEON sites. Within each NEON site, there are above 200 coordinates in a square, representing individual trees tagged for phenology observations.
+```{r}
 visualize_coordinates(df_coordinates) # Multiple sites across continental US
 visualize_coordinates(df_coordinates %>% filter(site == "SJER")) # Zoom in to one site SJER
 ```
-
-Make sure your data have the columns: `id` (unique id for each point of interest), `lon`, `lat`. You may have a character column `site` if you have concentrated coordinates at dispersed sites, like in our example. You may also a character column `group` you can use to group coordinates later on.
+Why is it important to label the coordinates with sites? If we try to download PlanetScope imagery that cover all coordinates, we will end up with a tremendous amount of imagery that cover most of continental US. Instead, we will use the site labels to create bounding boxes that cover each site. This way, we can download imagery that only cover the sites of interest. If your coordinates are already clustered in a small area, you don't have to supply the site labels. The package will process all coordinates as a single site.
 
 ## 2 Download PS data
 
+You will need an active Planet account and an API key to access the PlanetScope API. You can sign up for an account on the [Planet website](https://www.planet.com/get-started/). Once you have an account, you can copy your API key from your account settings.
+
 ### 2.1 Set downloading parameters
+
+You will specify several key parameters for downloading PlanetScope imagery using the `set_planetscope_parameters()` function. These parameters include the API key, item name, asset type, product bundle, cloud cover limit, and whether to use harmonized data. 
+
+Within this step, you set your API key using the `set_api_key()` function. This function will save your API key in a hidden environment file in your working directory, so you don't have to enter it every time you run the code. If you would like to change your API key, you can use the same function with the argument `change_key = T`.
+
+>In the Data API, an __item__ is an entry in our catalog, and generally represents a single logical observation (or scene) captured by a satellite. Items have __assets__, which are the downloadable products derived from the item's source data. [PlanetScope documentation](https://docs.planet.com/develop/apis/data/items/#assets)
+
+> __Product bundles__ comprise of a group of assets for an item. [PlanetScope documentation](https://docs.planet.com/develop/apis/orders/product_bundles/)
+
+Our default item is `PSScene`, 8-band PlanetScope imagery. The default asset is `ortho_analytic_4b_sr`, which is a PlanetScope atmospherically corrected surface reflectance product with four bands (blue, green, red, near-infrared). The default product bundle is `analytic_sr_udm2`, which includes the surface reflectance data and the [Usable data mask 2 (UDM2)](https://docs.planet.com/data/imagery/udm/). You can change these parameters to suit your needs. See a full list of PlanetScope items and assets in the [PlanetScope data catalog](https://docs.planet.com/data/) and see information and product bundles [here](https://docs.planet.com/develop/apis/orders/product_bundles/). 
+
+PlanetScope API allows filtering imagery by several criteria. Here, we allow users to filter imagery below a certain cloud coverage (the ratio of the area covered by clouds to total area). The `cloud_lim` parameter is set to 1 by default, which means we will download all images regardless of cloud coverage. You can set this parameter to a lower value (e.g., 0.5) to filter out images with more than 50% cloud coverage.
+
+PlanetScope API allow users to apply a tool named "harmonize" that applies scene-level normalization and harmonization, such that all PlanetScape data were consistent and approximately comparable to data from Sentinel 2. This tool is useful when integrating or comparing images from different times and locations. Refer to [PlanetScope technical documentation](https://assets.planet.com/docs/scene_level_normalization_of_planet_dove_imagery.pdf) for more details. The `harmonized` parameter is set to `TRUE` by default, which means we will download harmonized data. You can set this parameter to `FALSE` to download non-harmonized data.
 
 ```{r}
 setting <- set_planetscope_parameters(
   api_key = set_api_key(),
-  cloud_lim = 1,
   item_name = "PSScene",
   asset = "ortho_analytic_4b_sr",
   product_bundle = "analytic_sr_udm2",
+  cloud_lim = 1,
   harmonized = T
 )
 ```
 
+Use the `set_planetscope_parameters()` function to specify a directory to store the downloaded data and later store processed data. It is recommended to use symbolic link to a directory on your HPC system. This way, you can easily access the data from your local machine without being limited by the storage space on your local machine. Please still closely monitor the storage space on your local machine or HPC system as the data can be large. For example, all images for New York City since 2017 can be over 1TB.
 ```{r}
 dir_data <- set_dir_dataectory()
 ```
