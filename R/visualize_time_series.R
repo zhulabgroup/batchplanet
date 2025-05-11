@@ -129,13 +129,6 @@ visualize_coordinates <- function(df_coordinates) {
   plotly::ggplotly(p, tooltip = "text")
 }
 
-#' Adds the default style layers to a ggplot object.
-#'
-#' @param p A ggplot object.
-#' @param color_palette A character string specifying the color palette.
-#' @param include_scales Logical. Whether to include color/fill scales.
-#'
-#' @return A ggplot object with the style layers applied.
 apply_plot_style <- function(p) {
   p <- p +
     theme_minimal() +

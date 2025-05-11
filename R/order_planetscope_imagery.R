@@ -65,19 +65,6 @@ order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
   invisible(NULL)
 }
 
-#' Process Orders for a Single Site and Year
-#'
-#' For a given site and year, this function iterates through all 12 months, fetches available imagery
-#' from the API based on the specified date range and bounding box, groups images into orders,
-#' and saves an order summary.
-#'
-#' @param path_sat_site Character. Path to the site's raw data directory.
-#' @param siteoi Character. Site name.
-#' @param year_download Numeric. Year to process.
-#' @param bbox Object. Bounding box for the site.
-#' @param setting List. API settings.
-#'
-#' @return Invisibly returns NULL after saving the order summary.
 order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, setting) {
   # Initialize an empty data frame to accumulate order details
   df_order <- data.frame(year = integer(0), month = integer(0), order_name = character(0), order_id = character(0), num_images = integer(0))
@@ -213,19 +200,6 @@ order_planetscope_imagery <- function(api_key,
   return(order_id)
 }
 
-
-#' Build Order Request Body
-#'
-#' Constructs the JSON request body for placing an order.
-#'
-#' @param order_name Character. The name for the order.
-#' @param items Character vector. A vector of image IDs.
-#' @param item_name Character. The type of imagery item.
-#' @param product_bundle Character. The product bundle to order.
-#' @param tools List. The tools to apply to the order.
-#'
-#' @return A JSON string representing the order request body.
-#'
 build_order_request <- function(order_name, items, item_name, product_bundle, tools) {
   products <- list(
     list(
@@ -242,16 +216,6 @@ build_order_request <- function(order_name, items, item_name, product_bundle, to
   jsonlite::toJSON(order_body, pretty = TRUE)
 }
 
-#' Build Order Tools
-#'
-#' Constructs the tools list for an order request, including a clip tool and
-#' an optional harmonization tool.
-#'
-#' @param bbox A list with bounding box values.
-#' @param harmonized Logical. Whether to include harmonization (default: FALSE).
-#'
-#' @return A list representing the tools for the order.
-#'
 build_order_tools <- function(bbox, harmonized = FALSE) {
   aoi <- build_geojson_from_bbox(bbox)
   clip <- list(aoi = aoi)
@@ -262,9 +226,6 @@ build_order_tools <- function(bbox, harmonized = FALSE) {
   }
   return(tools)
 }
-
-#' Apply Default Plot Style
-#'
 
 #' Generate a Bounding Box from Coordinate Data
 #'

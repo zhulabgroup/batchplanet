@@ -64,7 +64,6 @@ set_planetscope_parameters <- function(api_key,
   return(params)
 }
 
-
 #' @export
 set_api_key <- function(change_key = F) {
   # Create .env file if it doesn't exist

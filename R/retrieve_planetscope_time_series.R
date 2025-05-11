@@ -49,21 +49,6 @@ retrieve_planetscope_time_series_batch <- function(dir, df_coordinates, v_site =
   invisible(NULL)
 }
 
-#' Process a Specific Site-Group Combination
-#'
-#' Processes satellite data for a given site and group. This function:
-#'   1. Checks if satellite raster files exist for the site.
-#'   2. Filters and samples point data.
-#'   3. Converts the sampled data to an sf object.
-#'   4. Calls downstream processing to extract and combine reflectance, QA, and metadata.
-#'   5. Saves the combined time series as an RDS file.
-#'
-#' @param dir Character. Base directory for satellite data.
-#' @param siteoi Character. Site identifier.
-#' @param groupoi Character. Group identifier. If "all", no additional filtering is applied.
-#' @param max_sample Numeric. Maximum number of samples to process.
-#'
-#' @return Invisibly returns NULL.
 retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, siteoi, groupoi, max_sample, num_cores) {
   dir_site <- file.path(dir, "raw", siteoi)
   # Count raster files (.tif) for the given site. Skip if none exist.
@@ -142,20 +127,6 @@ retrieve_planetscope_time_series <- function(dir_site, sf_coordinates, num_cores
   return(df_ps_full)
 }
 
-#' Process Reflectance or QA Raster Data
-#'
-#' Extracts data from raster files that match a given pattern (either reflectance or QA)
-#' for a specified site.
-#'
-#' @param dir Character. Base directory for satellite data.
-#' @param siteoi Character. Site identifier.
-#' @param sf_coordinates sf object. Spatial points object.
-#' @param v_id Character vector. Unique IDs for the spatial points.
-#' @param pattern Character. Regular expression pattern to match raster files.
-#' @param type Character. Type of raster ("sr" for reflectance, "udm" for QA).
-#'
-#' @return A data frame with extracted raster values.
-#'
 retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
   if (type == "sr") {
     pattern <- ".*_SR_.*clip.tif$"
@@ -208,16 +179,6 @@ retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
   return(df_ps)
 }
 
-#' Process Metadata JSON Files
-#'
-#' Reads and processes metadata JSON files associated with a site.
-#' Extracts acquisition time and sun elevation, and returns the data as a data frame.
-#'
-#' @param dir Character. Base directory for satellite data.
-#' @param siteoi Character. Site identifier.
-#'
-#' @return A data frame with metadata information, or \code{NULL} if no metadata files are found.
-#'
 retrieve_metadata <- function(dir_site, num_cores) {
   files <- list.files(
     path = dir_site, pattern = "_metadata.json$",

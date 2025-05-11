@@ -25,7 +25,6 @@ read_data_product <- function(dir, v_site = NULL, v_group = NULL, product_type =
   return(df)
 }
 
-
 filter_file_names <- function(v_file, v_site = NULL, v_group = NULL) {
   # Extract site and group from filenames
   file_parts <- v_file %>%

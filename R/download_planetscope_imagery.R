@@ -37,7 +37,6 @@ download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017
   }
 }
 
-
 download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, setting, num_cores, overwrite) {
   # Construct the order summary file path and read the file
   order_file <- file.path(dir_site, "orders", str_c("order_", yearoi, ".rds"))
@@ -130,17 +129,6 @@ download_planetscope_imagery <- function(order_id, exportfolder, api_key, overwr
   }
 }
 
-
-#' Wait for Order to Succeed
-#'
-#' Polls the remote sensing API until the order state is 'success', indicating that the order
-#' is ready for download.
-#'
-#' @param order_id Character. The order ID.
-#' @param api_key Character. The API key.
-#'
-#' @return A list containing the order details when the state is 'success'.
-#'
 wait_for_order_success <- function(order_id, api_key) {
   url2 <- paste0("https://api.planet.com/compute/ops/orders/v2/", order_id)
   get_order <- httr::GET(url = url2, username = api_key)

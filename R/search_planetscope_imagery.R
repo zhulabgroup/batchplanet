@@ -69,21 +69,6 @@ search_planetscope_imagery <- function(api_key,
   invisible(images)
 }
 
-
-
-### Helper Functions for Searching
-
-#' Build GeoJSON Geometry from Bounding Box
-#'
-#' Constructs a GeoJSON Polygon from a bounding box.
-#'
-#' @param bbox A list with elements \code{xmin}, \code{ymin}, \code{xmax}, and \code{ymax}.
-#' @return A list representing the GeoJSON polygon.
-#'
-#' @examples
-#' bbox <- list(xmin = -77.05, ymin = 38.80, xmax = -76.90, ymax = 39.00)
-#' geojson <- build_geojson_from_bbox(bbox)
-#'
 build_geojson_from_bbox <- function(bbox) {
   list(
     type = jsonlite::unbox("Polygon"),
@@ -105,16 +90,6 @@ build_geometry_filter <- function(bbox) {
   )
 }
 
-#' Build Date Range Filter
-#'
-#' Constructs a date range filter for the search request.
-#'
-#' @param date_start Character. Start date in "YYYY-MM-DD" format.
-#' @param date_end Character. End date in "YYYY-MM-DD" format.
-#' @param list_dates Optional vector of dates to refine the filter.
-#'
-#' @return A list representing the date range filter.
-#'
 build_date_range_filter <- function(date_start, date_end) {
   dategte <- paste0(date_start, "T00:00:00.000Z")
   datelte <- paste0(date_end, "T00:00:00.000Z")
@@ -128,14 +103,6 @@ build_date_range_filter <- function(date_start, date_end) {
   )
 }
 
-#' Build Cloud Cover Filter
-#'
-#' Constructs a cloud cover filter.
-#'
-#' @param cloud_lim Numeric. Maximum allowed cloud cover (0-1).
-#'
-#' @return A list representing the cloud cover filter.
-#'
 build_cloud_cover_filter <- function(cloud_lim = 0.1) {
   list(
     type = jsonlite::unbox("RangeFilter"),
@@ -146,15 +113,6 @@ build_cloud_cover_filter <- function(cloud_lim = 0.1) {
   )
 }
 
-#' Build Ground Control and Quality Filter
-#'
-#' Constructs a filter for ground control and quality.
-#'
-#' @param ground_control Logical. Whether ground control is required.
-#' @param quality Character. Quality filter (default: "standard").
-#'
-#' @return A list representing the ground control and quality filter.
-#'
 build_gq_filter <- function(ground_control = TRUE, quality = "standard") {
   list(
     type = jsonlite::unbox("AndFilter"),
@@ -173,17 +131,6 @@ build_gq_filter <- function(ground_control = TRUE, quality = "standard") {
   )
 }
 
-#' Combine Search Filters
-#'
-#' Combines date range, cloud cover, ground control/quality, and geometry filters.
-#'
-#' @param date_filter List. Date range filter.
-#' @param cloud_filter List. Cloud cover filter.
-#' @param gq_filter List. Ground control and quality filter.
-#' @param geometry_filter List. Geometry filter.
-#'
-#' @return A list representing the combined filter configuration.
-#'
 combine_filters <- function(date_filter, cloud_filter, gq_filter, geometry_filter) {
   list(
     type = jsonlite::unbox("AndFilter"),
@@ -191,15 +138,6 @@ combine_filters <- function(date_filter, cloud_filter, gq_filter, geometry_filte
   )
 }
 
-#' Extract Download Permissions from API Response
-#'
-#' Extracts the download permissions for the specified asset from the API response.
-#'
-#' @param res List. The API response parsed as a list.
-#' @param asset Character. The asset type to filter (e.g., "ortho_analytic_4b_sr").
-#'
-#' @return A data frame containing image IDs with download permission.
-#'
 extract_permissions <- function(res, asset) {
   permissions <- do.call(rbind, lapply(seq_along(res$features$`_permissions`), function(i) {
     perms <- stringr::str_split(res$features$`_permissions`[[i]], ":", simplify = TRUE)
@@ -214,16 +152,6 @@ extract_permissions <- function(res, asset) {
   resDFid[resDFid$permission == "download", ]
 }
 
-#' Fetch All Permissions Across Pagination
-#'
-#' Retrieves all pages of search results and extracts download permissions.
-#'
-#' @param initial_res List. The initial API response.
-#' @param api_key Character. The API key.
-#' @param asset Character. The asset type.
-#'
-#' @return A data frame containing permissions from all pages.
-#'
 extract_imagery_id <- function(initial_res, api_key, asset) {
   permissions <- extract_permissions(initial_res, asset)
   res <- initial_res

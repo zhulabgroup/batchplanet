@@ -4,7 +4,7 @@
 
 * **Download Data:** Retrieve PlanetScope images across multiple sites over time.
 * **Process Data:** Extract reflectance time series, calculate remote sensing indices (e.g., Enhanced Vegetation Index), and estimate transition time (e.g., green-up date).
-* **Visualize Data:** Generate visually appealing plots for raster maps and time series.
+* **Visualize Data:** Generate interactive true color maps and time series plots.
 
 ***
 
@@ -32,20 +32,6 @@ devtools::install_github("zhulabgroup/phenology-batchplanet")
 ## Example Workflow
 
 For a complete example of the package in action, see **vignettes/vignette.Rmd**. This document demonstrates steps in downloading PlanetScope data and processing time series using a subset of NEON site data.
-
-***
-
-## Future Directions
-
-* **Generalization:** Enable users to calculate custom indices and process non-vegetation data by specifying custom grouping variables.
-* **Cloud Integration:** Explore integration with cloud platforms like Google Earth Engine for scalable processing.
-* **HPC Optimization:** Provide guidelines for running the package efficiently in high-performance computing environments.
-
-***
-
-## Acknowledgments
-
-Developed by **Yiluan Song** (lead author) with contributions from Ken Reid and collaborators. 🙌
 
 ***
 
