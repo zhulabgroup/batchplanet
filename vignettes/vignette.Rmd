@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Overview
 
-This workflow demonstrates the features of the _batchplanet_ package. It provides a step-by-step guide to downloading PlanetScope imagery, processing time series data, and calculating phenological metrics. The package is designed to work with the PlanetScope API and is particularly useful for researchers and practitioners in environmental studies and remote sensing.
+This workflow demonstrates the features of the _batchplanet_ package. It provides a step-by-step guide to downloading PlanetScope imagery, processing time series data, and calculating phenological metrics. The package is designed to work with the PlanetScope API and is particularly useful for researchers and practitioners in environmental studies and remote sensing. This package has been used for our peer-reviewed publication ([Song et al., (2025)](https://doi.org/10.1016/j.srs.2025.100205)), to predict reproductive phenology of wind-pollinated trees via PlanetScope time series.
 
 Who should use this package?
 - If you prioritize reproducibility and control over data.
@@ -215,7 +215,7 @@ clean_planetscope_time_series_batch(dir = dir_data, v_site = c("HARV", "SJER"), 
 
 To process a single set of time series in a data frame, you can use the `clean_planetscope_time_series()` function.
 ```{r}
-df_ts_example <- read_rds(system.file("extdata", "ts/ts_SJER_Quercus.rds", package = "batchplanet"))
+df_ts_example <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "ts")
 df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = T)
 ```
 
@@ -254,7 +254,7 @@ calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = 
 This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `inst/extdata/clean/` folder of the package. You can also customize your own workflow using the `calculate_phenological_metrics()` function that takes a data frame of time series data and a data frame of thresholds and returns a data frame with the calculated phenological metrics.
 
 ```{r}
-df_clean_example <- read_rds(system.file("extdata", "clean/clean_SJER_Quercus.rds", package = "batchplanet"))
+df_clean_example <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "clean")
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 df_doy_example <- calculate_phenological_metrics(df_index = df_clean_example, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F)
 ```
@@ -262,12 +262,8 @@ df_doy_example <- calculate_phenological_metrics(df_index = df_clean_example, df
 Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}
 v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJER.06310")
-# Read and visualize the DOY results
-df_doy_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "doy") %>%
-  filter(id %in% v_id)
-
-df_evi_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "clean") %>%
-  filter(id %in% v_id)
+df_doy_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "doy") %>% filter(id %in% v_id)
+df_evi_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "clean") %>% filter(id %in% v_id)
 
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
 ```
