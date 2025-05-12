@@ -6,36 +6,40 @@
 \usage{
 download_planetscope_imagery_batch(
   dir,
-  v_site = NULL,
-  v_year = 2017:(year(Sys.Date())),
+  v_site    = NULL,
+  v_year    = 2017:(lubridate::year(Sys.Date())),
   setting,
   num_cores = 12,
-  overwrite = F
+  overwrite = FALSE
 )
 }
 \arguments{
-\item{dir}{Character. Base directory containing the raw satellite data.}
-
-\item{v_site}{Optional character vector. Site names to filter. If NULL, all available
-sites in \code{dir/raw/} are used.}
-
-\item{v_year}{Numeric vector. Years for which to download data. Default is from 2017 to the current year.}
-
-\item{setting}{List. Contains API settings including the API key (i.e., \code{setting$api_key}).}
-
-\item{download_fn}{Function. Function to download an individual order. Default is \code{satellite_order_download}.}
-}
-\value{
-Invisibly returns NULL after downloading the order data.
+  \item{dir}{Character. Base directory containing PlanetScope order folders under \code{raw/<site>/orders}.}
+  \item{v_site}{Character vector, optional. Site identifiers to download; if \code{NULL}, defaults to all folders under \code{dir/raw/}.}
+  \item{v_year}{Integer vector. Years for which to download imagery (default: 2017 through current year).}
+  \item{setting}{List. API settings as returned by \code{set_planetscope_parameters()}, must include \code{api_key}.}
+  \item{num_cores}{Integer. Number of parallel downloads (default: 12).}
+  \item{overwrite}{Logical. If \code{TRUE}, existing files will be overwritten (default: \code{FALSE}).}
 }
 \description{
-Iterates through specified sites and years, reads order information,
-and downloads satellite imagery for each order.
+Iterates through each site and year’s order summaries (in \code{dir/raw/<site>/orders/order_<year>.rds}) and
+downloads all imagery for each order via \code{download_planetscope_imagery()}. Retries on error
+and logs progress messages.
+}
+\value{
+Invisibly returns \code{NULL}. Side effect: writes image files into 
+\code{dir/raw/<site>/<order_name>/}.
 }
 \examples{
 \dontrun{
-settings <- list(api_key = "YOUR_API_KEY")
-down_satellite_batch("data/", v_site = c("SiteA", "SiteB"), setting = settings, v_year = 2017:2024)
+settings <- set_planetscope_parameters(api_key = set_api_key())
+download_planetscope_imagery_batch(
+  dir       = "data/planet_scope/",
+  v_site    = c("HARV", "SJER"),
+  v_year    = 2024,
+  setting   = settings,
+  num_cores = 6,
+  overwrite = FALSE
+)
 }
-
 }

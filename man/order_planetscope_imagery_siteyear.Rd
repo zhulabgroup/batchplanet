@@ -2,26 +2,40 @@
 % Please edit documentation in R/order_planetscope_imagery.R
 \name{order_planetscope_imagery_siteyear}
 \alias{order_planetscope_imagery_siteyear}
-\title{Process Orders for a Single Site and Year}
+\title{Create Orders for One Site and Year}
 \usage{
-order_planetscope_imagery_siteyear(dir_site, siteoi, yearoi, bbox, setting)
+order_planetscope_imagery_siteyear(
+  dir_site,
+  siteoi,
+  yearoi,
+  bbox,
+  setting
+)
 }
 \arguments{
-\item{siteoi}{Character. Site name.}
-
-\item{bbox}{Object. Bounding box for the site.}
-
-\item{setting}{List. API settings.}
-
-\item{path_sat_site}{Character. Path to the site's raw data directory.}
-
-\item{year_download}{Numeric. Year to process.}
-}
-\value{
-Invisibly returns NULL after saving the order summary.
+  \item{dir_site}{Character. Path to \code{dir/raw/<site>} where orders will be stored.}
+  \item{siteoi}{Character. Site identifier matching \code{dir_site} name.}
+  \item{yearoi}{Integer. Year for which to generate monthly orders.}
+  \item{bbox}{Bounding box as a named numeric list (see \code{order_planetscope_imagery}).}
+  \item{setting}{List. API settings from \code{set_planetscope_parameters()}, including \code{api_key}, \code{item_name}, \code{product_bundle}, \code{cloud_lim}, and \code{harmonized}.}
 }
 \description{
-For a given site and year, this function iterates through all 12 months, fetches available imagery
-from the API based on the specified date range and bounding box, groups images into orders,
-and saves an order summary.
+Loops through each month of \code{yearoi}, uses \code{search_planetscope_imagery()} to fetch image IDs,
+splits them into groups of ~450, and calls \code{order_planetscope_imagery()}.
+Saves a summary \code{order_<yearoi>.rds} under \code{dir_site/orders/}.
+}
+\value{
+Invisibly \code{NULL}. Side effect: writes \code{order_<yearoi>.rds} in \code{dir_site/orders/}.
+}
+\examples{
+\dontrun{
+# For site "SJER" in 2024
+order_planetscope_imagery_siteyear(
+  dir_site = "data/raw/SJER",
+  siteoi   = "SJER",
+  yearoi   = 2024,
+  bbox      = my_bbox,
+  setting   = my_settings
+)
+}
 }

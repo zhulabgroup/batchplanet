@@ -2,7 +2,7 @@
 % Please edit documentation in R/order_planetscope_imagery.R
 \name{order_planetscope_imagery}
 \alias{order_planetscope_imagery}
-\title{Place a Satellite Order Request}
+\title{Place a PlanetScope Order Request}
 \usage{
 order_planetscope_imagery(
   api_key,
@@ -16,25 +16,34 @@ order_planetscope_imagery(
 )
 }
 \arguments{
-\item{api_key}{Character. The API key.}
-
-\item{bbox}{A list with bounding box values.}
-
-\item{items}{Character vector. A vector of image IDs to order.}
-
-\item{item_name}{Character. The imagery item type.}
-
-\item{product_bundle}{Character. The product bundle to order.}
-
-\item{harmonized}{Logical. Whether to include harmonization (default: FALSE).}
-
-\item{order_name}{Character. A name for the order.}
-
-\item{mostrecent}{Numeric. If greater than 0, only the specified number of most recent images are ordered.}
-}
-\value{
-Character. The order ID if successful.
+  \item{api_key}{Character. Your Planet API key.}
+  \item{bbox}{An \code{sf}-style bounding box (a named numeric list with \code{xmin,ymin,xmax,ymax}).}
+  \item{items}{Character vector. Planet image IDs to include in this order.}
+  \item{item_name}{Character. Item type (e.g. \code{"PSScene"}).}
+  \item{product_bundle}{Character. Product bundle (e.g. \code{"analytic_sr_udm2"}).}
+  \item{harmonized}{Logical. If \code{TRUE}, applies harmonization tool in the order.}
+  \item{order_name}{Character. A unique name for this order.}
+  \item{mostrecent}{Integer. If >0, only the \emph{most recent} N images are ordered (default: 0 = all).}
 }
 \description{
-Submits an order request to the remote sensing API for a given set of image IDs.
+Submits a single Planet Orders API request for the specified image IDs and tools.
+Returns the new order’s ID and prints status messages.
+}
+\value{
+Character. The new order ID (invisibly).
+}
+\examples{
+\dontrun{
+# Order just the 10 most recent images in `ids`
+order_id <- order_planetscope_imagery(
+  api_key        = my_key,
+  bbox           = my_bbox,
+  items          = ids,
+  item_name      = "PSScene",
+  product_bundle = "analytic_sr_udm2",
+  harmonized     = TRUE,
+  order_name     = "SJER_202405",
+  mostrecent     = 10
+)
+}
 }

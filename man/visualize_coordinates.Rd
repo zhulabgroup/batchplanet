@@ -2,22 +2,27 @@
 % Please edit documentation in R/visualize_time_series.R
 \name{visualize_coordinates}
 \alias{visualize_coordinates}
-\title{Visualize Coordinates from a Dataframe}
+\title{Visualize Coordinate Points}
 \usage{
 visualize_coordinates(df_coordinates)
 }
 \arguments{
-\item{df_points}{Data frame containing longitude and latitude columns.}
-
-\item{save_plot}{Logical. If TRUE, saves the plot to disk.}
-
-\item{plot_path}{Character. Directory where the plot will be saved (default: "plots").}
-
-\item{color_palette}{Character. The palette option for styling (default: "colorblind").}
-}
-\value{
-A ggplot object displaying the coordinate points.
+  \item{df_coordinates}{Data frame. Must contain numeric columns \code{lon} and \code{lat}, and optionally \code{id} for hover text.}
 }
 \description{
-Creates a scatter plot of coordinate data.
+Creates an interactive scatter plot of longitude and latitude points using \pkg{ggplot2}
+and returns a \pkg{plotly} object with hover text showing \code{id}, \code{lon}, and \code{lat}.
+}
+\value{
+An interactive \pkg{plotly} object.
+}
+\examples{
+\dontrun{
+df_pts <- data.frame(
+  id  = 1:3,
+  lon = c(-77.0, -76.9, -77.1),
+  lat = c(38.8, 38.85, 38.9)
+)
+visualize_coordinates(df_pts)
+}
 }

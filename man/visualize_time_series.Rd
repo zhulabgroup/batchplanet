@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualize_time_series.R
 \name{visualize_time_series}
 \alias{visualize_time_series}
-\title{Visualize Time Series}
+\title{Interactive Time Series Plot}
 \usage{
 visualize_time_series(
   df_ts,
@@ -16,37 +16,38 @@ visualize_time_series(
 )
 }
 \arguments{
-\item{df_ts}{Data frame containing time series data.}
-
-\item{var}{Character. Column name for the variable to plot (default: "value").}
-
-\item{ylab}{Character. Label for the Y-axis.}
-
-\item{smooth}{Logical. Whether to apply loess smoothing (default: FALSE).}
-
-\item{color_palette}{Character. A color-blind friendly palette option (default: "viridis").}
-
-\item{v_site}{Character vector of site names (defaults to all sites).}
-
-\item{v_group}{Character vector of group names (defaults to all groups).}
-
-\item{v_id}{Character vector of point identifiers (defaults to a random sample).}
-
-\item{v_year}{Numeric vector of years to include (defaults to all years).}
-
-\item{n_id}{Numeric. Number of IDs to sample if \code{v_id} is NULL (default: 3).}
-
-\item{annotate}{Logical. Whether to add key event markers (default: TRUE).}
-
-\item{facet}{Optional. Column name for faceting.}
-
-\item{save_plot}{Logical. Whether to save the plot (default: FALSE).}
-
-\item{plot_path}{Character. Directory to save the plot (default: "plots").}
-}
-\value{
-A ggplot object.
+  \item{df_ts}{Data frame. Must contain either a \code{time} (POSIX) or \code{date} (Date) column, an \code{id} column, and the variable to plot.}
+  \item{df_doy}{Optional data frame. DOY metrics from \code{calculate_phenological_metrics()}, with columns \code{year}, \code{start}, \code{end}, and \code{doy} for event markers. Default: \code{NULL}.}
+  \item{var}{Character. Name of the column in \code{df_ts} to plot (default: \dQuote{value}).}
+  \item{ylab}{Character. Label for the y-axis (default: \dQuote{Value}).}
+  \item{smooth}{Logical. If \code{TRUE}, applies Whittaker smoothing (default: \code{FALSE}).}
+  \item{lambda}{Numeric. Smoothing parameter for Whittaker smoothing (default: 50).}
+  \item{facet_var}{Character or \code{NULL}. Column name to facet by (e.g., \dQuote{site} or \dQuote{id}).}
+  \item{color_palette}{Character. Name of a \pkg{viridis} palette for line colors (default: \dQuote{viridis}).}
 }
 \description{
-Creates a customizable time series plot with improved labeling and annotations.
+Generates an interactive \pkg{plotly} time series plot from \code{df_ts}, optionally adding
+DOY event markers from \code{df_doy}. Points are colored by \code{id}, and you can facet
+by any grouping variable via \code{facet_var}.
+}
+\value{
+An interactive \pkg{plotly} object.
+}
+\examples{
+\dontrun{
+# Basic time series
+visualize_time_series(df_ts = df_myts)
+
+# With smoothing and DOY markers
+df_doy <- readRDS("data/doy_SJER.rds")
+visualize_time_series(
+  df_ts          = df_myts,
+  df_doy         = df_doy,
+  var            = "evi",
+  smooth         = TRUE,
+  lambda         = 100,
+  facet_var      = "id",
+  color_palette  = "magma"
+)
+}
 }

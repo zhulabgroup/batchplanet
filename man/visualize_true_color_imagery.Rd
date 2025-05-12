@@ -2,28 +2,38 @@
 % Please edit documentation in R/visualize_true_color_imagery.R
 \name{visualize_true_color_imagery}
 \alias{visualize_true_color_imagery}
-\title{Visualize Multi-Band Raster Data}
+\title{True-Color Raster Visualization}
 \usage{
-visualize_true_color_imagery(file, df_coordinates = NULL, brightness = 5)
+visualize_true_color_imagery(
+  file,
+  df_coordinates = NULL,
+  brightness     = 5
+)
 }
 \arguments{
-\item{brightness}{Numeric. Brightness multiplier (default: 1).}
-
-\item{path}{Character. Path to the raster file.}
-
-\item{crop_shape}{Optional. An \code{sf} or \code{SpatVector} object to crop the raster.}
-
-\item{bands}{Character vector. Names of the RGB bands (default: c("red", "green", "blue")).}
-
-\item{save_plot}{Logical. If TRUE, saves the plot.}
-
-\item{plot_path}{Character. Directory in which to save the plot (default: "plots").}
-
-\item{color_palette}{Character. The palette option for styling (default: "colorblind").}
-}
-\value{
-A ggplot object displaying the RGB composite.
+  \item{file}{Character. Path to a multi-band raster file (e.g., PlanetScope SR clip).}
+  \item{df_coordinates}{Optional data frame. Point locations to overlay; must contain \code{lon}, \code{lat}, and \code{site}. Default: \code{NULL}.}
+  \item{brightness}{Numeric. Brightness multiplier for RGB values (default: 5).}
 }
 \description{
-Creates an RGB composite visualization of a multi-band raster.
+Reads a multi-band raster, converts the red, green, and blue bands to normalized RGB values,
+and creates a \pkg{ggplot2} tile plot of the true-color composite. Optionally overlays
+point locations from \code{df_coordinates}.
+}
+\value{
+A \pkg{ggplot2} object.
+}
+\examples{
+\dontrun{
+# True-color display
+p <- visualize_true_color_imagery("raw/SJER/20240501_SR_harmonized_clip.tif")
+
+# With point overlay
+df_pts <- read.csv("points.csv")
+visualize_true_color_imagery(
+  file           = "raw/SJER/20240501_SR_harmonized_clip.tif",
+  df_coordinates = df_pts,
+  brightness     = 3
+)
+}
 }

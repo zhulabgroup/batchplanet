@@ -2,7 +2,7 @@
 % Please edit documentation in R/order_planetscope_imagery.R
 \name{order_planetscope_imagery_batch}
 \alias{order_planetscope_imagery_batch}
-\title{Batch Order Satellite Imagery}
+\title{Batch Order PlanetScope Imagery}
 \usage{
 order_planetscope_imagery_batch(
   dir,
@@ -13,32 +13,30 @@ order_planetscope_imagery_batch(
 )
 }
 \arguments{
-\item{dir}{Character. Base directory for saving orders.}
-
-\item{v_site}{Optional character vector. Site names to process. If NULL, all unique sites in \code{df_locations} are used.}
-
-\item{v_year}{Numeric vector. Years to process (default: 2017 to current year).}
-
-\item{setting}{List. API settings including API key, item name, asset type, cloud limit, product bundle, and harmonized flag.}
-
-\item{df_locations}{Data frame containing location records with latitude and longitude.}
-}
-\value{
-Invisibly returns NULL.
+  \item{dir}{Character. Base directory for orders; expects \code{dir/raw/} to exist.}
+  \item{df_coordinates}{Data frame of points with columns \code{site, lon, lat, id} (and optional \code{group}).}
+  \item{v_site}{Character vector, optional. Sites to process; if \code{NULL}, all unique \code{df_coordinates\$site}.}
+  \item{v_year}{Integer vector. Years to process (default: 2017 through current year).}
+  \item{setting}{List. API settings as returned by \code{set_planetscope_parameters()}.}
 }
 \description{
-Initiates the ordering process for satellite imagery for a set of locations.
-For each site (optionally provided or extracted from \code{df_locations}) and each year,
-the function processes orders by calling site- and year-specific routines.
+For each site in \code{v_site} (or \code{df_coordinates\$site}) and each year in \code{v_year},
+creates monthly orders by calling \code{order_planetscope_imagery_siteyear()}. 
+Results are stored under \code{dir/raw/<site>/orders/order_<year>.rds}.
+}
+\value{
+Invisibly \code{NULL}. Side effect: one \code{order_<year>.rds} per site per year.
 }
 \examples{
 \dontrun{
-df_locations <- read.csv("locations.csv")
-settings <- list(
-  api_key = "YOUR_API_KEY", item_name = "PSScene", asset = "ortho_analytic_4b_sr",
-  cloud_lim = 0.1, product_bundle = "analytic_sr_udm2", harmonized = TRUE
+df_pts <- read.csv("points.csv")
+settings <- set_planetscope_parameters(api_key = set_api_key())
+order_planetscope_imagery_batch(
+  dir            = "data/",
+  df_coordinates = df_pts,
+  v_site         = c("HARV","SJER"),
+  v_year         = 2024,
+  setting        = settings
 )
-order_satellite_batch("orders_dir/", df_locations, setting = settings)
 }
-
 }

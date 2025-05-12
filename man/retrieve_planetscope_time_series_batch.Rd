@@ -2,7 +2,7 @@
 % Please edit documentation in R/retrieve_planetscope_time_series.R
 \name{retrieve_planetscope_time_series_batch}
 \alias{retrieve_planetscope_time_series_batch}
-\title{Process Satellite Time Series Data for Spatial Points}
+\title{Retrieve PlanetScope Time Series for Spatial Points}
 \usage{
 retrieve_planetscope_time_series_batch(
   dir,
@@ -10,35 +10,41 @@ retrieve_planetscope_time_series_batch(
   v_site = NULL,
   v_group = NULL,
   max_sample = 2000,
-  num_cores = 12
+  num_cores = parallel::detectCores()
 )
 }
 \arguments{
-\item{dir}{Character. Base directory for satellite data.}
-
-\item{df_coordinates}{Data frame containing point coordinates. Must include columns: \code{site}, \code{lon}, \code{lat}, \code{id}, and \code{group}.}
-
-\item{v_site}{Optional character vector. Site identifiers to process. If \code{NULL}, the function
-extracts all available sites from \code{dir/raw/}.}
-
-\item{v_group}{Optional character vector. Group identifiers to process. Defaults to "all".}
-
-\item{max_sample}{Numeric. Maximum number of samples per group (default: 2000).}
-
-\item{num_cores}{Numeric. Number of cores for parallel processing (default: detects all available).}
-}
-\value{
-Invisibly returns NULL. Side effect: creates an RDS file containing the processed satellite data.
+  \item{dir}{Character. Base directory containing PlanetScope data; must have a \code{raw/} subdirectory with folders named by site.}
+  \item{df_coordinates}{Data frame of point locations. Must include columns:
+    \itemize{
+      \item \code{site} – site identifier matching a folder in \code{dir/raw/}
+      \item \code{lon, lat} – numeric coordinates (rows with \code{NA} are dropped)
+      \item \code{id} – unique identifier for each point
+      \item \code{group} (optional) – grouping label; defaults to \code{"allGroup"} if missing
+    }
+  }
+  \item{v_site}{Character vector, optional. Names of sites to process; if \code{NULL}, defaults to all folders under \code{dir/raw/}.}
+  \item{v_group}{Character vector, optional. Groups to process; if \code{NULL}, defaults to all values in \code{df_coordinates\$group}.}
+  \item{max_sample}{Numeric. Maximum number of points to sample per site–group (default: 2000).}
+  \item{num_cores}{Numeric. Number of CPU cores for parallel processing (default: all available cores as returned by \code{parallel::detectCores()}).}
 }
 \description{
-Processes satellite time series data for spatial points by reading, extracting,
-and combining reflectance, QA, and metadata information. The resulting combined
-time series data is saved as an RDS file.
+For each site–group combination in \code{df_coordinates}, reads raw PlanetScope imagery
+(reflectance, QA, and metadata), extracts values at each point, and writes a combined
+time series to an \code{.rds} file in \code{dir/ts/}, named \code{ts_<site>_<group>.rds}.
+}
+\value{
+Invisibly returns \code{NULL}. Side effect: creates one \code{.rds} time series file per
+site–group under \code{dir/ts/}.
 }
 \examples{
 \dontrun{
-df_coordinates <- read.csv("points.csv")
-process_satellite_ts("satellite_data/", df_coordinates, v_site = c("Site1", "Site2"))
+df_pts <- read.csv("points.csv")
+# This writes files like ts_HARV_allGroup.rds, ts_SJER_Quercus.rds, etc.
+retrieve_planetscope_time_series_batch(
+  dir            = "data/planet_scope/",
+  df_coordinates = df_pts,
+  num_cores      = 6
+)
 }
-
 }

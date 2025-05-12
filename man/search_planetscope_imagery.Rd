@@ -2,58 +2,49 @@
 % Please edit documentation in R/search_planetscope_imagery.R
 \name{search_planetscope_imagery}
 \alias{search_planetscope_imagery}
-\title{Search for Satellite Imagery}
+\title{Search for PlanetScope Imagery IDs}
 \usage{
 search_planetscope_imagery(
   api_key,
   bbox,
-  date_end = NULL,
-  date_start = NULL,
-  item_name = "PSScene",
-  asset = "ortho_analytic_4b_sr",
-  cloud_lim = 0.1,
+  date_start     = NULL,
+  date_end       = NULL,
+  item_name      = "PSScene",
+  asset          = "ortho_analytic_4b_sr",
+  cloud_lim      = 0.1,
   ground_control = TRUE,
-  quality = "standard"
+  quality        = "standard"
 )
 }
 \arguments{
-\item{api_key}{Character. The API key.}
-
-\item{bbox}{List. A list with \code{xmin}, \code{ymin}, \code{xmax}, and \code{ymax}.}
-
-\item{date_end}{Character. End date ("YYYY-MM-DD") for the search.}
-
-\item{date_start}{Character. Start date ("YYYY-MM-DD") for the search.}
-
-\item{item_name}{Character. Imagery item type (default: "PSScene").}
-
-\item{asset}{Character. Asset type (default: "ortho_analytic_4b_sr").}
-
-\item{cloud_lim}{Numeric. Maximum allowed cloud cover (default: 0.1).}
-
-\item{ground_control}{Logical. Whether ground control is required (default: TRUE).}
-
-\item{quality}{Character. Quality filter (default: "standard").}
-
-\item{list_dates}{Optional vector of dates for filtering.}
-}
-\value{
-A character vector of image IDs with download permission, or \code{NULL} if none found.
+  \item{api_key}{Character. Your Planet API key.}
+  \item{bbox}{Named numeric list with \code{xmin}, \code{ymin}, \code{xmax}, \code{ymax} defining the search area.}
+  \item{date_start}{Character. Start date (\dQuote{YYYY-MM-DD}) for the search (inclusive).}
+  \item{date_end}{Character. End date (\dQuote{YYYY-MM-DD}) for the search (inclusive).}
+  \item{item_name}{Character. Planet item type to search (default: \dQuote{PSScene}).}
+  \item{asset}{Character. Asset type to filter permissions (default: \dQuote{ortho_analytic_4b_sr}).}
+  \item{cloud_lim}{Numeric. Maximum allowed cloud cover fraction (0–1, default: 0.1).}
+  \item{ground_control}{Logical. If \code{TRUE}, require ground control metadata (default: \code{TRUE}).}
+  \item{quality}{Character. Quality category filter (default: \dQuote{standard}).}
 }
 \description{
-Queries a remote sensing API for imagery overlapping a given bounding box and meeting
-specified filtering criteria. Returns a vector of image IDs for which the user has
-download permission.
+Queries the Planet Quick-Search API for imagery overlapping the specified bounding box
+and date range, then filters results by cloud cover, ground control, and quality.
+Returns only IDs for which you have download permission.
+}
+\value{
+Character vector of image IDs with download permission. Returns \code{NULL} invisibly if none are found.
 }
 \examples{
 \dontrun{
-bbox <- list(xmin = -77.05, ymin = 38.80, xmax = -76.90, ymax = 39.00)
-image_ids <- search_satellite_imagery(
-  bbox = bbox,
-  date_start = "2023-06-01",
-  date_end = "2023-06-30",
-  api_key = "YOUR_API_KEY"
+my_bbox <- list(xmin = -77.05, ymin = 38.80, xmax = -76.90, ymax = 39.00)
+ids <- search_planetscope_imagery(
+  api_key        = set_api_key(),
+  bbox           = my_bbox,
+  date_start     = "2023-06-01",
+  date_end       = "2023-06-30",
+  cloud_lim      = 0.2,
+  ground_control = TRUE
 )
 }
-
 }

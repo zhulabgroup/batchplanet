@@ -2,39 +2,41 @@
 % Please edit documentation in R/clean_planetscope_time_series.R
 \name{clean_planetscope_time_series_batch}
 \alias{clean_planetscope_time_series_batch}
-\title{Process Index Time Series for a Specific Site}
+\title{Clean PlanetScope Time Series Data in Batch}
 \usage{
 clean_planetscope_time_series_batch(
   dir,
-  v_site = NULL,
-  v_group = NULL,
+  v_site        = NULL,
+  v_group       = NULL,
   num_cores,
-  calculate_evi = T
+  calculate_evi = TRUE
 )
 }
 \arguments{
-\item{dir}{Character. The base directory containing satellite data.}
-
-\item{v_group}{Character vector. A vector of group identifiers.}
-
-\item{siteoi}{Character. The site identifier.}
-
-\item{parallel}{Logical. Whether to load the groups in parallel (default: FALSE).}
-}
-\value{
-A named list where each element corresponds to the index time series data for a group.
-Groups with no available data will have a value of \code{NULL}.
+  \item{dir}{Character. Base directory containing raw time series files under \code{ts/}.}
+  \item{v_site}{Character vector, optional. Site identifiers to process; if \code{NULL}, defaults to all sites in \code{ts/}.}
+  \item{v_group}{Character vector, optional. Group identifiers to process; if \code{NULL}, defaults to all groups in filenames.}
+  \item{num_cores}{Integer. Number of parallel workers to use (default: required argument).}
+  \item{calculate_evi}{Logical. If \code{TRUE}, computes Enhanced Vegetation Index (\code{evi}) after cleaning (default: \code{TRUE}).}
 }
 \description{
-Processes index time series data for a given site by iterating over the
-provided group identifiers. For each group, \code{process_group_index_ts()} is called
-to load the clean data. The results are returned as a named list, with group names as keys.
+Loads raw index time series (\code{.rds}) files from \code{dir/ts/}, filters and cleans them
+(removing invalid observations, summarizing spectral bands by day-of-year), and optionally
+computes the Enhanced Vegetation Index (EVI). Processed time series are saved as \code{.rds}
+files under \code{dir/clean/} with filenames prefixed \code{clean_}.
+}
+\value{
+Invisibly returns \code{NULL}. Side effect: writes one cleaned \code{.rds} file per input into \code{dir/clean/}.
 }
 \examples{
 \dontrun{
-result_list <- process_site_index_ts("test_data", "TestSite", c("GroupA", "GroupB"))
-# Access data for GroupA:
-df_groupA <- result_list[["GroupA"]]
+# Clean all time series for NEON sites A and B using 4 cores
+clean_planetscope_time_series_batch(
+  dir           = "data/planet_scope/",
+  v_site        = c("NEON.A", "NEON.B"),
+  v_group       = c("Quercus", "Pinus"),
+  num_cores     = 4,
+  calculate_evi = TRUE
+)
 }
-
 }

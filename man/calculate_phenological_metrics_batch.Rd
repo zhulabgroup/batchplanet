@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_phenological_metrics.R
 \name{calculate_phenological_metrics_batch}
 \alias{calculate_phenological_metrics_batch}
-\title{Process DOY Data from Satellite Time Series}
+\title{Batch Calculate Phenological DOY Metrics}
 \usage{
 calculate_phenological_metrics_batch(
   dir,
@@ -11,41 +11,46 @@ calculate_phenological_metrics_batch(
   df_thres = NULL,
   var_index = "evi",
   min_days = 300,
-  check_seasonality = T,
+  check_seasonality = TRUE,
   extend_to_previous_year = 275,
   extend_to_next_year = 90,
   num_cores = 3
 )
 }
 \arguments{
-\item{dir}{Character. Directory containing index data (default: "alldata/PSdata/").}
-
-\item{v_site}{Optional character vector. Site identifiers to process.}
-
-\item{v_group}{Optional character vector. Group identifiers to process.}
-
-\item{df_thres}{Optional data frame of threshold values. If NULL, defaults to \code{set_thres()}.}
-
-\item{min_days}{Numeric. Minimum number of valid data points required for processing (default: 300).}
-
-\item{v_year}{Optional numeric vector. Years to process.}
-
-\item{v_id}{Optional character vector. IDs to process. If NULL, IDs are extracted from the data.}
-
-\item{parallel}{Logical. Whether to use parallel processing (default: FALSE).}
-}
-\value{
-Invisibly saves processed DOY data as RDS files and returns \code{NULL}.
+  \item{dir}{Character. Base directory containing cleaned index files under \code{dir/clean/}.}
+  \item{v_site}{Character vector, optional. Site identifiers to process; if \code{NULL}, all sites are included.}
+  \item{v_group}{Character vector, optional. Group identifiers to process; if \code{NULL}, all groups are included.}
+  \item{df_thres}{Data frame of thresholds as from \code{set_thresholds()}; if \code{NULL}, uses default thresholds.}
+  \item{var_index}{Character. Name of the index column in cleaned data (default: \dQuote{evi}).}
+  \item{min_days}{Numeric. Minimum valid days required (default: 300).}
+  \item{check_seasonality}{Logical. If \code{TRUE}, ensures a seasonal pattern before computing DOY (default: \code{TRUE}).}
+  \item{extend_to_previous_year}{Integer. Days to extend backward for early-year phenology (default: 275).}
+  \item{extend_to_next_year}{Integer. Days to extend forward for late-year phenology (default: 90).}
+  \item{num_cores}{Integer. Number of parallel workers for processing (default: 3).}
 }
 \description{
-This function processes day-of-year (DOY) data from index time series files
-stored in the specified directory. For each site and group combination, it reads
-the corresponding index data, computes DOY values based on threshold crossings,
-and saves the processed DOY data as an RDS file.
+Reads cleaned index time series files from \code{dir/clean/}, grouped by site and group,
+then for each calls \code{calculate_phenological_metrics()} to compute DOY metrics.
+Outputs are saved as \code{.rds} files under \code{dir/doy/} prefixed \code{doy_}.
+}
+\value{
+Invisibly returns \code{NULL}. Side effect: writes one DOY metrics \code{.rds} file per input into \code{dir/doy/}.
 }
 \examples{
 \dontrun{
-proc_doy(dir = "alldata/PSdata/", v_site = c("Site1", "Site2"), v_group = c("GroupA", "GroupB"))
+# Batch compute DOY metrics for NEON sites using 4 cores
+calculate_phenological_metrics_batch(
+  dir                     = "data/planet_scope/",
+  v_site                  = c("NEON.A","NEON.B"),
+  v_group                 = c("Quercus","Pinus"),
+  df_thres                = set_thresholds(thres_up = c(0.3,0.5)),
+  var_index               = "evi",
+  min_days                = 300,
+  check_seasonality       = TRUE,
+  extend_to_previous_year = 275,
+  extend_to_next_year     = 90,
+  num_cores               = 4
+)
 }
-
 }

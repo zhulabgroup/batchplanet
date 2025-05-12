@@ -12,20 +12,25 @@ download_planetscope_imagery(
 )
 }
 \arguments{
-\item{order_id}{Character. The order ID.}
-
-\item{api_key}{Character. The API key.}
-
-\item{order_name}{Character. The folder name in which to save the downloaded files.}
-
-\item{order_num}{Numeric. Identifier for the order used for logging.}
-
-\item{overwrite_opt}{Logical. Whether to overwrite existing files (default: FALSE).}
-}
-\value{
-Invisibly returns NULL after downloading the files.
+  \item{order_id}{Character. The PlanetScope order ID.}
+  \item{exportfolder}{Character. Directory in which to save downloaded files (created if needed).}
+  \item{api_key}{Character. Your Planet API key.}
+  \item{overwrite}{Logical. If \code{TRUE}, existing files will be overwritten (default: \code{FALSE}).}
 }
 \description{
-Retrieves the order details from the remote sensing API and downloads all associated items.
-The function waits until the order is ready (state = 'success') before downloading.
+Retrieves the order details from the Planet Orders API (polling until \code{state == "success"}), 
+then downloads each associated item into \code{exportfolder}.
+}
+\value{
+Invisibly returns \code{NULL}. Side effect: writes all imagery files to disk.
+}
+\examples{
+\dontrun{
+download_planetscope_imagery(
+  order_id     = "abc123-order-id",
+  exportfolder = "data/raw/SJER/SJER_202405_121_151",
+  api_key      = set_api_key(),
+  overwrite    = TRUE
+)
+}
 }

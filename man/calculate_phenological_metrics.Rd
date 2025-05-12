@@ -2,30 +2,43 @@
 % Please edit documentation in R/calculate_phenological_metrics.R
 \name{calculate_phenological_metrics}
 \alias{calculate_phenological_metrics}
-\title{Process DOY Data for a Single time series}
+\title{Calculate Phenological DOY Metrics for One Time Series}
 \usage{
 calculate_phenological_metrics(
   df_index,
   df_thres,
   min_days,
-  check_seasonality = T,
+  check_seasonality = TRUE,
   var_index = "evi"
 )
 }
 \arguments{
-\item{df_thres}{Data frame containing candidate threshold values.}
-
-\item{min_days}{Numeric. Minimum required valid data points (default: 300).}
-
-\item{df_ts_ind}{Data frame of time series.}
-}
-\value{
-A data frame with DOY information for both increasing and decreasing conditions,
-or \code{NULL} if insufficient valid data.
+  \item{df_index}{Data frame of cleaned index time series. Must contain \code{doy} and \code{index_sm}.}
+  \item{df_thres}{Data frame with columns \code{direction} (\dQuote{up}/\dQuote{down}) and \code{threshold} (numeric 0–1).}
+  \item{min_days}{Numeric. Minimum required number of non-NA \code{index_sm} observations (default: 300).}
+  \item{check_seasonality}{Logical. If \code{TRUE}, tests for a seasonal pattern before computing phenophases (default: \code{TRUE}).}
+  \item{var_index}{Character. Name of the index column in \code{df_index} to analyze (default: \dQuote{evi}).}
 }
 \description{
-This function processes the time series for a single ID by first completing
-missing days over a specified range, applying Whittaker smoothing to the signal,
-and then calculating DOY values based on threshold crossings. If the number of valid
-days is below \code{min_days}, the function returns \code{NULL}.
+Processes a single group’s cleaned index time series by completing missing days,
+applying Whittaker smoothing, testing for seasonality, and computing day-of-year (DOY)
+crossings for each threshold in \code{df_thres} (both green-up and green-down).
+Returns \code{NULL} if the number of valid days is below \code{min_days}.
+}
+\value{
+A data frame of phenological metrics (DOY) per threshold and direction, or \code{NULL}
+if there are fewer than \code{min_days} valid observations.
+}
+\examples{
+\dontrun{
+# Compute DOY metrics for one smoothed series using custom thresholds
+df_thres <- set_thresholds(thres_up = c(0.3, 0.5), thres_down = NULL)
+df_metrics <- calculate_phenological_metrics(
+  df_index          = df_clean,
+  df_thres          = df_thres,
+  min_days          = 250,
+  check_seasonality = TRUE,
+  var_index         = "evi"
+)
+}
 }
