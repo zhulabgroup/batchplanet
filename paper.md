@@ -12,7 +12,7 @@ authors:
     orcid: 0000-0003-3660-3797
     affiliation: 1,2
   - name: Ken Reid
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0001-8654-2430
     affiliation: 1
   - name: Kai Zhu
     orcid: 0000-0003-1587-3317
