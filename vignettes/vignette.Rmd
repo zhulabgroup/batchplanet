@@ -16,7 +16,7 @@ This workflow demonstrates the features of the _batchplanet_ package. It provide
 Who should use this package?
 - If you prioritize reproducibility and control over data.
 - If you prefer using R to python.
-- If you want to download PlanetScope imagery over multiple sites and over a long time (optional but recommended).
+- If you want to download PlanetScope imagery over multiple locations and over a long time (optional but recommended).
 - If you use high-performance computing (optional).
 - If you want to retrieve and process time series from PlanetScope data (optional).
 
@@ -38,7 +38,7 @@ What do we mean by "clustered coordinates at dispersed sites?" Use the function 
 visualize_coordinates(df_coordinates) # Multiple sites across continental US
 visualize_coordinates(df_coordinates %>% filter(site == "SJER")) # Zoom in to one site SJER
 ```
-Why is it important to label the coordinates with sites? If we try to download PlanetScope imagery that cover all coordinates, we will end up with a tremendous amount of imagery that cover most of continental US. Instead, we will use the site labels to create bounding boxes that cover each site. This way, we can download imagery that only cover the sites of interest. If your coordinates are already clustered in a small area, you don't have to supply the site labels. The package will process all coordinates as a single site.
+Why is it important to label the coordinates with sites? If we treat all coordinates as a single set and try to download PlanetScope imagery that cover them, we will end up with a tremendous amount of imagery that cover most of continental US. Instead, we will use the site labels to group the coordinates and create bounding boxes that cover each site. This way, we can download imagery that only cover the sites of interest. If your coordinates are already clustered in a small area, you don't have to supply the site labels. The package will process all coordinates as a single site.
 
 ## 2 Download PS data
 
@@ -48,7 +48,7 @@ You will need an active Planet account and an API key to access the PlanetScope 
 
 You will specify several key parameters for downloading PlanetScope imagery using the `set_planetscope_parameters()` function. These parameters include the API key, item name, asset type, product bundle, cloud cover limit, and whether to use harmonized data. 
 
-Within this step, you set your API key using the `set_api_key()` function. This function will save your API key in a hidden environment file in your working directory, so you don't have to enter it every time you run the code. If you would like to change your API key, you can use the same function with the argument `change_key = T`.
+Within this step, you set your API key using the `set_api_key()` function. This function will save your API key in a hidden environment file in your working directory, so you don't have to enter it every time you run the code. If you would like to change your API key, you can use the same function with the argument `change_key = T`. 
 
 >In the Data API, an __item__ is an entry in our catalog, and generally represents a single logical observation (or scene) captured by a satellite. Items have __assets__, which are the downloadable products derived from the item's source data. [PlanetScope documentation](https://docs.planet.com/develop/apis/data/items/#assets)
 
@@ -146,6 +146,9 @@ At this point, you might have downloaded a large amount of images. Consider arch
 ### 2.4 Visualize true color imagery
 
 The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness. Again, you have the option to overlay the coordinates on the images.
+
+*The function runs correctly itself, but the error "could not find function "visualize_true_color_imagery_batch" occurs in this vignette.*
+
 ```{r}
 visualize_true_color_imagery_batch(dir = dir_data, df_coordinates = df_coordinates)
 ```
@@ -192,7 +195,7 @@ You can read in processed data using the `read_data_product()` function. To read
 You can visualize time series data using the `visualize_time_series()` function. You can specify the variable you want to plot, which needs to be a column in the supplies data frame, and the corresponding y-axis label. The optional `facet_var` parameter allows you to specify the variable you want to use for faceting the plot (e.g., site, group, or id). The `smooth` parameter allows you to specify whether you want to smooth the time series data or not. If `smooth = TRUE`, the function will use a weighted Whittaker smoothing method to smooth and fill the time series data (see Section 4.1). This function is not specific to PlanetScope data and can be used with any time series data, as long as the data frame has `date` or `time` at regular intervals, as well as the variable you want to plot.
 ```{r}
 df_ts <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), product_type = "ts")
-visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "site", smooth = F)
+visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "group", smooth = F)
 ```
 
 ### 3.2 Clean time series
@@ -334,5 +337,5 @@ example_seasonality <- determine_seasonality(
   k = 50
 )
 
-print(str_c("Time series has significant seasonal variation: ", example_flat_check))
+print(str_c("Time series has significant seasonal variation: ", example_seasonality))
 ```
