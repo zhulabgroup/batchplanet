@@ -3,19 +3,13 @@
 #' Creates a customizable time series plot with improved labeling and annotations.
 #'
 #' @param df_ts Data frame containing time series data.
-#' @param v_site Character vector of site names (defaults to all sites).
-#' @param v_group Character vector of group names (defaults to all groups).
-#' @param v_id Character vector of point identifiers (defaults to a random sample).
-#' @param v_year Numeric vector of years to include (defaults to all years).
-#' @param n_id Numeric. Number of IDs to sample if `v_id` is NULL (default: 3).
+#' @param df_doy Data frame containing phenological metrics (optional).
 #' @param var Character. Column name for the variable to plot (default: "value").
 #' @param ylab Character. Label for the Y-axis.
 #' @param smooth Logical. Whether to apply loess smoothing (default: FALSE).
-#' @param annotate Logical. Whether to add key event markers (default: TRUE).
+#' @param lambda Numeric. Parameter controls the smoothness of the output (default: 50).
 #' @param color_palette Character. A color-blind friendly palette option (default: "viridis").
-#' @param facet Optional. Column name for faceting.
-#' @param save_plot Logical. Whether to save the plot (default: FALSE).
-#' @param plot_path Character. Directory to save the plot (default: "plots").
+#' @param facet_var Optional. Column name for faceting.
 #'
 #' @return A ggplot object.
 #' @export
@@ -104,10 +98,7 @@ visualize_time_series <- function(df_ts,
 #'
 #' Creates a scatter plot of coordinate data.
 #'
-#' @param df_points Data frame containing longitude and latitude columns.
-#' @param save_plot Logical. If TRUE, saves the plot to disk.
-#' @param plot_path Character. Directory where the plot will be saved (default: "plots").
-#' @param color_palette Character. The palette option for styling (default: "colorblind").
+#' @param df_coordinates Data frame containing longitude and latitude columns.
 #'
 #' @return A ggplot object displaying the coordinate points.
 #' @export
