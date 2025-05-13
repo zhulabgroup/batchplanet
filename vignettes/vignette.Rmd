@@ -76,7 +76,7 @@ Use the `set_data_directory()` function to specify a directory to store the down
 dir_data <- set_data_directory()
 ```
 
-For demonstration purpose, we are going to set the data directory to the package's extdata folder, but you should use `set_data_directory()` as above when you carry our your own analysis.
+For demonstration purpose, we are going to set the data directory to the package's extdata folder, but you should use `set_data_directory()` as above when you carry out your own analysis.
 ```{r}
 dir_data <- system.file("extdata", package = "batchplanet")
 ```
