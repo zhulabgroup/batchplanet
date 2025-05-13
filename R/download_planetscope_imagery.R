@@ -42,9 +42,10 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, sett
   order_file <- file.path(dir_site, "orders", str_c("order_", yearoi, ".rds"))
   if (!file.exists(order_file)) {
     message("Order file not found: ", order_file)
-    next
+    df_order <- data.frame()
+  } else {
+    df_order <- read_rds(order_file)
   }
-  df_order <- read_rds(order_file)
 
   # If there are orders to process, initiate parallel download
   if (nrow(df_order) > 0) {
