@@ -147,8 +147,6 @@ At this point, you might have downloaded a large amount of images. Consider arch
 
 The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness. Again, you have the option to overlay the coordinates on the images.
 
-*The function runs correctly itself, but the error "could not find function "visualize_true_color_imagery_batch" occurs in this vignette.*
-
 ```{r}
 visualize_true_color_imagery_batch(dir = dir_data, df_coordinates = df_coordinates)
 ```
