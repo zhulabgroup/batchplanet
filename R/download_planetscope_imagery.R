@@ -103,7 +103,7 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, sett
 #' @return Invisibly returns NULL after downloading the files.
 #'
 #' @export
-download_planetscope_imagery <- function(osrder_id, exportfolder, api_key, overwrite = FALSE) {
+download_planetscope_imagery <- function(order_id, exportfolder, api_key, overwrite = FALSE) {
   get_content <- wait_for_order_success(order_id, api_key)
 
   message("Starting download")
