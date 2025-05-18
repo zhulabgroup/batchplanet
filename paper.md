@@ -23,22 +23,29 @@ authors:
   - name: Kai Zhu
     orcid: 0000-0003-1587-3317
     affiliation: 2
+  - name: Alexandre R. Bevington
+    orcid: 0000-0003-1587-3317
+    affiliation: 3 4
 affiliations:
   - name: Michigan Institute for Data and AI in Society, University of Michigan, Ann Arbor, MI, USA
     index: 1
   - name: School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA
     index: 2
+  - name: Department of Geography, Earth and Environmental Sciences, University of Northern British Columbia, Prince George, BC, Canada
+    index: 3
+  - name: Ministry of Forests, Province of British Columbia, Prince George, BC, Canada
+    index: 4
 date: 2025-05-11
 repository: https://github.com/zhulabgroup/batchplanet
 ---
 
 # Summary
 
-The `batchplanet` R package provides a reproducible and scalable workflow for accessing and processing PlanetScope satellite imagery, enabling environmental researchers to perform spatiotemporal analysis of high-resolution remote sensing data. The package streamlines the steps required to work with the PlanetScope API, including the ordering and downloading of imagery, retrieving and cleaning pixel-level time series, and computing derived metrics such as the Enhanced Vegetation Index (EVI) and green-up/down time. This tool has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology]. Generalizable beyond phenological research, this tool is particularly suited for environmental research that involves large volumes of imagery across multiple sites and long time periods.
+The `batchplanet` R package provides a reproducible and scalable workflow for accessing and processing PlanetScope satellite imagery, enabling environmental researchers to efficiently perform spatiotemporal analysis of high-resolution remote sensing data. The package streamlines the steps required to work with the PlanetScope API, including the ordering and downloading of imagery, retrieving and cleaning pixel-level time series, and computing derived metrics such as the Enhanced Vegetation Index (EVI) and green-up/down time. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology]. Generalizable beyond phenological research, this tool is particularly suited for environmental research that involves large volumes of imagery across multiple sites and long time periods.
 
 # Statement of Need
 
-PlanetScope is a high-resolution (~3-meter), near-daily satellite imagery product provided by Planet Labs. With its global coverage, high spatial resolution, and rapid revisit time, PlanetScope data has become increasingly valuable for scientific research and operational monitoring — enabling detailed analyses of land use change, ecosystem dynamics, disaster impacts, and more [@moon2021phenology]. While access to Planet data has been facilitated through the Planet API [@planet2017api], using such data still poses challenges: complex API interactions, large-volume data downloads, and non-trivial processing workflows often limit accessibility and reproducibility.
+PlanetScope is a commercial high-resolution (~3-meter), near-daily satellite imagery product provided by Planet Labs. With its global coverage, high spatial resolution, and rapid revisit time, PlanetScope data has become increasingly valuable for scientific research and operational monitoring — enabling detailed analyses of land use change, ecosystem dynamics, disaster impacts, and more [@moon2021phenology]. While access to Planet data has been facilitated through the Planet API [@planet2017api], using such data still poses challenges: complex API interactions, large-volume data downloads, and non-trivial processing workflows often limit accessibility and reproducibility.
 
 Cloud-based platforms such as Sentinel Hub and Google Earth Engine (GEE) provide powerful PlanetScope imagery access and processing capabilities, but their cloud-based nature restricts user control over processing environments and data storage, which can complicate reproducibility and transparency in scientific workflows. In addition, the programming languages (Python and JavaScript) used on these two platforms might be less familiar to R users. An existing R package `planetR` offers an R-native interface to the Planet API. Nevertheless, these existing tools usually require users to write custom scripts to download and process data in batch over multiple sites, which can be time-consuming and is easily limited by users' computing and storage resources. `batchplanet` fills key gaps in the existing ecosystem (Table 1) with R-native, locally reproducible batch downloading and processing of PlanetScope imagery. It also includes features such as time series analysis tools and interactive visualization. `batchplanet` is particularly suitable for scientific research workflows that require scalability, transparency, and reproducibility over the data pipeline.
 
