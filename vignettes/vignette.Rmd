@@ -14,11 +14,9 @@ knitr::opts_chunk$set(echo = TRUE)
 This workflow demonstrates the features of the _batchplanet_ package. It provides a step-by-step guide to downloading PlanetScope imagery, processing time series data, and calculating phenological metrics. The package is designed to work with the PlanetScope API and is particularly useful for researchers and practitioners in environmental studies and remote sensing. This package has been used for our peer-reviewed publication ([Song et al., (2025)](https://doi.org/10.1016/j.srs.2025.100205)), to predict reproductive phenology of wind-pollinated trees via PlanetScope time series.
 
 Who should use this package?
-- If you prioritize reproducibility and control over data.
-- If you prefer using R to python.
-- If you want to download PlanetScope imagery over multiple locations and over a long time (optional but recommended).
-- If you use high-performance computing (optional).
-- If you want to retrieve and process time series from PlanetScope data (optional).
+- If you prefer using R over Python for batch downloading PlanetScope data across multiple locations and extended time periods, as well as for processing tasks such as time series retrieval and metric calculation.
+- If you want to utilize high-performance computing to run processes in parallel.
+- If reproducibility and control over data are your top priorities.
 
 ```{r}
 library(batchplanet)
@@ -190,7 +188,7 @@ df_ts_example <- retrieve_planetscope_time_series(
 
 You can read in processed data using the `read_data_product()` function. To read in time series retrieved from raw imagery, set `product_type = "ts"`. The function will read in all time series data from the `ts/` folder and combine them into one data frame. You can specify the sites and groups you want to read in using the `v_site` and `v_group` parameters. If you do not specify these parameters, the function will read in all time series data.
 
-You can visualize time series data using the `visualize_time_series()` function. You can specify the variable you want to plot, which needs to be a column in the supplies data frame, and the corresponding y-axis label. The optional `facet_var` parameter allows you to specify the variable you want to use for faceting the plot (e.g., site, group, or id). The `smooth` parameter allows you to specify whether you want to smooth the time series data or not. If `smooth = TRUE`, the function will use a weighted Whittaker smoothing method to smooth and fill the time series data (see Section 4.1). This function is not specific to PlanetScope data and can be used with any time series data, as long as the data frame has `date` or `time` at regular intervals, as well as the variable you want to plot.
+You can visualize time series data using the `visualize_time_series()` function. You can specify the variable you want to plot, which needs to be a column in the supplies data frame, and the corresponding y-axis label. The optional `facet_var` parameter allows you to specify the variable you want to use for faceting the plot (e.g., site, group, or id). The `smooth` parameter allows you to specify whether you want to smooth the time series data or not. If `smooth = TRUE`, the function will use a weighted Whittaker smoothing method to smooth and fill the time series data (see Section 4). This function is not specific to PlanetScope data and can be used with any time series data, as long as the data frame has `date` or `time` at regular intervals, as well as the variable you want to plot. Each color represents a pixel.
 ```{r}
 df_ts <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), product_type = "ts")
 visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "group", smooth = F)
@@ -220,7 +218,7 @@ df_ts_example <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Q
 df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = T)
 ```
 
-Similar to Section 3.2, you can read in cleaned time series data using the `read_data_product()` function, with `product_type = "clean"`. You can then visualize the cleaned time series data using the `visualize_time_series()` function. The cleaned time series data will have a new column `evi` that we can visualize, if you set `calculate_evi = T` in the previous step.
+Similar to Section 3.1, you can read in cleaned time series data using the `read_data_product()` function, with `product_type = "clean"`. You can then visualize the cleaned time series data using the `visualize_time_series()` function. The cleaned time series data will have a new column `evi` that we can visualize, if you set `calculate_evi = T` in the previous step.
 
 ```{r}
 df_clean <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Quercus"), product_type = "clean")
