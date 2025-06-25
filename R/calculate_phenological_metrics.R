@@ -133,7 +133,7 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
 
   # Compute a flattened trend indicator using a helper smoothing function
   if (check_seasonality) {
-    seasonal <- check_seasonality(df_index$index_sm, k = 50)
+    seasonal <- determine_seasonality(df_index$index_sm, k = 50)
   } else {
     seasonal <- T
   }
