@@ -1,26 +1,27 @@
-#' Process Index Time Series for a Specific Site
-#'
-#' Processes index time series data for a given site by iterating over the
-#' provided group identifiers. For each group, \code{process_group_index_ts()} is called
-#' to load the clean data. The results are returned as a named list, with group names as keys.
-#'
-#' @param dir Character. The base directory containing satellite data.
-#' @param siteoi Character. The site identifier.
-#' @param v_group Character vector. A vector of group identifiers.
-#' @param parallel Logical. Whether to load the groups in parallel (default: FALSE).
-#'
-#' @return A named list where each element corresponds to the index time series data for a group.
-#'   Groups with no available data will have a value of \code{NULL}.
-#'
+#' Clean PlanetScope Time Series for multiple sites and groups
+#' 
+#' @param dir: Character. Base directory containing raw time series files under `ts/` subdirectory.
+#' @param v_site: Character vector, optional. Site identifiers to process; if NULL, defaults to all sites in `ts/`.
+#' @param v_group: Character vector, optional. Group identifiers to process; if NULL, defaults to all groups in filenames.
+#' @param num_cores: Integer. Number of parallel workers to use (default: 3).
+#' @param calculate_evi: Logical. If TRUE, computes Enhanced Vegetation Index (`evi`) after cleaning (default: TRUE).
+#' 
+#' @return: Invisibly returns NULL and saves cleaned time series as `.rds` files under `clean/` subdirectory within specified `dir`, prefixed `clean_`.
+#' 
 #' @examples
 #' \dontrun{
-#' result_list <- process_site_index_ts("test_data", "TestSite", c("GroupA", "GroupB"))
-#' # Access data for GroupA:
-#' df_groupA <- result_list[["GroupA"]]
+#' # Clean all time series for NEON sites A and B using 4 cores
+#' clean_planetscope_time_series_batch(
+#'   dir           = "alldata/PlanetScope/",
+#'   v_site        = c("Site1", "Site2"),
+#'   v_group       = c("Group1", "Group2"),
+#'   num_cores     = 3,
+#'   calculate_evi = TRUE
+#' )
 #' }
 #'
 #' @export
-clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NULL, num_cores, calculate_evi = T) {
+clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NULL, num_cores = 3, calculate_evi = T) {
   dir.create(file.path(dir, "clean"), showWarnings = F)
 
   v_file <- list.files(file.path(dir, "ts"), recursive = FALSE, full.names = FALSE) %>%
@@ -42,6 +43,8 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
     write_rds(df_clean, f_clean)
   }
   stopCluster(cl)
+
+  invisible(NULL)
 }
 
 #' @export

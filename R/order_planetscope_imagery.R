@@ -149,20 +149,35 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
   invisible(NULL)
 }
 
-#' Place a Satellite Order Request
+#' Place a PlanetScope Order Request
 #'
-#' Submits an order request to the remote sensing API for a given set of image IDs.
+#' Submits an order request to Planet API, with specified image IDs and tools.
 #'
-#' @param api_key Character. The API key.
-#' @param bbox A list with bounding box values.
-#' @param items Character vector. A vector of image IDs to order.
-#' @param item_name Character. The imagery item type.
-#' @param product_bundle Character. The product bundle to order.
-#' @param harmonized Logical. Whether to include harmonization (default: FALSE).
-#' @param order_name Character. A name for the order.
-#' @param mostrecent Numeric. If greater than 0, only the specified number of most recent images are ordered.
+#' @param api_key Character. Your Planet API key.
+#' @param bbox An `sf`-style bounding box (a named numeric list with `xmin,ymin,xmax,ymax`).
+#' @param items Character vector. Planet image IDs to include in this order.
+#' @param item_name Character. Item type (e.g. "PSScene").
+#' @param product_bundle Character. Product bundle (e.g. "analytic_sr_udm2").
+#' @param harmonized Logical. If `TRUE`, applies harmonization tool in the order.
+#' @param order_name Character. A unique name for this order.
+#' @param mostrecent Integer. If >0, only the most recent N images are ordered (default: 0 = all).
 #'
-#' @return Character. The order ID if successful.
+#' @return Character. The ID of the order.
+#'
+#' @examples
+#' \dontrun{
+#' # Order just the 10 most recent images in `ids`
+#' order_id <- order_planetscope_imagery(
+#'   api_key        = set_api_key(),
+#'   bbox           = set_bbox(df_coordinates, "SJER"),
+#'   items          = ids,
+#'   item_name      = "PSScene",
+#'   product_bundle = "analytic_sr_udm2",
+#'   harmonized     = TRUE,
+#'   order_name     = "SJER_20240501_20240531",
+#'   mostrecent     = 0
+#' )
+#' }
 #'
 #' @export
 order_planetscope_imagery <- function(api_key,

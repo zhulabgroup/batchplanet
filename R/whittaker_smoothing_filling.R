@@ -4,10 +4,12 @@
 #' placeholder values (-9999) by interpolating over short gaps.
 #'
 #' @param x Numeric vector. The time series signal to be smoothed.
-#' @param maxgap Numeric. Maximum number of consecutive NAs to interpolate (default: Inf).
 #' @param lambda Numeric. Smoothing parameter; larger values result in a smoother output.
+#' @param maxgap Numeric. Maximum number of consecutive NAs to interpolate (default: Inf).
 #' @param minseg Numeric. Minimum segment length for smoothing (default: 2).
+#'
 #' @return A numeric vector containing the smoothed signal.
+#'
 #' @examples
 #' \dontrun{
 #' df <- data.frame(doy = 1:365, evi = sin((1:365) / 365 * pi))
@@ -18,6 +20,7 @@
 #' ggplot(df, aes(x = doy, y = evi_sm)) +
 #'   geom_line(col = "blue")
 #' }
+#'
 #' @export
 whittaker_smoothing_filling <- function(x, lambda, maxgap = Inf, minseg = 2) {
   # Replace short gaps with a placeholder (-9999)

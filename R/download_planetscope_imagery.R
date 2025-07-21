@@ -92,16 +92,25 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, sett
 
 #' Download a Satellite Order
 #'
-#' Retrieves the order details from the remote sensing API and downloads all associated items.
-#' The function waits until the order is ready (state = 'success') before downloading.
+#' Retrieves the order details from the Planet Orders API, waits until API returns a success status for the order, 
+#' then downloads items in the order into specified `exportfolder`.
 #'
-#' @param order_id Character. The order ID.
-#' @param order_name Character. The folder name in which to save the downloaded files.
-#' @param api_key Character. The API key.
-#' @param order_num Numeric. Identifier for the order used for logging.
-#' @param overwrite_opt Logical. Whether to overwrite existing files (default: FALSE).
+#' @param order_id Character. The PlanetScope order ID.
+#' @param exportfolder Character. Directory in which to save downloaded files (created if needed).
+#' @param api_key Character. Your Planet API key.
+#' @param overwrite Logical. If `TRUE`, existing files will be overwritten (default: `FALSE`).
 #'
-#' @return Invisibly returns NULL after downloading the files.
+#' @return Invisibly returns `NULL` and writes all imagery files to the specified `exportfolder`.
+#'
+#' @examples
+#' \dontrun{
+#' download_planetscope_imagery(
+#'   order_id     = "abc123-order-id",
+#'   exportfolder = "data/raw/SJER/SJER_202405_121_151",
+#'   api_key      = set_api_key(),
+#'   overwrite    = TRUE
+#' )
+#' }
 #'
 #' @export
 download_planetscope_imagery <- function(order_id, exportfolder, api_key, overwrite = FALSE) {

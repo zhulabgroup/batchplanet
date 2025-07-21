@@ -1,16 +1,29 @@
-#' Visualize Multi-Band Raster Data
+#' True-Color Raster Visualization
 #'
-#' Creates an RGB composite visualization of a multi-band raster.
+#' Reads a multi-band raster, converts the red, green, and blue bands to normalized RGB values,
+#' and creates a \pkg{ggplot2} tile plot of the true-color composite. Optionally overlays
+#' point locations from `df_coordinates`.
 #'
-#' @param path Character. Path to the raster file.
-#' @param crop_shape Optional. An `sf` or `SpatVector` object to crop the raster.
-#' @param brightness Numeric. Brightness multiplier (default: 1).
-#' @param bands Character vector. Names of the RGB bands (default: c("red", "green", "blue")).
-#' @param save_plot Logical. If TRUE, saves the plot.
-#' @param plot_path Character. Directory in which to save the plot (default: "plots").
-#' @param color_palette Character. The palette option for styling (default: "colorblind").
+#' @param file Character. Path to a multi-band raster file (e.g., PlanetScope SR clip).
+#' @param df_coordinates Optional data frame. Point locations to overlay; must contain `lon`, `lat`, and `site`. Default: `NULL`.
+#' @param brightness Numeric. Brightness multiplier for RGB values (default: 5).
 #'
-#' @return A ggplot object displaying the RGB composite.
+#' @return A \pkg{ggplot2} object.
+#'
+#' @examples
+#' \dontrun{
+#' # True-color display
+#' p <- visualize_true_color_imagery("raw/SJER/20240501_SR_harmonized_clip.tif")
+#'
+#' # With point overlay
+#' df_pts <- read.csv("points.csv")
+#' visualize_true_color_imagery(
+#'   file           = "raw/SJER/20240501_SR_harmonized_clip.tif",
+#'   df_coordinates = df_pts,
+#'   brightness     = 3
+#' )
+#' }
+#'
 #' @export
 visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness = 5) {
   ras <- terra::rast(file) %>%

@@ -96,9 +96,7 @@ retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, site
 #' applies scaling to the spectral bands, and returns a combined data frame.
 #'
 #' @param dir Character. Base directory for satellite data.
-#' @param siteoi Character. Site identifier.
 #' @param sf_coordinates sf object. Spatial points corresponding to the site's coordinates.
-#' @param v_id Character vector. Unique IDs for the spatial points.
 #'
 #' @return A data frame containing the combined satellite data.
 #'

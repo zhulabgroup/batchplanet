@@ -1,30 +1,31 @@
-#' Search for Satellite Imagery
+#' Search for available PlanetScope Imagery
 #'
-#' Queries a remote sensing API for imagery overlapping a given bounding box and meeting
-#' specified filtering criteria. Returns a vector of image IDs for which the user has
-#' download permission.
+#' Queries the Planet API for imagery overlapping the specified bounding box
+#' and date range, then filters results by cloud cover, ground control, and quality.
+#' Returns only IDs for which you have download permission.
 #'
-#' @param bbox List. A list with \code{xmin}, \code{ymin}, \code{xmax}, and \code{ymax}.
-#' @param date_end Character. End date ("YYYY-MM-DD") for the search.
-#' @param date_start Character. Start date ("YYYY-MM-DD") for the search.
-#' @param cloud_lim Numeric. Maximum allowed cloud cover (default: 0.1).
-#' @param ground_control Logical. Whether ground control is required (default: TRUE).
-#' @param quality Character. Quality filter (default: "standard").
-#' @param item_name Character. Imagery item type (default: "PSScene").
-#' @param asset Character. Asset type (default: "ortho_analytic_4b_sr").
-#' @param api_key Character. The API key.
-#' @param list_dates Optional vector of dates for filtering.
+#' @param api_key Character. Your Planet API key.
+#' @param bbox Named numeric list with `xmin`, `ymin`, `xmax`, `ymax` defining the search area.
+#' @param date_start Character. Start date ("YYYY-MM-DD") for the search (inclusive).
+#' @param date_end Character. End date ("YYYY-MM-DD") for the search (inclusive).
+#' @param item_name Character. Planet item type to search (default: "PSScene").
+#' @param asset Character. Asset type to filter permissions (default: "ortho_analytic_4b_sr").
+#' @param cloud_lim Numeric. Maximum allowed cloud cover fraction (0–1, default: 0.1).
+#' @param ground_control Logical. If `TRUE`, require ground control metadata (default: `TRUE`).
+#' @param quality Character. Quality category filter (default: "standard").
 #'
-#' @return A character vector of image IDs with download permission, or \code{NULL} if none found.
+#' @return Character vector of image IDs with download permission. Returns `NULL` invisibly if none are found.
 #'
 #' @examples
 #' \dontrun{
-#' bbox <- list(xmin = -77.05, ymin = 38.80, xmax = -76.90, ymax = 39.00)
-#' image_ids <- search_satellite_imagery(
-#'   bbox = bbox,
-#'   date_start = "2023-06-01",
-#'   date_end = "2023-06-30",
-#'   api_key = "YOUR_API_KEY"
+#' my_bbox <- list(xmin = -77.05, ymin = 38.80, xmax = -76.90, ymax = 39.00)
+#' ids <- search_planetscope_imagery(
+#'   api_key        = set_api_key(),
+#'   bbox           = my_bbox,
+#'   date_start     = "2023-06-01",
+#'   date_end       = "2023-06-30",
+#'   cloud_lim      = 0.2,
+#'   ground_control = TRUE
 #' )
 #' }
 #'
@@ -66,7 +67,7 @@ search_planetscope_imagery <- function(api_key,
   # Fetch download permissions from all pages of results
   images <- extract_imagery_id(res, api_key, asset)
 
-  invisible(images)
+  return(images)
 }
 
 build_geojson_from_bbox <- function(bbox) {

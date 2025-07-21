@@ -1,17 +1,35 @@
-#' Visualize Time Series
+#' Visualize Time Series Interactively
 #'
-#' Creates a customizable time series plot with improved labeling and annotations.
+#' Generates an interactive \pkg{plotly} time series plot from `df_ts`, optionally adding
+#' phenological events from `df_doy`. Points are colored by column `id`, and you can facet
+#' by any grouping variable with the argument `facet_var`.
 #'
-#' @param df_ts Data frame containing time series data.
-#' @param df_doy Data frame containing phenological metrics (optional).
-#' @param var Character. Column name for the variable to plot (default: "value").
-#' @param ylab Character. Label for the Y-axis.
-#' @param smooth Logical. Whether to apply loess smoothing (default: FALSE).
-#' @param lambda Numeric. Parameter controls the smoothness of the output (default: 50).
-#' @param color_palette Character. A color-blind friendly palette option (default: "viridis").
-#' @param facet_var Optional. Column name for faceting.
+#' @param df_ts Data frame. Must contain either a `time` (POSIX) or `date` (Date) column, an `id` column, and the variable to plot.
+#' @param df_doy Optional data frame. Time of phenological events with columns `year` and `doy`. Default: `NULL`.
+#' @param var Character. Name of the column in `df_ts` to plot (default: "value").
+#' @param ylab Character. Label for the y-axis (default: "Value").
+#' @param smooth Logical. If `TRUE`, applies gap-filling and smoothing to data points with Whittaker smoothing (default: `FALSE`).
+#' @param lambda Numeric. Smoothing parameter for Whittaker smoothing (default: 50).
+#' @param facet_var Character or `NULL`. Column name in `df_ts` and `df_doy` to facet by (e.g., "site" or "id").
+#' @param color_palette Character. Name of a \pkg{viridis} palette for line colors (default: "viridis").
 #'
-#' @return A ggplot object.
+#' @return An interactive \pkg{plotly} object.
+#'
+#' @examples
+#' \dontrun{
+#' df_doy <- readRDS("alldata/PSdata/doy/doy_SJER_allGroup.rds")
+#' visualize_time_series(
+#'   df_ts          = df_myts,
+#'   df_doy         = df_doy,
+#'   var            = "value",
+#'   ylab           = "Value",
+#'   smooth         = TRUE,
+#'   lambda         = 100,
+#'   facet_var      = "id",
+#'   color_palette  = "magma"
+#' )
+#' }
+#'
 #' @export
 visualize_time_series <- function(df_ts,
                                   df_doy = NULL,
