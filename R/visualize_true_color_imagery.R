@@ -1,63 +1,17 @@
-#' True-Color Raster Visualization
+#' Launch a Shiny App to Visualize True-Color Imagery
 #'
-#' Reads a multi-band raster, converts the red, green, and blue bands to normalized RGB values,
-#' and creates a \pkg{ggplot2} tile plot of the true-color composite. Optionally overlays
-#' point locations from `df_coordinates`.
+#' Starts an interactive Shiny app for browsing and visualizing true-color PlanetScope imagery in a directory.
 #'
-#' @param file Character. Path to a multi-band raster file (e.g., PlanetScope SR clip).
+#' @param dir Character. Base directory containing raw imagery (expects a `raw/` subdirectory).
 #' @param df_coordinates Optional data frame. Point locations to overlay; must contain `lon`, `lat`, and `site`. Default: `NULL`.
-#' @param brightness Numeric. Brightness multiplier for RGB values (default: 5).
 #'
-#' @return A \pkg{ggplot2} object.
+#' @return None. Launches a Shiny app in the default web browser.
 #'
 #' @examples
 #' \dontrun{
-#' # True-color display
-#' p <- visualize_true_color_imagery("raw/SJER/20240501_SR_harmonized_clip.tif")
-#'
-#' # With point overlay
-#' df_pts <- read.csv("points.csv")
-#' visualize_true_color_imagery(
-#'   file           = "raw/SJER/20240501_SR_harmonized_clip.tif",
-#'   df_coordinates = df_pts,
-#'   brightness     = 3
-#' )
+#' visualize_true_color_imagery_batch(dir = "alldata/PSdata/", df_coordinates = df_coordinates)
 #' }
 #'
-#' @export
-visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness = 5) {
-  ras <- terra::rast(file) %>%
-    terra::project("EPSG:4326")
-
-  df_ras <- ras %>%
-    as.data.frame(xy = T) %>%
-    as_tibble() %>%
-    select(
-      b = blue,
-      g = green,
-      r = red,
-      x,
-      y
-    ) %>%
-    mutate(across(c(r, g, b), ~ . * 0.0001 * brightness)) %>%
-    mutate(across(c(r, g, b), ~ pmax(., 0))) %>%
-    mutate(across(c(r, g, b), ~ pmin(., 1))) %>%
-    mutate(rgb = rgb(r, g, b, maxColorValue = 1))
-
-  p <- ggplot(df_ras) +
-    geom_tile(aes(x = x, y = y, fill = rgb)) +
-    scale_fill_identity() +
-    labs(x = "Longitude", y = "Latitude") +
-    theme_minimal()
-
-  if (!is.null(df_coordinates)) {
-    p <- p +
-      geom_point(data = df_coordinates, aes(x = lon, y = lat), pch = 1, alpha = 0.8, color = "yellow")
-  }
-
-  return(p)
-}
-
 #' @export
 visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL) {
   library(shiny)
@@ -160,4 +114,57 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL) {
   }
 
   shinyApp(ui, server)
+}
+
+#' Visualize true-color raster imagery
+#'
+#' Reads a multi-band raster, converts the red, green, and blue bands to normalized RGB values, and creates a ggplot2 tile plot of the true-color composite. Optionally overlays point locations.
+#'
+#' @param file Character. Path to a multi-band raster file (e.g., PlanetScope SR clip).
+#' @param df_coordinates Optional data frame. Point locations to overlay; must contain `lon`, `lat`, and `site`. Default: `NULL`.
+#' @param brightness Numeric. Brightness multiplier for RGB values (default: 5).
+#'
+#' @return A ggplot2 object.
+#'
+#' @examples
+#' \dontrun{
+#' visualize_true_color_imagery(
+#'   file = "raw/SJER/20240501_SR_harmonized_clip.tif",
+#'   df_coordinates = df_coordinates_SJER,
+#'   brightness = 3
+#' )
+#' }
+#'
+#' @export
+visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness = 5) {
+  ras <- terra::rast(file) %>%
+    terra::project("EPSG:4326")
+
+  df_ras <- ras %>%
+    as.data.frame(xy = T) %>%
+    as_tibble() %>%
+    select(
+      b = blue,
+      g = green,
+      r = red,
+      x,
+      y
+    ) %>%
+    mutate(across(c(r, g, b), ~ . * 0.0001 * brightness)) %>%
+    mutate(across(c(r, g, b), ~ pmax(., 0))) %>%
+    mutate(across(c(r, g, b), ~ pmin(., 1))) %>%
+    mutate(rgb = rgb(r, g, b, maxColorValue = 1))
+
+  p <- ggplot(df_ras) +
+    geom_tile(aes(x = x, y = y, fill = rgb)) +
+    scale_fill_identity() +
+    labs(x = "Longitude", y = "Latitude") +
+    theme_minimal()
+
+  if (!is.null(df_coordinates)) {
+    p <- p +
+      geom_point(data = df_coordinates, aes(x = lon, y = lat), pch = 1, alpha = 0.8, color = "yellow")
+  }
+
+  return(p)
 }

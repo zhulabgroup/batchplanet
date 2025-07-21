@@ -1,21 +1,26 @@
 #' Set PlanetScope API Parameters
 #'
 #' Constructs a named list of parameters required for interacting with the PlanetScope API.
-#' This includes API authentication, cloud coverage limits, product details, and whether to harmonize data.
 #'
 #' @param api_key Character. API key for authentication.
+#' @param item_name Character. Name of the satellite data product (default: `"PSScene"`).
+#' @param asset Character. Type of asset to retrieve (default: `"ortho_analytic_4b_sr"`).
+#' @param product_bundle Character. Product bundle selection (default: `"analytic_sr_udm2"`).
 #' @param cloud_lim Numeric. Cloud coverage limit (between 0 and 1, default: 1).
-#' @param item_name Character. Name of the satellite data product (default: "PSScene").
-#' @param asset Character. Type of asset to retrieve (default: "ortho_analytic_4b_sr").
-#' @param product_bundle Character. Product bundle selection (default: "analytic_sr_udm2").
-#' @param harmonized Logical. Indicates whether to harmonize data (default: TRUE).
+#' @param harmonized Logical. Indicates whether to use the Planset API tool to harmonize data (default: `TRUE`).
 #'
 #' @return A named list containing the PlanetScope API parameters.
 #'
 #' @examples
 #' \dontrun{
-#' params <- set_ps(api_key = "YOUR_API_KEY")
-#' # Use the params list in subsequent API requests.
+#' setting <- set_planetscope_parameters(
+#'   api_key = set_api_key(),
+#'   item_name = "PSScene",
+#'   asset = "ortho_analytic_4b_sr",
+#'   product_bundle = "analytic_sr_udm2",
+#'   cloud_lim = 1,
+#'   harmonized = TRUE
+#' )
 #' }
 #'
 #' @export
@@ -64,6 +69,20 @@ set_planetscope_parameters <- function(api_key,
   return(params)
 }
 
+#' Set or change the Planet API key
+#'
+#' Prompts the user to enter a Planet API key and saves it in a hidden `.env` file in the working directory.
+#'
+#' @param change_key Logical. If `TRUE`, prompts for a new API key even if one already exists (default: `FALSE`).
+#'
+#' @return Invisibly returns the API key.
+#'
+#' @examples
+#' \dontrun{
+#' set_api_key()         # Set the API key for the first time
+#' set_api_key(change_key = TRUE)     # Change the API key
+#' }
+#'
 #' @export
 set_api_key <- function(change_key = F) {
   # Create .env file if it doesn't exist
@@ -91,6 +110,20 @@ set_api_key <- function(change_key = F) {
   invisible(key)
 }
 
+#' Set or change the data directory
+#'
+#' Prompts the user to enter a path to the data directory and saves it in a hidden `.env` file in the working directory.
+#'
+#' @param change_directory Logical. If `TRUE`, prompts for a new directory even if one already exists (default: `FALSE`).
+#'
+#' @return Character. The path to the data directory.
+#'
+#' @examples
+#' \dontrun{
+#' set_data_directory()         # Set the data directory for the first time
+#' set_data_directory(change_directory = TRUE)     # Change the data directory
+#' }
+#'
 #' @export
 set_data_directory <- function(change_directory = F) {
   # Create .env file if it doesn't exist

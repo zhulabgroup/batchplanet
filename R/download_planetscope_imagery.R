@@ -1,21 +1,26 @@
-#' Download Satellite Batch Data
+#' Download PlanetScope imagery for multiple sites and years
 #'
-#' Iterates through specified sites and years, reads order information,
-#' and downloads satellite imagery for each order.
+#' Downloads all ordered PlanetScope imagery for specified sites and years. The function will wait until the order is successfully processed by Planet API, and then download the files.
 #'
-#' @param dir Character. Base directory containing the raw satellite data.
-#' @param v_site Optional character vector. Site names to filter. If NULL, all available
-#'               sites in \code{dir/raw/} are used.
-#' @param setting List. Contains API settings including the API key (i.e., \code{setting$api_key}).
+#' @param dir Character. Base directory where the raw satellite data will be stored, expects a `raw/` subdirectory.
+#' @param v_site Character vector, optional. Site names to filter; if `NULL`, all sites are used.
+#' @param setting List. Contains API settings including the API key (i.e., `setting$api_key`).
 #' @param v_year Numeric vector. Years for which to download data. Default is from 2017 to the current year.
-#' @param download_fn Function. Function to download an individual order. Default is \code{satellite_order_download}.
+#' @param num_cores Integer. Number of parallel workers to use (default: 12).
+#' @param overwrite Logical. If `TRUE`, existing files will be overwritten (default: `FALSE`).
 #'
-#' @return Invisibly returns NULL after downloading the order data.
+#' @return Invisibly returns `NULL` and saves downloaded imagery to the `raw/` subdirectory of the specified `dir`.
 #'
 #' @examples
 #' \dontrun{
-#' settings <- list(api_key = "YOUR_API_KEY")
-#' down_satellite_batch("data/", v_site = c("SiteA", "SiteB"), setting = settings, v_year = 2017:2024)
+#' download_planetscope_imagery_batch(
+#'   dir = "alldata/PSdata/",
+#'   v_site = c("HARV", "SJER"),
+#'   v_year = 2025,
+#'   setting = setting,
+#'   num_cores = 3,
+#'   overwrite = FALSE
+#' )
 #' }
 #'
 #' @export
@@ -33,8 +38,8 @@ download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017
     for (yearoi in v_year) {
       download_planetscope_imagery_siteyear(dir_site, siteoi, yearoi, setting, num_cores, overwrite)
     }
-    invisible(NULL)
   }
+  invisible(NULL)
 }
 
 download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, setting, num_cores, overwrite) {
@@ -90,10 +95,9 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, sett
   }
 }
 
-#' Download a Satellite Order
+#' Download a PlanetScope order
 #'
-#' Retrieves the order details from the Planet Orders API, waits until API returns a success status for the order, 
-#' then downloads items in the order into specified `exportfolder`.
+#' Downloads all files for a given PlanetScope order ID, saving them to the specified folder. The function will wait until the order is successfully processed by Planet API.
 #'
 #' @param order_id Character. The PlanetScope order ID.
 #' @param exportfolder Character. Directory in which to save downloaded files (created if needed).
@@ -105,10 +109,10 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, sett
 #' @examples
 #' \dontrun{
 #' download_planetscope_imagery(
-#'   order_id     = "abc123-order-id",
+#'   order_id = "abc123-order-id",
 #'   exportfolder = "data/raw/SJER/SJER_202405_121_151",
-#'   api_key      = set_api_key(),
-#'   overwrite    = TRUE
+#'   api_key = set_api_key(),
+#'   overwrite = TRUE
 #' )
 #' }
 #'

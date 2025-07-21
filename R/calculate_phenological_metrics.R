@@ -1,38 +1,37 @@
-#' Calculate Phenological Metrics for Time Series from multiple sites and groups
+#' Calculate phenological metrics for time series from multiple sites and groups
 #'
-#' Reads remote sensing index time series files from `clean/` subdirectory within the specified `dir`,
-#' extends the time series for each site, group, and year combination to include the end of the previous year and the beginning of the next year,
-#' in order to capture early-year and late-year phenological events,
-#' then calls `calculate_phenological_metrics()` to caculate phenological metrics for time series from each site and group.
-#' Outputs are saved as `.rds` files under `doy/` subdirectory within specified `dir`, prefixed `doy_`.
+#' Reads remote sensing index time series files from the `clean/` subdirectory within the specified `dir`.
+#' For each site, group, and year combination, the function extends the time series to include the end of the previous year and the beginning of the next year (to capture early- and late-year phenological events), then calls `calculate_phenological_metrics()` to calculate phenological metrics for each time series.
+#' Results are saved as `.rds` files under the `doy/` subdirectory within `dir`, prefixed `doy_`.
 #'
-#' @param dir Character. Base directory containing remote sensing index files under `clean/` subdirectory.
+#' @param dir Character. Base directory containing remote sensing index files (expects `clean/` subdirectory).
 #' @param v_site Character vector, optional. Site identifiers to process; if `NULL`, all sites are included.
 #' @param v_group Character vector, optional. Group identifiers to process; if `NULL`, all groups are included.
-#' @param df_thres Data frame of thresholds as from `set_thresholds()`; if `NULL`, uses default thresholds.
-#' @param var_index Character. Name of the index column in `df_index` to analyze (default: "evi").
+#' @param df_thres Data frame of thresholds as from [set_thresholds()]; if `NULL`, uses default thresholds.
+#' @param var_index Character. Name of the remote sensing index column in the input data frame `df_index` to analyze (default: "evi").
 #' @param min_days Numeric. Minimum required number of non-NA data points in one year (default: 80).
 #' @param check_seasonality Logical. If `TRUE`, tests for significant seasonal changes before calculating phenological metrics (default: `TRUE`).
-#' @param extend_to_previous_year Integer. Day of year to extend backward to, in order to capture early-year phenological events (default: 275).
-#' @param extend_to_next_year Integer. Day of year to extend to, in order to capture late-year phenological events (default: 90).
+#' @param extend_to_previous_year Integer. Day of year to extend backward to, to capture early-year events (default: 275).
+#' @param extend_to_next_year Integer. Day of year to extend forward to, to capture late-year events (default: 90).
 #' @param num_cores Integer. Number of parallel workers for processing (default: 3).
 #'
-#' @return Invisibly returns `NULL` and saves calculated phenological metrics as `.rds` files into `doy/` subdirectory within specified `dir`.
+#' @return Invisibly returns `NULL` and saves calculated phenological metrics as `.rds` files in the `doy/` subdirectory of `dir`.
 #'
 #' @examples
 #' \dontrun{
-#' # Batch compute DOY metrics for NEON sites using 4 cores
+#' # Example: Calculate phenological metrics for two sites and two groups
+#' df_thres <- set_thresholds(thres_up = c(0.3, 0.5))
 #' calculate_phenological_metrics_batch(
-#'   dir                     = "alldata/PSdata/",
-#'   v_site                  = c("Site1","Site2"),
-#'   v_group                 = c("Group1","Group2"),
-#'   df_thres                = set_thresholds(thres_up = c(0.3,0.5)),
-#'   var_index               = "evi",
-#'   min_days                = 80,
-#'   check_seasonality       = TRUE,
+#'   dir = "alldata/PSdata/",
+#'   v_site = c("Site1", "Site2"),
+#'   v_group = c("Group1", "Group2"),
+#'   df_thres = df_thres,
+#'   var_index = "evi",
+#'   min_days = 80,
+#'   check_seasonality = TRUE,
 #'   extend_to_previous_year = 275,
-#'   extend_to_next_year     = 90,
-#'   num_cores               = 3
+#'   extend_to_next_year = 90,
+#'   num_cores = 3
 #' )
 #' }
 #'
@@ -117,13 +116,10 @@ calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, min_day
   return(df_doy)
 }
 
-#' Calculate Phenological Metrics for One Time Series
+#' Calculate phenological metrics for a single time series
 #'
-#' This function processes the remote sensing index time series for a single location in one year by gap-filling and smoothing
-#'  with Whittaker smoothing, testing for seasonality, and calculating day-of-year (DOY)
-#' when the index crosses green-up or green-down threshold(s) specified in `df_thres`.
-#' Note that the input index data series is recommended to be extended to include the end of the previous year and the beginning of the next year,
-#' in order to capture early-year and late-year phenological events.
+#' Processes a remote sensing index time series for a single location in one year by gap-filling and smoothing (using Whittaker smoothing), testing for seasonality, and calculating day-of-year (DOY) when the index crosses green-up or green-down threshold(s) specified in `df_thres`.
+#' The input time series should ideally be extended to include the end of the previous year and the beginning of the next year to capture early- and late-year events.
 #'
 #' @param df_index Data frame of remote sensing index time series at one location in one year. Must contain columns `doy` and the index of interest.
 #' @param df_thres Data frame containing candidate threshold values, with columns `direction` ("up"/"down") and `threshold` (numeric 0–1).
@@ -131,19 +127,18 @@ calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, min_day
 #' @param check_seasonality Logical. If `TRUE`, tests for significant seasonal changes before calculating phenological metrics (default: `TRUE`).
 #' @param var_index Character. Name of the index column in `df_index` to analyze (default: "evi").
 #'
-#' @return A data frame of phenological metrics (DOY) per threshold and direction, or `NULL`
-#'   if there are fewer than `min_days` valid data points or if the index does not show a seasonal pattern.
+#' @return A data frame of phenological metrics (DOY) per threshold and direction, or `NULL` if there are fewer than `min_days` valid data points or if the index does not show a seasonal pattern.
 #'
 #' @examples
 #' \dontrun{
-#' # Compute DOY metrics for one smoothed series using custom thresholds
+#' # Example: Calculate DOY metrics for a single cleaned time series
 #' df_thres <- set_thresholds(thres_up = c(0.3, 0.5), thres_down = NULL)
 #' df_metrics <- calculate_phenological_metrics(
-#'   df_index          = df_clean,
-#'   df_thres          = df_thres,
-#'   min_days          = 250,
+#'   df_index = df_clean,
+#'   df_thres = df_thres,
+#'   min_days = 80,
 #'   check_seasonality = TRUE,
-#'   var_index         = "evi"
+#'   var_index = "evi"
 #' )
 #' }
 #'
@@ -289,11 +284,9 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
   return(df_doy)
 }
 
-#' Generate Threshold Values for Phenological Events
+#' Specify thresholds for detecting phenological events
 #'
-#' Creates a data frame with candidate threshold values for both increasing
-#' and decreasing trends. Optionally, users can apply custom rules to filter the thresholds
-#' based on specific conditions (e.g., applying to specific types of data or indices).
+#' Creates a data frame with threshold values for both increasing ("up") and decreasing ("down") trends. These thresholds are used to detect phenological events in the time series.
 #'
 #' @param thres_up Numeric vector. Threshold values for increasing trends (default: seq(from = 0, to = 1, by = 0.1) %>% round(1)).
 #' @param thres_down Numeric vector. Threshold values for decreasing trends (default: seq(from = 1, to = 0, by = -0.1) %>% round(1)).
@@ -307,7 +300,7 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
 #' default_thres <- set_thresholds()
 #'
 #' # Get thresholds with custom rule
-#' custom_thres <- set_thresholds(thres_up = c(0.3,0.5), thres_down = NULL)
+#' custom_thres <- set_thresholds(thres_up = c(0.3, 0.5), thres_down = NULL)
 #'
 #' @export
 set_thresholds <- function(thres_up = seq(from = 0, to = 1, by = 0.1) %>% round(1),

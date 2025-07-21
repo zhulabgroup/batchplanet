@@ -1,32 +1,30 @@
-#' Visualize Time Series Interactively
+#' Visualize time series interactively
 #'
-#' Generates an interactive \pkg{plotly} time series plot from `df_ts`, optionally adding
-#' phenological events from `df_doy`. Points are colored by column `id`, and you can facet
-#' by any grouping variable with the argument `facet_var`.
+#' Generates an interactive plotly time series plot from a data frame, optionally overlaying phenological events.
 #'
 #' @param df_ts Data frame. Must contain either a `time` (POSIX) or `date` (Date) column, an `id` column, and the variable to plot.
 #' @param df_doy Optional data frame. Time of phenological events with columns `year` and `doy`. Default: `NULL`.
-#' @param var Character. Name of the column in `df_ts` to plot (default: "value").
-#' @param ylab Character. Label for the y-axis (default: "Value").
+#' @param var Character. Name of the column in `df_ts` to plot (default: `"value"`).
+#' @param ylab Character. Label for the y-axis (default: `"Value"`).
 #' @param smooth Logical. If `TRUE`, applies gap-filling and smoothing to data points with Whittaker smoothing (default: `FALSE`).
 #' @param lambda Numeric. Smoothing parameter for Whittaker smoothing (default: 50).
-#' @param facet_var Character or `NULL`. Column name in `df_ts` and `df_doy` to facet by (e.g., "site" or "id").
-#' @param color_palette Character. Name of a \pkg{viridis} palette for line colors (default: "viridis").
+#' @param facet_var Character or `NULL`. Column name in `df_ts` and `df_doy` to facet by (e.g., `"site"` or `"id"`).
+#' @param color_palette Character. Name of a viridis palette for line colors (default: `"viridis"`).
 #'
-#' @return An interactive \pkg{plotly} object.
+#' @return An interactive plotly object.
 #'
 #' @examples
 #' \dontrun{
-#' df_doy <- readRDS("alldata/PSdata/doy/doy_SJER_allGroup.rds")
+#' # Example: Visualize a time series with phenological events
 #' visualize_time_series(
-#'   df_ts          = df_myts,
-#'   df_doy         = df_doy,
-#'   var            = "value",
-#'   ylab           = "Value",
-#'   smooth         = TRUE,
-#'   lambda         = 100,
-#'   facet_var      = "id",
-#'   color_palette  = "magma"
+#'   df_ts = df_ts,
+#'   df_doy = df_doy,
+#'   var = "value",
+#'   ylab = "Value",
+#'   smooth = TRUE,
+#'   lambda = 50,
+#'   facet_var = "id",
+#'   color_palette = "viridis"
 #' )
 #' }
 #'
@@ -112,13 +110,18 @@ visualize_time_series <- function(df_ts,
   g
 }
 
-#' Visualize Coordinates from a Dataframe
+#' Visualize coordinates from a data frame
 #'
 #' Creates a scatter plot of coordinate data.
-#'
 #' @param df_coordinates Data frame containing longitude and latitude columns.
 #'
 #' @return A ggplot object displaying the coordinate points.
+#'
+#' @examples
+#' \dontrun{
+#' visualize_coordinates(df_coordinates)
+#' }
+#'
 #' @export
 visualize_coordinates <- function(df_coordinates) {
   # Validate required columns

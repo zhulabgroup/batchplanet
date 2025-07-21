@@ -1,25 +1,25 @@
-#' Batch Order Satellite Imagery
+#' Order PlanetScope imagery for multiple sites and years
 #'
-#' Initiates the ordering process for satellite imagery for a set of locations.
-#' For each site (optionally provided or extracted from \code{df_locations}) and each year,
-#' the function processes orders by calling site- and year-specific routines.
+#' Orders PlanetScope imagery for all sites and years specified in a coordinate data frame.
+#' Saves order IDs and metadata for each site and year.
 #'
-#' @param dir Character. Base directory for saving orders.
-#' @param df_locations Data frame containing location records with latitude and longitude.
-#' @param v_site Optional character vector. Site names to process. If NULL, all unique sites in \code{df_locations} are used.
-#' @param setting List. API settings including API key, item name, asset type, cloud limit, product bundle, and harmonized flag.
+#' @param dir Character. Base directory for saving orders, expects a `raw/` subdirectory.
+#' @param df_coordinates Data frame of coordinates of interest with columns `site`, `lon`, `lat`, and `id`.
+#' @param v_site Character vector, optional. Site names to process; if `NULL`, all unique sites in `df_coordinates` are used.
 #' @param v_year Numeric vector. Years to process (default: 2017 to current year).
+#' @param setting List. API settings including API key, item name, asset type, cloud limit, product bundle, and harmonized flag.
 #'
-#' @return Invisibly returns NULL.
+#' @return Invisibly returns `NULL` and writes order metadata as `.rds` files under `orders/` subdirectory of specified `dir`.
 #'
 #' @examples
 #' \dontrun{
-#' df_locations <- read.csv("locations.csv")
-#' settings <- list(
-#'   api_key = "YOUR_API_KEY", item_name = "PSScene", asset = "ortho_analytic_4b_sr",
-#'   cloud_lim = 0.1, product_bundle = "analytic_sr_udm2", harmonized = TRUE
+#' order_planetscope_imagery_batch(
+#'   dir = "alldata/PSdata/",
+#'   df_coordinates = df_coordinates,
+#'   v_site = c("HARV", "SJER"),
+#'   v_year = 2025,
+#'   setting = setting
 #' )
-#' order_satellite_batch("orders_dir/", df_locations, setting = settings)
 #' }
 #'
 #' @export
@@ -149,15 +149,15 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
   invisible(NULL)
 }
 
-#' Place a PlanetScope Order Request
+#' Place a PlanetScope order
 #'
-#' Submits an order request to Planet API, with specified image IDs and tools.
+#' Submits an order to Planet API, with specified image IDs and tools.
 #'
 #' @param api_key Character. Your Planet API key.
 #' @param bbox An `sf`-style bounding box (a named numeric list with `xmin,ymin,xmax,ymax`).
 #' @param items Character vector. Planet image IDs to include in this order.
-#' @param item_name Character. Item type (e.g. "PSScene").
-#' @param product_bundle Character. Product bundle (e.g. "analytic_sr_udm2").
+#' @param item_name Character. Item type (e.g. `"PSScene"`).
+#' @param product_bundle Character. Product bundle (e.g. `"analytic_sr_udm2"`).
 #' @param harmonized Logical. If `TRUE`, applies harmonization tool in the order.
 #' @param order_name Character. A unique name for this order.
 #' @param mostrecent Integer. If >0, only the most recent N images are ordered (default: 0 = all).
@@ -166,16 +166,15 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
 #'
 #' @examples
 #' \dontrun{
-#' # Order just the 10 most recent images in `ids`
 #' order_id <- order_planetscope_imagery(
-#'   api_key        = set_api_key(),
-#'   bbox           = set_bbox(df_coordinates, "SJER"),
-#'   items          = ids,
-#'   item_name      = "PSScene",
+#'   api_key = set_api_key(),
+#'   bbox = set_bbox(df_coordinates, "SJER"),
+#'   items = ids,
+#'   item_name = "PSScene",
 #'   product_bundle = "analytic_sr_udm2",
-#'   harmonized     = TRUE,
-#'   order_name     = "SJER_20240501_20240531",
-#'   mostrecent     = 0
+#'   harmonized = TRUE,
+#'   order_name = "SJER_20240501_20240531",
+#'   mostrecent = 0
 #' )
 #' }
 #'

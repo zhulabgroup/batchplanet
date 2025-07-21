@@ -1,23 +1,27 @@
-#' Evaluate Flatness of a Time Series Using AIC-based Model Selection
+#' Test for seasonality in a time series Using AIC-based model selection
 #'
-#' This function fits a simple linear regression model and segmented regression
-#' models with 1 to 3 breakpoints to a given time series. It then compares their
-#' Akaike Information Criterion (AIC) values (with a penalty parameter k) to assess
-#' whether a straight-line (i.e., non-segmented) model is preferred. A return value
-#' of TRUE indicates that the simple linear model is the best fit.
+#' Fits a simple linear regression model and segmented regression models (with 1 to 3 breakpoints) to a numeric time series.
+#' Compares their Akaike Information Criterion (AIC) values, with a penalty parameter `k`, to determine if the time series is best described as flat (no seasonality) or as having significant seasonal changes
 #'
-#' @param ts Numeric vector. The time series signal to evaluate.
-#' @param doy Numeric vector. The day-of-year indices corresponding to the time series.
-#'   Default is 1:length(ts).
-#' @param k Numeric. Penalty parameter for the AIC calculation. Default is 50.
+#' @param ts Numeric vector. The time series signal to evaluate (e.g., EVI, NDVI, or other index).
+#' @param doy Numeric vector. The day-of-year indices corresponding to the time series. Default is `1:length(ts)`. If your `ts` is not daily, you need to provide the day-of-year indices.
+#' @param k Numeric. Penalty parameter for the AIC calculation. Higher values make the function more conservative in detecting seasonality. Default is 50.
 #'
-#' @return Logical. FALSE if the straight-line model (with no breakpoints) is preferred;
-#'   TRUE otherwise.
+#' @return Logical. Returns `TRUE` if the time series is seasonal (segmented model preferred), or `FALSE` if the time series is flat (linear model preferred).
 #'
 #' @examples
 #' \dontrun{
-#' ts <- sin(seq(0, 2 * pi, length.out = 100)) + rnorm(100, sd = 0.1)
-#' is_flat <- util_flat(ts)
+#' # Simulate a seasonal time series with noise and missing values
+#' t <- 1:365
+#' simulate_ts <- sin(2 * pi * t / 365) + rnorm(365, sd = 0.1)
+#' simulate_ts[sample(1:365, 30)] <- NA # introduce some missing data
+#' 
+#' # Test for seasonality
+#' determine_seasonality(ts = simulate_ts, k = 50)
+#'
+#' # Example with a flat (non-seasonal) time series
+#' flat_ts <- rnorm(365, mean = 0.5, sd = 0.05)
+#' determine_seasonality(ts = flat_ts)
 #' }
 #'
 #' @export

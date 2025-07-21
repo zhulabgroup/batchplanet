@@ -1,23 +1,28 @@
-#' Process Satellite Time Series Data for Spatial Points
+#' Retrieve PlanetScope time series for multiple sites and groups
 #'
-#' Processes satellite time series data for spatial points by reading, extracting,
-#' and combining reflectance, QA, and metadata information. The resulting combined
-#' time series data is saved as an RDS file.
+#' Extracts time series data from PlanetScope imagery for all points in a coordinate data frame, grouped by site and group.
+#' For each site and group, reflectance, QA, and metadata are extracted and combined
+#' Results are saved as `.rds` files under the `ts/` subdirectory of the specified `dir`, prefixed `ts_`.
 #'
-#' @param dir Character. Base directory for satellite data.
-#' @param df_coordinates Data frame containing point coordinates. Must include columns: \code{site}, \code{lon}, \code{lat}, \code{id}, and \code{group}.
-#' @param v_site Optional character vector. Site identifiers to process. If \code{NULL}, the function
-#'        extracts all available sites from \code{dir/raw/}.
-#' @param v_group Optional character vector. Group identifiers to process. Defaults to "all".
-#' @param max_sample Numeric. Maximum number of samples per group (default: 2000).
-#' @param num_cores Numeric. Number of cores for parallel processing (default: detects all available).
+#' @param dir Character. Base directory containing raw PlanetScope data (expects a `raw/` subdirectory).
+#' @param df_coordinates Data frame with columns `site`, `lon`, `lat`, `id`, and optionally `group`.
+#' @param v_site Character vector, optional. Site identifiers to process; if `NULL`, all sites in `df_coordinates` are included.
+#' @param v_group Character vector, optional. Group identifiers to process; if `NULL`, all groups in `df_coordinates` are included.
+#' @param max_sample Integer. Maximum number of samples per group (default: 2000). This is to avoid processing too many points at once, which can be slow.
+#' @param num_cores Integer. Number of parallel workers for processing (default: 12).
 #'
-#' @return Invisibly returns NULL. Side effect: creates an RDS file containing the processed satellite data.
+#' @return Invisibly returns `NULL` and saves one `.rds` file per site-group to the `ts/` subdirectory in the specified `dir`.
 #'
 #' @examples
 #' \dontrun{
-#' df_coordinates <- read.csv("points.csv")
-#' process_satellite_ts("satellite_data/", df_coordinates, v_site = c("Site1", "Site2"))
+#' retrieve_planetscope_time_series_batch(
+#'   dir = "alldata/PSdata/",
+#'   df_coordinates = df_coordinates,
+#'   v_site = c("HARV", "SJER"),
+#'   v_group = c("Acer", "Quercus"),
+#'   max_sample = 2000,
+#'   num_cores = 12
+#' )
 #' }
 #'
 #' @export
@@ -89,19 +94,28 @@ retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, site
   message("Saved processed data: ", f_ts)
 }
 
-#' Process Satellite Data (Reflectance, QA, and Metadata)
+#' Retrieve a single set of PlanetScope time series
 #'
-#' Extracts and combines satellite data for a given site.
-#' The function processes reflectance data, QA data, and metadata, merges these with point coordinate information,
-#' applies scaling to the spectral bands, and returns a combined data frame.
+#' Extracts and combines reflectance, QA, and metadata for a set of spatial points.
 #'
-#' @param dir Character. Base directory for satellite data.
-#' @param sf_coordinates sf object. Spatial points corresponding to the site's coordinates.
+#' @param dir_site Character. Path to the site-specific raw data directory.
+#' @param sf_coordinates An `sf` object with point coordinates (must have an `id` column).
+#' @param num_cores Integer. Number of parallel workers for processing (default: 12).
 #'
-#' @return A data frame containing the combined satellite data.
+#' @return Data frame with columns for point ID, coordinates, reflectance bands, QA, and metadata.
+#'
+#' @examples
+#' \dontrun{
+#' df_coordinates_example <- df_coordinates %>% filter(site == "SJER", group == "Quercus")
+#' df_ts_example <- retrieve_planetscope_time_series(
+#'   dir_site = file.path("alldata/PSdata/raw", "SJER"),
+#'   sf_coordinates = sf::st_as_sf(df_coordinates_example, coords = c("lon", "lat"), crs = 4326),
+#'   num_cores = 12
+#' )
+#' }
 #'
 #' @export
-retrieve_planetscope_time_series <- function(dir_site, sf_coordinates, num_cores) {
+retrieve_planetscope_time_series <- function(dir_site, sf_coordinates, num_cores = 12) {
   # Process reflectance data and QA data using specified patterns
   df_ps <- retrieve_raster_data(dir_site, sf_coordinates, type = "sr", num_cores)
   df_ps_qa <- retrieve_raster_data(dir_site, sf_coordinates, type = "udm", num_cores)

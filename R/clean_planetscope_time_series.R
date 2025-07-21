@@ -1,21 +1,28 @@
-#' Clean PlanetScope Time Series for multiple sites and groups
-#' 
-#' @param dir: Character. Base directory containing raw time series files under `ts/` subdirectory.
-#' @param v_site: Character vector, optional. Site identifiers to process; if NULL, defaults to all sites in `ts/`.
-#' @param v_group: Character vector, optional. Group identifiers to process; if NULL, defaults to all groups in filenames.
-#' @param num_cores: Integer. Number of parallel workers to use (default: 3).
-#' @param calculate_evi: Logical. If TRUE, computes Enhanced Vegetation Index (`evi`) after cleaning (default: TRUE).
-#' 
-#' @return: Invisibly returns NULL and saves cleaned time series as `.rds` files under `clean/` subdirectory within specified `dir`, prefixed `clean_`.
-#' 
+#' Clean PlanetScope time series for multiple sites and groups
+#'
+#' Cleans raw time series data for all sites and groups, removing low-quality data and optionally calculating EVI.
+#' Low-quality data are defined as:
+#' - The sun elevation angle is less than 0 degrees (i.e., night time images).
+#' - The reflectance values for any band are less than 0.
+#' - The pixel was cloudy, had snow, ice, shadow, haze, or cloud.
+#' - The usable data mask had algorithmic confidence in classification less than 80% for the pixel.
+#' Results are saved as `.rds` files under the `clean/` subdirectory within `dir`, prefixed `clean_`.
+#'
+#' @param dir Character. Base directory containing raw time series files (expects a `ts/` subdirectory).
+#' @param v_site Character vector, optional. Site identifiers to process; if `NULL`, all sites in `ts/` are included.
+#' @param v_group Character vector, optional. Group identifiers to process; if `NULL`, all groups in filenames are included.
+#' @param num_cores Integer. Number of parallel workers to use (default: 3).
+#' @param calculate_evi Logical. If `TRUE`, computes Enhanced Vegetation Index (`evi`) after cleaning (default: `TRUE`).
+#'
+#' @return Invisibly returns `NULL` and saves cleaned time series as `.rds` files in the `clean/` subdirectory of `dir`.
+#'
 #' @examples
 #' \dontrun{
-#' # Clean all time series for NEON sites A and B using 4 cores
 #' clean_planetscope_time_series_batch(
-#'   dir           = "alldata/PlanetScope/",
-#'   v_site        = c("Site1", "Site2"),
-#'   v_group       = c("Group1", "Group2"),
-#'   num_cores     = 3,
+#'   dir = "alldata/PSdata/",
+#'   v_site = c("HARV", "SJER"),
+#'   v_group = c("Acer", "Quercus"),
+#'   num_cores = 3,
 #'   calculate_evi = TRUE
 #' )
 #' }
@@ -47,6 +54,23 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
   invisible(NULL)
 }
 
+#' Clean a single PlanetScope time series
+#'
+#' Cleans a single time series data frame by removing low-quality data and optionally calculating EVI.
+#' Low-quality data are defined as:
+#' - The sun elevation angle is less than 0 degrees (i.e., night time images).
+#' - The reflectance values for any band are less than 0.
+#' - The pixel was cloudy, had snow, ice, shadow, haze, or cloud.
+#' - The usable data mask had algorithmic confidence in classification less than 80% for the pixel.
+#'
+#' @param df_ts Data frame. Raw time series data for a single site/group.
+#' @param calculate_evi Logical. If `TRUE`, computes Enhanced Vegetation Index (`evi`) after cleaning (default: `TRUE`).
+#'
+#' @return Data frame of cleaned time series, with EVI if requested.
+#'
+#' @examples
+#' df_clean <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = TRUE)
+#'
 #' @export
 clean_planetscope_time_series <- function(df_ts, calculate_evi) {
   df_clean <- df_ts %>%
