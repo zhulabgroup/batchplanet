@@ -23,21 +23,19 @@ Depends:
     R (>= 3.3),
     tidyverse,
     sf,
-    doSNOW,
-    parallel
+    terra
 Imports:
     dotenv,
-    jsonlite, 
-    httr,
-    zoo,
     ptw,
     imputeTS,
     segmented,
-    viridis,
-    ggspatial,
+    foreach,
+    doSNOW,
+    jsonlite,
     lubridate,
-    terra,
+    stringr,
+    httr,
+    plotly,
     shiny,
-    shinyWidgets,
-    plotly
+    shinyWidgets
 VignetteBuilder: knitr
