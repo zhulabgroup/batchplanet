@@ -11,7 +11,7 @@
 #' @param v_year Optional numeric vector. Years to process.
 #' @param v_id Optional character vector. IDs to process. If NULL, IDs are extracted from the data.
 #' @param df_thres Optional data frame of threshold values. If NULL, defaults to \code{set_thres()}.
-#' @param min_days Numeric. Minimum number of valid data points required for processing (default: 300).
+#' @param min_days Numeric. Minimum number of valid data points required for processing (default: 80).
 #' @param parallel Logical. Whether to use parallel processing (default: FALSE).
 #'
 #' @return Invisibly saves processed DOY data as RDS files and returns \code{NULL}.
@@ -27,7 +27,7 @@ calculate_phenological_metrics_batch <- function(dir,
                                                  v_group = NULL,
                                                  df_thres = NULL,
                                                  var_index = "evi",
-                                                 min_days = 300,
+                                                 min_days = 80,
                                                  check_seasonality = T,
                                                  extend_to_previous_year = 275,
                                                  extend_to_next_year = 90,
@@ -109,7 +109,7 @@ calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, min_day
 #'
 #' @param df_ts_ind Data frame of time series.
 #' @param df_thres Data frame containing candidate threshold values.
-#' @param min_days Numeric. Minimum required valid data points (default: 300).
+#' @param min_days Numeric. Minimum required valid data points in one year (default: 80).
 #'
 #' @return A data frame with DOY information for both increasing and decreasing conditions,
 #'   or \code{NULL} if insufficient valid data.
@@ -133,7 +133,7 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
 
   # Compute a flattened trend indicator using a helper smoothing function
   if (check_seasonality) {
-    seasonal <- check_seasonality(df_index$index_sm, k = 50)
+    seasonal <- determine_seasonality(df_index$index_sm, k = 50)
   } else {
     seasonal <- T
   }
