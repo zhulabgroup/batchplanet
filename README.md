@@ -48,6 +48,7 @@ To run all tests from your package root in R:
 # from within R or RStudio, with your working directory set to the package root
 devtools::test()
 ```
+***
 
 ## Example Workflow
 
@@ -55,6 +56,17 @@ For a complete example of the package in action, see **vignettes/vignette.Rmd**.
 
 ***
 
-Enjoy exploring and analyzing remote sensing data with BatchPlanet! 🚀
+## Planned Features (Coming Soon)
+
+The following features are planned for future releases of batchplanet:
+
+- **Polygon support:** Ability to use polygons (or multiple polygons) as the area of interest (AOI) for ordering, downloading, and extracting data, in addition to points.
+- **Band math and raster processing tools:** Integration with the Planet Orders API's processing tools (such as band math, clip, harmonize, reproject, tile, and more) to allow on-the-fly calculation of indices (e.g., NDVI, EVI) and other raster operations before download. See [Planet Orders API Tools documentation](https://docs.planet.com/develop/apis/orders/tools/).
+- **Option to run in series:** Ability to choose between parallel and serial (series) processing for workflows where parallelization is not desired or possible.
+- **Order and download by date range:** More flexible options to order and download imagery based on custom date ranges.
+
+Have a feature request? Please open an issue or discussion!
 
 ***
+
+Enjoy exploring and analyzing remote sensing data with BatchPlanet! 🚀
