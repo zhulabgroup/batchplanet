@@ -19,3 +19,12 @@ test_that("Sinusoidal series is seasonal", {
   result <- suppressWarnings(determine_seasonality(ts_sin))
   expect_true(result)
 })
+
+test_that("determine_seasonality handles noise and missing data", {
+  set.seed(123)
+  t <- 1:100
+  ts_seasonal <- sin(2 * pi * t / 100) + rnorm(100, sd = 0.1)
+  ts_seasonal[sample(1:100, 10)] <- NA
+  result <- suppressWarnings(determine_seasonality(ts_seasonal))
+  expect_true(result)
+})

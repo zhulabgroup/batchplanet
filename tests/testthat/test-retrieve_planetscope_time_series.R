@@ -5,34 +5,25 @@
 library(testthat)
 library(batchplanet)
 
-test_that("retrieve_planetscope_time_series_batch runs (skipped by default)", {
-  skip_on_cran()
-  skip("API/long-running test not run by default")
-  # Example (do not actually run):
-  # retrieve_planetscope_time_series_batch(dir = tempdir(), df_coordinates = data.frame())
-  expect_true(TRUE)
+test_that("retrieve_planetscope_time_series_batch works with example data", {
+  tmp <- tempdir()
+  dir.create(file.path(tmp, "raw", "SiteA"), recursive = TRUE, showWarnings = FALSE)
+  # Create a dummy .tif file (could use terra::rast() and terra::writeRaster() if terra is available)
+  # For now, just check that the function runs with the expected structure
+  df_coordinates <- data.frame(site = "SiteA", lon = 0, lat = 0, id = 1)
+  expect_error(
+    retrieve_planetscope_time_series_batch(tmp, df_coordinates, v_site = "SiteA", v_group = NULL, max_sample = 1, num_cores = 1),
+    NA
+  )
 })
 
-test_that("retrieve_planetscope_time_series runs (skipped by default)", {
-  skip_on_cran()
-  skip("API/long-running test not run by default")
-  # Example (do not actually run):
-  # retrieve_planetscope_time_series(dir_site = tempdir(), sf_coordinates = sf::st_sf())
-  expect_true(TRUE)
-})
-
-test_that("retrieve_planetscope_time_series_sitegroup runs (skipped by default)", {
-  skip_on_cran()
-  skip("API/long-running test not run by default")
-  # Example (do not actually run):
-  # retrieve_planetscope_time_series_sitegroup(dir_site = tempdir(), sf_coordinates = sf::st_sf())
-  expect_true(TRUE)
-})
-
-test_that("retrieve_raster_data runs (skipped by default)", {
-  skip_on_cran()
-  skip("API/long-running test not run by default")
-  # Example (do not actually run):
-  # retrieve_raster_data(dir_site = tempdir(), sf_coordinates = sf::st_sf(), type = "sr", num_cores = 1)
-  expect_true(TRUE)
+test_that("retrieve_planetscope_time_series works with example sf object", {
+  # Create a dummy sf object
+  df <- data.frame(id = 1, lon = 0, lat = 0)
+  sf_obj <- st_as_sf(df, coords = c("lon", "lat"), crs = 4326)
+  # Use a dummy directory (no actual rasters, just check for error handling)
+  expect_error(
+    retrieve_planetscope_time_series(tempdir(), sf_obj, num_cores = 1),
+    NA
+  )
 })

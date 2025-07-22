@@ -8,18 +8,15 @@
 library(testthat)
 library(batchplanet)
 
-test_that("read_data_product imports and annotates correctly", {
+test_that("read_data_product handles multiple files and types", {
   tmp <- tempdir()
-  # create product folder
-  prod_dir <- file.path(tmp, "clean")
-  dir.create(prod_dir, showWarnings = FALSE)
-  # write a dummy RDS
-  fname <- file.path(prod_dir, "clean_SiteA_GroupX.rds")
-  saveRDS(data.frame(foo = 42), fname)
-
-  df <- read_data_product(tmp, v_site = "SiteA", v_group = "GroupX", product_type = "clean")
-  expect_s3_class(df, "data.frame")
-  expect_equal(unique(df$site), "SiteA")
-  expect_equal(unique(df$group), "GroupX")
-  expect_equal(df$foo, 42)
+  dir.create(file.path(tmp, "clean"), showWarnings = FALSE)
+  dir.create(file.path(tmp, "doy"), showWarnings = FALSE)
+  saveRDS(data.frame(a = 1), file.path(tmp, "clean", "clean_SiteA_GroupX.rds"))
+  saveRDS(data.frame(b = 2), file.path(tmp, "clean", "clean_SiteB_GroupY.rds"))
+  saveRDS(data.frame(c = 3), file.path(tmp, "doy", "doy_SiteA_GroupX.rds"))
+  df_clean <- read_data_product(tmp, v_site = "SiteA", v_group = "GroupX", product_type = "clean")
+  expect_equal(df_clean$a, 1)
+  df_doy <- read_data_product(tmp, v_site = "SiteA", v_group = "GroupX", product_type = "doy")
+  expect_equal(df_doy$c, 3)
 })

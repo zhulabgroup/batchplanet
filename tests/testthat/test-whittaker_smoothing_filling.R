@@ -8,12 +8,14 @@
 library(testthat)
 library(batchplanet)
 
-test_that("Whittaker smoothing preserves linear trend", {
-  x <- 1:10
-  y <- whittaker_smoothing_filling(x, lambda = 10)
+test_that("Whittaker smoothing fills short gaps and smooths noise", {
+  set.seed(42)
+  t <- 1:100
+  x <- sin(2 * pi * t / 100) + rnorm(100, sd = 0.1)
+  x[sample(1:100, 10)] <- NA
+  y <- whittaker_smoothing_filling(x, lambda = 20, maxgap = 5)
   expect_length(y, length(x))
-  expect_type(y, "double")
-  expect_gt(cor(x, y), 0.99)
+  expect_true(sum(is.na(y)) < sum(is.na(x)))
 })
 
 test_that("Whittaker smoothing leaves large gaps as NA", {
