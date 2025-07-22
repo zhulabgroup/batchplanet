@@ -178,6 +178,8 @@ estimate_global_brightness <- function(raster_metadata) {
       }
     }
     global_brightness <- mean(brightness_vals, na.rm = TRUE)
+    # cap at 0.2 in case most images are still cloudy
+    global_brightness <- min(global_brightness, 0.2)
   } else {
     global_brightness <- NA
   }
