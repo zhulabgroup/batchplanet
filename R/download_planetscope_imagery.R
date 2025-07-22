@@ -18,7 +18,7 @@
 #'   dir = "alldata/PSdata/",
 #'   v_site = c("HARV", "SJER"),
 #'   v_year = 2025,
-#'   v_month = c(4,5,6),
+#'   v_month = 4:6,
 #'   setting = setting,
 #'   num_cores = 3,
 #'   overwrite = FALSE

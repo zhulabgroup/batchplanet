@@ -23,14 +23,15 @@ Depends:
     R (>= 3.3),
     tidyverse,
     sf,
-    terra
+    terra,
+    foreach,
+    doSNOW,
+    parallel
 Imports:
     dotenv,
     ptw,
     imputeTS,
     segmented,
-    foreach,
-    doSNOW,
     jsonlite,
     lubridate,
     stringr,
