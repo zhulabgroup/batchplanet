@@ -47,8 +47,8 @@ order_id <- order_planetscope_imagery(
 If you would like to customize your batch downloading process, you may use the function `download_planetscope_imagery()` to download images from a single order. You can find the order ID saved in the `raw/` folder, or you can find it in the past orders in your Planet account, if you did not use `order_planetscope_imagery_batch()` to order images.
 ```{r, eval = F}
 download_planetscope_imagery(
-  order_id = order_id,
-  exportfolder = path,
+  order_id = "dummy",
+  exportfolder = "dummy",
   api_key = setting$api_key,
   overwrite = F
 )

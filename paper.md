@@ -90,7 +90,7 @@ remotes::install_github("zhulabgroup/batchplanet")
 library(batchplanet)
 
 # Read example coordinates
-df_coordinates <- read_csv(system.file("extdata", "example_neon_coordinates.csv", package = "batchplanet"))
+df_coordinates <- read.csv(system.file("extdata/NEON/example_neon_coordinates.csv", package = "batchplanet"))
 visualize_coordinates(df_coordinates)
 ```
 
@@ -104,10 +104,10 @@ setting <- set_planetscope_parameters(
   cloud_lim = 0.3,
   harmonized = TRUE
 )
-dir_data <- set_data_directory()
+dir_data <-  system.file("extdata/NEON", package = "batchplanet")
 ```
 
-```e
+```r
 # Order and download imagery (slow process, uncomment to run)
 # order_planetscope_imagery_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_year = 2024, setting = setting)
 # download_planetscope_imagery_batch(dir = dir_data, setting = setting, num_cores = 3)
