@@ -75,6 +75,19 @@ download_planetscope_imagery(
 )
 ```
 
+## Visualize a single true color image
+
+You can visualize the true color imagery of single images using the `visualize_true_color_imagery()` function. You can overlay the coordinates from the relevant site on the imagery (optional). You can specify the brightness of the image using the `brightness` parameter.
+```{r}
+df_coordinates_SJER <- df_coordinates %>% filter(site == "SJER")
+
+visualize_true_color_imagery(
+  file = system.file("extdata", "raw/SJER/SJER_2025_60_90/20250318_190514_92_24d3_3B_AnalyticMS_SR_harmonized_clip.tif", package = "batchplanet"),
+  df_coordinates = df_coordinates_SJER,
+  brightness = 5
+)
+```
+
 ## Direct retrieval of time series for a set of coordinates
 
 If you would like to customize your time series retrieval process, you may use the function `retrieve_planetscope_time_series()` for a single folder `dir_site` and a set of coordinates you specify. 

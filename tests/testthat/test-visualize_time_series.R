@@ -19,4 +19,4 @@ test_that("visualize_coordinates runs (skipped by default)", {
   # Example (do not actually run):
   # visualize_coordinates(df_coordinates = data.frame(lon = 0, lat = 0))
   expect_true(TRUE)
-}) 
+})

@@ -25,4 +25,4 @@ test_that("set_thresholds returns a data frame with up and down directions", {
   expect_s3_class(df, "data.frame")
   expect_true(all(c("direction", "threshold") %in% names(df)))
   expect_true(all(df$direction %in% c("up", "down")))
-}) 
+})

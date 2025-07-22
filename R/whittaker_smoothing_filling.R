@@ -21,8 +21,8 @@
 #'
 #' # Smooth and fill gaps
 #' x_sm <- whittaker_smoothing_filling(x, lambda = 50, maxgap = 14, minseg = 2)
-#' plot(t, x, type = 'p', col = 'grey', main = 'Whittaker Smoothing')
-#' lines(t, x_sm, col = 'darkgreen', lwd = 2)
+#' plot(t, x, type = "p", col = "grey", main = "Whittaker Smoothing")
+#' lines(t, x_sm, col = "darkgreen", lwd = 2)
 #' }
 #'
 #' @export

@@ -19,4 +19,4 @@ test_that("visualize_true_color_imagery runs (skipped by default)", {
   # Example (do not actually run):
   # visualize_true_color_imagery(file = "dummy.tif")
   expect_true(TRUE)
-}) 
+})

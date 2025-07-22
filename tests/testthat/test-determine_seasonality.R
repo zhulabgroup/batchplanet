@@ -15,7 +15,7 @@ test_that("Flat series is not seasonal", {
 })
 
 test_that("Sinusoidal series is seasonal", {
-  ts_sin <- sin(seq(0, 2*pi, length.out = 100))
+  ts_sin <- sin(seq(0, 2 * pi, length.out = 100))
   result <- suppressWarnings(determine_seasonality(ts_sin))
   expect_true(result)
 })

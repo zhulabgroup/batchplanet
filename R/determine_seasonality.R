@@ -15,7 +15,7 @@
 #' t <- 1:365
 #' simulate_ts <- sin(2 * pi * t / 365) + rnorm(365, sd = 0.1)
 #' simulate_ts[sample(1:365, 30)] <- NA # introduce some missing data
-#' 
+#'
 #' # Test for seasonality
 #' determine_seasonality(ts = simulate_ts, k = 50)
 #'

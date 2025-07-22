@@ -20,11 +20,15 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
 
   v_site <- list.dirs(file.path(dir, "raw"), recursive = F, full.names = F)
 
-  raster_metadata <- get_raster_metadata(dir)
+  raster_metadata <- get_raster_metadata(dir, v_site)
   # Filter by cloud cover
   raster_metadata <- raster_metadata %>% filter(cloud_cover <= cloud_lim)
 
-  init_brightness <- estimate_initial_brightness(raster_metadata)
+  global_brightness_lookup <- lapply(unique(raster_metadata$site), function(s) {
+    data <- raster_metadata %>% filter(site == s)
+    brightness <- estimate_global_brightness(data)
+    tibble(site = s, brightness = brightness)
+  }) %>% bind_rows()
 
   ui <- fluidPage(
     titlePanel("PlanetScope true color imagery viewer"),
@@ -37,7 +41,7 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
       ),
       column(
         6,
-        sliderInput("brightness", "Brightness", min = 0, max = 10, value = init_brightness, step = 0.5, width = "100%", ticks = F)
+        sliderInput("brightness", "Brightness", min = 0, max = 10, value = 5, step = 0.5, width = "100%", ticks = F)
       )
     ),
 
@@ -61,8 +65,12 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
   server <- function(input, output, session) {
     # Update date options based on selected site
     output$date_ui <- renderUI({
-      v_datetime <- raster_metadata %>%
-        filter(site == input$site) %>%
+      req(input$site)
+
+      raster_metadata_site <- raster_metadata %>%
+        filter(site == input$site)
+
+      v_datetime <- raster_metadata_site %>%
         arrange(datetime) %>%
         pull(datetime)
 
@@ -80,22 +88,31 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
 
     # Generate raster visualization
     output$raster_plot <- renderPlot({
-      req(input$site, input$datetime)
+      req(input$site, input$datetime, input$brightness)
 
-      selected_file <- raster_metadata %>%
-        filter(site == input$site, datetime == input$datetime) %>%
+      raster_metadata_site <- raster_metadata %>%
+        filter(site == input$site)
+
+      global_brightness <- global_brightness_lookup %>%
+        filter(site == input$site) %>%
+        pull(brightness)
+
+      df_coordinates_site <- if (!is.null(df_coordinates)) {
+        df_coordinates %>% filter(site == input$site)
+      } else {
+        NULL
+      }
+
+      selected_file <- raster_metadata_site %>%
+        filter(datetime == input$datetime) %>%
         pull(file) %>%
         first()
-
-      if (!is.null(df_coordinates)) {
-        df_coordinates_site <- df_coordinates %>% filter(site == input$site)
-      }
 
       visualize_true_color_imagery(
         file = selected_file,
         df_coordinates = df_coordinates_site,
         brightness = input$brightness,
-        global_brightness = init_brightness
+        global_brightness = global_brightness
       )
     })
   }
@@ -104,21 +121,21 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
 }
 
 # Helper to parse site and date from directory structure and extract cloud cover
-get_raster_metadata <- function(dir) {
+get_raster_metadata <- function(dir, v_site) {
   ls_df_metadata <- list()
   for (siteoi in v_site) {
     raster_files <- list.files(file.path(dir, "raw", siteoi), pattern = "\\SR_harmonized_clip.tif$", recursive = TRUE, full.names = TRUE)
-    meta_files <- gsub("SR_harmonized_clip.tif$", "metadata.json", raster_files)
+    meta_files <- list.files(file.path(dir, "raw", siteoi), pattern = "\\metadata.json$", recursive = TRUE, full.names = TRUE)
     cloud_covers <- sapply(meta_files, function(mf) {
       if (file.exists(mf)) {
         meta <- tryCatch(jsonlite::fromJSON(mf), error = function(e) NULL)
         if (!is.null(meta) && !is.null(meta$properties$cloud_cover)) {
           as.numeric(meta$properties$cloud_cover)
         } else {
-          NA_real_
+          NA
         }
       } else {
-        NA_real_
+        NA
       }
     })
     ls_df_metadata[[siteoi]] <- tibble(
@@ -136,7 +153,7 @@ get_raster_metadata <- function(dir) {
   return(df_metadata)
 }
 
-estimate_initial_brightness <- function(raster_metadata) {
+estimate_global_brightness <- function(raster_metadata) {
   # Sample up to 100 images to estimate average brightness (after cloud filter)
   if (nrow(raster_metadata) > 0) {
     sample_files <- raster_metadata %>% sample_n(min(100, nrow(raster_metadata)))
@@ -154,14 +171,13 @@ estimate_initial_brightness <- function(raster_metadata) {
         }
       }
     }
-    init_brightness <- ifelse(length(brightness_vals) > 0, round(mean(brightness_vals, na.rm = TRUE) * 10, 1), 5)
-    init_brightness <- min(max(init_brightness, 0), 10)
+    global_brightness <- mean(brightness_vals, na.rm = TRUE)
   } else {
-    init_brightness <- 5
+    global_brightness <- NA
   }
-  return(init_brightness)
+  return(global_brightness)
 }
-  
+
 #' Visualize true-color raster imagery
 #'
 #' Reads a multi-band raster, converts the red, green, and blue bands to normalized RGB values, and creates a ggplot2 tile plot of the true-color composite. Optionally overlays point locations. Automatically normalizes image brightness to the global average (computed at app startup) for legibility, then applies the user brightness slider (0-10, default 5) as a multiplier.
@@ -176,15 +192,15 @@ estimate_initial_brightness <- function(raster_metadata) {
 #' @examples
 #' \dontrun{
 #' visualize_true_color_imagery(
-#'   file = "raw/SJER/20240501_SR_harmonized_clip.tif",
+#'   file = "alldata/PSdata/raw/SJER/20240501_SR_harmonized_clip.tif",
 #'   df_coordinates = df_coordinates_SJER,
 #'   brightness = 5,
-#'   global_brightness = 0.5
+#'   global_brightness = 0.05
 #' )
 #' }
 #'
 #' @export
-visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness = 5, global_brightness = 0.5) {
+visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness = 5, global_brightness = 0.05) {
   ras <- terra::rast(file) %>%
     terra::project("EPSG:4326")
 
@@ -199,18 +215,9 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
       y
     )
 
-  # Calculate mean brightness (0-1 scale) for this image
-  mean_brightness <- mean((df_ras$r + df_ras$g + df_ras$b) * 0.0001 / 3, na.rm = TRUE)
-  # Avoid division by zero
-  if (is.na(mean_brightness) || mean_brightness == 0) mean_brightness <- 0.01
-  # Compute normalization multiplier to match global average
-  auto_mult <- global_brightness / mean_brightness
-  # User slider: 0-10, default 5, so scale is brightness/5
-  user_mult <- brightness / 5
-  final_mult <- auto_mult * user_mult
-
   df_ras <- df_ras %>%
-    mutate(across(c(r, g, b), ~ . * 0.0001 * final_mult)) %>%
+    mutate(across(c(r, g, b), ~ . * 0.0001)) %>%
+    mutate(across(c(r, g, b), ~ . * brightness * 0.05 / global_brightness)) %>%
     mutate(across(c(r, g, b), ~ pmax(., 0))) %>%
     mutate(across(c(r, g, b), ~ pmin(., 1))) %>%
     mutate(rgb = rgb(r, g, b, maxColorValue = 1))
@@ -223,7 +230,8 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
 
   if (!is.null(df_coordinates)) {
     p <- p +
-      geom_point(data = df_coordinates, aes(x = lon, y = lat), pch = 1, alpha = 0.8, color = "yellow")
+      geom_point(data = df_coordinates, aes(x = lon, y = lat), pch = 1, alpha = 0.8, color = "yellow") +
+      coord_equal()
   }
 
   return(p)

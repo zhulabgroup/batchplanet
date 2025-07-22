@@ -27,4 +27,4 @@ test_that("download_planetscope_imagery runs (skipped by default)", {
   # Example (do not actually run):
   # download_planetscope_imagery(order_id = "dummy", exportfolder = tempdir(), api_key = "dummy", overwrite = FALSE)
   expect_true(TRUE)
-}) 
+})

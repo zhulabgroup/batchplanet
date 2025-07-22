@@ -23,18 +23,18 @@ library(batchplanet)
 ```
 
 ## 1 Read coordinate data
-In order to download PlanetScope imagery, you need to provide coordinates of points of interest. For this example, we will use a sample data file retrieved from the [National Ecological Observatory Network (NEON)](https://www.neonscience.org/) [plant phenology observations data product](https://data.neonscience.org/data-products/DP1.10055.001).
+In order to download PlanetScope imagery, you need to provide coordinates of points of interest. For this example, we will use several street tree inventories retrieved from the [OpenTrees.org](https://opentrees.org/).
 ```{r}
 # Read the data file with coordinates
-df_coordinates <- read_csv(system.file("extdata", "example_neon_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
-head(df_coordinates)
+df_coordinates_urban <- read_csv(system.file("extdata", "urban/example_urban_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
+head(df_coordinates_urban)
 ```
 You should create your own data frame with coordinates. Make sure your data frame for coordinates have the columns: `id` (unique id for each point of interest), `lon` for longitude, and `lat` for latitude. You may have a character column `site` if you have clustered coordinates at dispersed sites. You may also a character column `group` you can use to group coordinates later on.
 
-What do we mean by "clustered coordinates at dispersed sites?" Use the function `visualize_coordinates()` to visualize the coordinates. Our sample coordinates are dispersed across 47 NEON sites. Within each NEON site, there are above 200 coordinates in a square, representing individual trees tagged for phenology observations.
+What do we mean by "clustered coordinates at dispersed sites?" Use the function `visualize_coordinates()` to visualize the coordinates. Our sample coordinates are dispersed across four cities. Within each city, there are hundres or thousands of coordinates, representing individual trees.
 ```{r}
-visualize_coordinates(df_coordinates) # Multiple sites across continental US
-visualize_coordinates(df_coordinates %>% filter(site == "SJER")) # Zoom in to one site SJER
+visualize_coordinates(df_coordinates_urban %>% sample_n(2000)) # Multiple sites across continental US
+visualize_coordinates(df_coordinates_urban %>% filter(site == "NY") %>% sample_n(2000)) # Zoom in to one site NY
 ```
 Why is it important to label the coordinates with sites? If we treat all coordinates as a single set and try to download PlanetScope imagery that cover them, we will end up with a tremendous amount of imagery that cover most of continental US. Instead, we will use the site labels to group the coordinates and create bounding boxes that cover each site. This way, we can download imagery that only cover the sites of interest. If your coordinates are already clustered in a small area, you don't have to supply the site labels. The package will process all coordinates as a single site.
 
@@ -88,7 +88,7 @@ You can specify the sites (must exist in your `site` column of the coordinates d
 The function will create a folder `raw/` in the data directory you specified, and multiple subfolders for different sites you specified. In each subfolder, the function will save the order IDs in rds files for later use.
 
 ```{r, eval = F}
-order_planetscope_imagery_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting)
+order_planetscope_imagery_batch(dir = file.path(dir_data, "urban"), df_coordinates = df_coordinates_urban, v_site = c("NY", "AT"), v_year = 2025, setting = setting)
 ```
 
 After successful ordering, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
@@ -104,7 +104,7 @@ After successful ordering, check your [Planet account](https://www.planet.com/ac
 Use the `download_planetscope_imagery_batch()` function to download the ordered images. This function will save downloaded images to the folder `raw/` in the data directory. If you do not specify `v_site` and `v_year`, the function will download all ordered images in the `raw/` folder. This step uses multiple cores to download. Use `num_cores = 12` to download data from 12 months in parallel. `overwrite = F` prevents overwriting existing images.
 
 ```{r, eval = F}
-download_planetscope_imagery_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting, num_cores = 3, overwrite = F)
+download_planetscope_imagery_batch(dir = file.path(dir_data, "urban"), v_site = c("NY", "AT"), v_year = 2025, setting = setting, num_cores = 3, overwrite = F)
 ```
 
 At this point, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
@@ -114,21 +114,17 @@ At this point, you might have downloaded a large amount of images. Consider arch
 The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness. Again, you have the option to overlay the coordinates on the images.
 
 ```{r}
-visualize_true_color_imagery_batch(dir = dir_data, df_coordinates = df_coordinates)
-```
-
-You can visualize the true color imagery of single images using the `visualize_true_color_imagery()` function. You can overlay the coordinates from the relevant site on the imagery (optional). You can specify the brightness of the image using the `brightness` parameter.
-```{r}
-df_coordinates_SJER <- df_coordinates %>% filter(site == "SJER")
-
-visualize_true_color_imagery(
-  file = system.file("extdata", "raw/SJER/SJER_2025_60_90/20250318_190514_92_24d3_3B_AnalyticMS_SR_harmonized_clip.tif", package = "batchplanet"),
-  df_coordinates = df_coordinates_SJER,
-  brightness = 5
-)
+visualize_true_color_imagery_batch(dir = file.path(dir_data, "urban"), df_coordinates = df_coordinates_urban, cloud_lim = 0.1)
 ```
 
 ## 3 Retrieve and process time series
+
+To demonstrate the capacity in processing long time series, we will use a sample data file retrieved from the [National Ecological Observatory Network (NEON)](https://www.neonscience.org/) [plant phenology observations data product](https://data.neonscience.org/data-products/DP1.10055.001).
+```{r}
+# Read the data file with coordinates
+df_coordinates_NEON <- read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
+head(df_coordinates_NEON)
+```
 
 ### 3.1 Retrieve time series
 
@@ -141,14 +137,14 @@ The `num_cores` parameter allows you to use multiple cores for this step, which 
 This function will create a folder `ts/` in the data directory you specified and save time series data with files names in the format of `ts_<site>_<group>.rds`.
 
 ```{r, eval = F}
-retrieve_planetscope_time_series_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), max_sample = 2000, num_cores = 10)
+retrieve_planetscope_time_series_batch(dir = file.path(dir_data, "NEON"), df_coordinates = df_coordinates_NEON, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), max_sample = 2000, num_cores = 10)
 ```
 
 You can read in processed data using the `read_data_product()` function. To read in time series retrieved from raw imagery, set `product_type = "ts"`. The function will read in all time series data from the `ts/` folder and combine them into one data frame. You can specify the sites and groups you want to read in using the `v_site` and `v_group` parameters. If you do not specify these parameters, the function will read in all time series data.
 
 You can visualize time series data using the `visualize_time_series()` function. You can specify the variable you want to plot, which needs to be a column in the supplies data frame, and the corresponding y-axis label. The optional `facet_var` parameter allows you to specify the variable you want to use for faceting the plot (e.g., site, group, or id). The `smooth` parameter allows you to specify whether you want to smooth the time series data or not. If `smooth = TRUE`, the function will use a weighted Whittaker smoothing method to smooth and fill the time series data (see Section 4). This function is not specific to PlanetScope data and can be used with any time series data, as long as the data frame has `date` or `time` at regular intervals, as well as the variable you want to plot. Each color represents a pixel.
 ```{r}
-df_ts <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), product_type = "ts")
+df_ts <- read_data_product(dir = file.path(dir_data, "NEON"), v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), product_type = "ts")
 visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "group", smooth = F)
 ```
 
@@ -167,13 +163,13 @@ $$
 The function will create a folder `clean/` in the data directory you specified and save cleaned time series data with files names in the format of `clean_<site>_<group>.rds`.
 
 ```{r, eval = F}
-clean_planetscope_time_series_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), num_cores = 3, calculate_evi = T)
+clean_planetscope_time_series_batch(dir = file.path(dir_data, "NEON"), v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), num_cores = 3, calculate_evi = T)
 ```
 
 Similar to Section 3.1, you can read in cleaned time series data using the `read_data_product()` function, with `product_type = "clean"`. You can then visualize the cleaned time series data using the `visualize_time_series()` function. The cleaned time series data will have a new column `evi` that we can visualize, if you set `calculate_evi = T` in the previous step.
 
 ```{r}
-df_clean <- read_data_product(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Quercus"), product_type = "clean")
+df_clean <- read_data_product(dir = file.path(dir_data, "NEON"), v_site = c("HARV", "SJER"), v_group = c("Quercus"), product_type = "clean")
 visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
 ```
 
@@ -199,15 +195,15 @@ The function will create a folder `doy/` in the data directory you specified and
 ```{r, eval = F}
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
-calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 3)
+calculate_phenological_metrics_batch(dir = file.path(dir_data, "NEON"), v_site = "SJER", v_group = "Quercus", df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 3)
 ```
 This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `inst/extdata/clean/` folder of the package. 
 
 Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}
 v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJER.06310")
-df_doy_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "doy") %>% filter(id %in% v_id)
-df_evi_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "clean") %>% filter(id %in% v_id)
+df_doy_sample <- read_data_product(dir = file.path(dir_data, "NEON"), v_site = "SJER", v_group = "Quercus", product_type = "doy") %>% filter(id %in% v_id)
+df_evi_sample <- read_data_product(dir = file.path(dir_data, "NEON"), v_site = "SJER", v_group = "Quercus", product_type = "clean") %>% filter(id %in% v_id)
 
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
 ```

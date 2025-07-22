@@ -35,4 +35,4 @@ test_that("retrieve_raster_data runs (skipped by default)", {
   # Example (do not actually run):
   # retrieve_raster_data(dir_site = tempdir(), sf_coordinates = sf::st_sf(), type = "sr", num_cores = 1)
   expect_true(TRUE)
-}) 
+})

@@ -25,4 +25,4 @@ test_that("set_data_directory runs (skipped by default)", {
   # Example (do not actually run):
   # set_data_directory("dummy_dir")
   expect_true(TRUE)
-}) 
+})

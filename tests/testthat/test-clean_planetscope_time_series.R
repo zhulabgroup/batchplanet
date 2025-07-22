@@ -36,4 +36,4 @@ test_that("clean_planetscope_time_series cleans dummy data", {
   df_clean <- clean_planetscope_time_series(df_ts, calculate_evi = TRUE)
   expect_s3_class(df_clean, "data.frame")
   expect_true("evi" %in% names(df_clean))
-}) 
+})

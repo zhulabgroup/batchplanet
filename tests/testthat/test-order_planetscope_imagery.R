@@ -25,4 +25,4 @@ test_that("set_bbox returns a bbox for dummy data", {
   df_coords <- data.frame(site = c("A", "A"), lon = c(0, 1), lat = c(0, 1))
   bbox <- set_bbox(df_coords, "A", buffer = 0.001)
   expect_true(is.list(bbox) || inherits(bbox, "bbox"))
-}) 
+})

@@ -79,8 +79,8 @@ set_planetscope_parameters <- function(api_key,
 #'
 #' @examples
 #' \dontrun{
-#' set_api_key()         # Set the API key for the first time
-#' set_api_key(change_key = TRUE)     # Change the API key
+#' set_api_key() # Set the API key for the first time
+#' set_api_key(change_key = TRUE) # Change the API key
 #' }
 #'
 #' @export
@@ -120,8 +120,8 @@ set_api_key <- function(change_key = F) {
 #'
 #' @examples
 #' \dontrun{
-#' set_data_directory()         # Set the data directory for the first time
-#' set_data_directory(change_directory = TRUE)     # Change the data directory
+#' set_data_directory() # Set the data directory for the first time
+#' set_data_directory(change_directory = TRUE) # Change the data directory
 #' }
 #'
 #' @export
