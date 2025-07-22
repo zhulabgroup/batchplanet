@@ -14,7 +14,8 @@ test_that("calculate_phenological_metrics_batch runs (skipped by default)", {
 })
 
 test_that("calculate_phenological_metrics returns NULL for too few valid days", {
-  df_index <- data.frame(doy = 1:10, evi = rep(NA, 10))
+  df_index <- data.frame(doy = 1:365) %>% 
+    mutate(evi = c(rep(NA, 180), runif(10, 0.2, 0.8),  c(rep(NA, 190))  # Only 10 valid days
   df_thres <- set_thresholds()
   result <- calculate_phenological_metrics(df_index, df_thres, min_days = 20, check_seasonality = TRUE, var_index = "evi")
   expect_null(result)

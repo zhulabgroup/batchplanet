@@ -85,10 +85,10 @@ Use the `order_planetscope_imagery_batch()` function to order PlanetScope imager
 
 You can specify the sites (must exist in your `site` column of the coordinates data frame) and years (after 2014) you want to order images for. Here, we order images from two sites in one year as an example. If you do not specify `v_site` and `v_year`, the function will order images for all sites and years in the coordinates data frame.
 
-The function will create a folder `raw/` in the data directory you specified, and multiple subfolders for different sites you specified. In each subfolder, the function will save the order IDs in rds files for later use.
+The function will create a folder `raw/` in the data directory you specified, and multiple subfolders for different sites you specified. In each subfolder, the function will save the order IDs in rds files for later use. Here we only demonstrate with one site, one year, and one month, but you are encouraged to specify multiple sites, years, and months at once to maximize the capacity of this package.
 
 ```{r, eval = F}
-order_planetscope_imagery_batch(dir = file.path(dir_data, "urban"), df_coordinates = df_coordinates_urban, v_site = c("ST", "AT"), v_year = 2025, v_month = 5, setting = setting)
+order_planetscope_imagery_batch(dir = file.path(dir_data, "urban"), df_coordinates = df_coordinates_urban, v_site = c("AT"), v_year = 2025, v_month = 5, setting = setting)
 ```
 
 After successful ordering, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
@@ -104,7 +104,7 @@ After successful ordering, check your [Planet account](https://www.planet.com/ac
 Use the `download_planetscope_imagery_batch()` function to download the ordered images. This function will save downloaded images to the folder `raw/` in the data directory. If you do not specify `v_site` and `v_year`, the function will download all ordered images in the `raw/` folder. This step uses multiple cores to download. Use `num_cores = 12` to download data from 12 months in parallel. `overwrite = F` prevents overwriting existing images.
 
 ```{r, eval = F}
-download_planetscope_imagery_batch(dir = file.path(dir_data, "urban"), v_site = c("ST", "AT"), v_year = 2025, v_month = 5, setting = setting, num_cores = 3, overwrite = F)
+download_planetscope_imagery_batch(dir = file.path(dir_data, "urban"), v_site = c("AT"), v_year = 2025, v_month = 5, setting = setting, num_cores = 3, overwrite = F)
 ```
 
 At this point, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
