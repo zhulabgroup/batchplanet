@@ -7,6 +7,7 @@
 #' @param df_coordinates Data frame of coordinates of interest with columns `site`, `lon`, `lat`, and `id`.
 #' @param v_site Character vector, optional. Site names to process; if `NULL`, all unique sites in `df_coordinates` are used.
 #' @param v_year Numeric vector. Years to process (default: 2017 to current year).
+#' @param v_month Integer vector. Months (1-12) to process (default: 1:12, i.e., all months).
 #' @param setting List. API settings including API key, item name, asset type, cloud limit, product bundle, and harmonized flag.
 #'
 #' @return Invisibly returns `NULL` and writes order metadata as `.rds` files under `orders/` subdirectory of specified `dir`.
@@ -18,6 +19,7 @@
 #'   df_coordinates = df_coordinates,
 #'   v_site = c("HARV", "SJER"),
 #'   v_year = 2025,
+#'   v_month = c(4,5,6),
 #'   setting = setting
 #' )
 #' }
@@ -25,6 +27,7 @@
 #' @export
 order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
                                             v_year = 2017:(lubridate::year(Sys.Date())),
+                                            v_month = 1:12,
                                             setting) {
   if (!"site" %in% colnames(df_coordinates)) {
     df_coordinates <- df_coordinates %>%
@@ -58,19 +61,18 @@ order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
 
     # Process orders for each year
     for (yearoi in v_year) {
-      order_planetscope_imagery_siteyear(dir_site, siteoi, yearoi, bbox, setting)
+      order_planetscope_imagery_siteyear(dir_site, siteoi, yearoi, bbox, setting, v_month = v_month)
     }
   }
 
   invisible(NULL)
 }
 
-order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, setting) {
+order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, setting, v_month = 1:12) {
   # Initialize an empty data frame to accumulate order details
   df_order <- data.frame(year = integer(0), month = integer(0), order_name = character(0), order_id = character(0), num_images = integer(0))
 
-  # Loop over each month of the year
-  for (monthoi in 1:12) {
+  for (monthoi in v_month) {
     # Get start and end date information for the month
     date_start <- lubridate::floor_date(as.Date(sprintf("%d-%02d-01", yearoi, monthoi)), unit = "month")
     date_end <- lubridate::ceiling_date(date_start, unit = "month") - 1
@@ -81,7 +83,6 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
     order_name <- str_c(siteoi, yearoi, doy_start, doy_end, sep = "_")
 
     # Fetch available images from the API based on the date range and bounding box
-    # Planet Orders API
     out <- tryCatch(
       {
         images <- search_planetscope_imagery(
@@ -145,7 +146,6 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
     dir.create(file.path(dir_site, "orders"), showWarnings = FALSE)
     write_rds(df_order, file.path(dir_site, "orders", str_c("order_", yearoi, ".rds")))
   }
-
   invisible(NULL)
 }
 

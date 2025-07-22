@@ -11,13 +11,12 @@
 #' @param asset Character. Asset type to filter permissions (default: `"ortho_analytic_4b_sr"`).
 #' @param cloud_lim Numeric. Maximum allowed cloud cover fraction (0–1, default: 0.1).
 #' @param ground_control Logical. If `TRUE`, require ground control metadata (default: `TRUE`).
-#' @param quality Character. Quality category filter (default: `"standard"`).
+#' @param quality Character. Quality category filter (default: "standard").
 #'
 #' @return Character vector of image IDs with download permission. Returns `NULL` if none are found.
 #'
 #' @examples
 #' \dontrun{
-#' my_bbox <- list(xmin = -77.05, ymin = 38.80, xmax = -76.90, ymax = 39.00)
 #' ids <- search_planetscope_imagery(
 #'   api_key = set_api_key(),
 #'   bbox = my_bbox,

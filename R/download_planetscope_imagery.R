@@ -4,8 +4,9 @@
 #'
 #' @param dir Character. Base directory where the raw satellite data will be stored, expects a `raw/` subdirectory.
 #' @param v_site Character vector, optional. Site names to filter; if `NULL`, all sites are used.
-#' @param setting List. Contains API settings including the API key (i.e., `setting$api_key`).
 #' @param v_year Numeric vector. Years for which to download data. Default is from 2017 to the current year.
+#' @param v_month Integer vector. Months (1-12) to download (default: 1:12, i.e., all months).
+#' @param setting List. Contains API settings including the API key (i.e., `setting$api_key`).
 #' @param num_cores Integer. Number of parallel workers to use (default: 12).
 #' @param overwrite Logical. If `TRUE`, existing files will be overwritten (default: `FALSE`).
 #'
@@ -17,6 +18,7 @@
 #'   dir = "alldata/PSdata/",
 #'   v_site = c("HARV", "SJER"),
 #'   v_year = 2025,
+#'   v_month = c(4,5,6),
 #'   setting = setting,
 #'   num_cores = 3,
 #'   overwrite = FALSE
@@ -24,7 +26,7 @@
 #' }
 #'
 #' @export
-download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017:(year(Sys.Date())), setting, num_cores = 12, overwrite = F) {
+download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017:(year(Sys.Date())), v_month = 1:12, setting, num_cores = 12, overwrite = F) {
   # If no sites are provided, list all available directories under dir/raw/
   if (is.null(v_site)) {
     v_site <- list.dirs(file.path(dir, "raw"), recursive = FALSE, full.names = FALSE)
@@ -36,13 +38,13 @@ download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017
 
     # Loop over each specified year
     for (yearoi in v_year) {
-      download_planetscope_imagery_siteyear(dir_site, siteoi, yearoi, setting, num_cores, overwrite)
+      download_planetscope_imagery_siteyear(dir_site, siteoi, yearoi, v_month, setting, num_cores, overwrite)
     }
   }
   invisible(NULL)
 }
 
-download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, setting, num_cores, overwrite) {
+download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, v_month = 1:12, setting, num_cores, overwrite) {
   # Construct the order summary file path and read the file
   order_file <- file.path(dir_site, "orders", str_c("order_", yearoi, ".rds"))
   if (!file.exists(order_file)) {
@@ -54,6 +56,8 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, sett
 
   # If there are orders to process, initiate parallel download
   if (nrow(df_order) > 0) {
+    df_order <- df_order[df_order$month %in% v_month, ]
+    
     cl <- makeCluster(num_cores, outfile = "")
     registerDoSNOW(cl)
 
