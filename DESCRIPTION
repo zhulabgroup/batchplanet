@@ -1,20 +1,22 @@
 Package: batchplanet
 Title: Streamlined Processing and Analysis of PlanetScope and Satellite Imagery Data
 Version: 0.1.0
-Authors@R: 
+Authors@R: c(
     person("Yiluan", "Song", email = "songyl@umich.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "0000-0003-3660-3797", affiliation = "Michigan Institute for Data and AI in Society, University of Michigan, Ann Arbor, MI, USA; School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA")),
+    person("Ken", "Reid", role = "aut",
+           comment = c(ORCID = "0000-0001-8654-2430", affiliation = "Michigan Institute for Data and AI in Society, University of Michigan, Ann Arbor, MI, USA")),
+    person("Yi", "Liu", role = "aut",
+           comment = c(ORCID = "0000-0002-5515-8804", affiliation = "School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA")),
+    person("Jiali", "Zhu", role = "aut",
+           comment = c(ORCID = "0009-0009-7339-557X", affiliation = "School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA")),
+    person("Kai", "Zhu", role = "aut",
+           comment = c(ORCID = "0000-0003-1587-3317", affiliation = "School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA")),
+    person("Alexandre R.", "Bevington", role = "aut",
+           comment = c(ORCID = "0000-0003-1587-3317", affiliation = "Department of Geography, Earth and Environmental Sciences, University of Northern British Columbia, Prince George, BC, Canada; Ministry of Forests, Province of British Columbia, Prince George, BC, Canada"))
+)
 Description: 
-    Batchplanet is an R package that provides a comprehensive suite of tools for processing, 
-    analyzing, and visualizing remote sensing data—particularly PlanetScope imagery. The package 
-    includes functions to read and validate spatial datasets (e.g., county and subdivision shapefiles), 
-    set custom thresholds for monitoring, and generate bounding boxes for targeted areas. 
-    It streamlines workflows for ordering and downloading imagery via the Planet API, and it offers robust 
-    routines for processing satellite time series data, computing indices, and calculating 
-    day-of-year (DOY) metrics for green-up and green-down events. Additionally, Batchplanet leverages 
-    efficient parallel processing and state-of-the-art smoothing techniques (e.g., Whittaker smoothing) 
-    to handle large environmental datasets, making it a valuable tool for researchers in remote sensing 
-    and ecological monitoring.
+    The `batchplanet` R package provides a reproducible and scalable workflow for accessing and processing PlanetScope satellite imagery, enabling environmental researchers to efficiently perform spatiotemporal analysis of high-resolution remote sensing data. The package streamlines the steps required to work with the PlanetScope API, including the ordering and downloading of imagery, retrieving and cleaning pixel-level time series, and computing derived metrics such as the Enhanced Vegetation Index (EVI) and green-up/down time. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees (Song et al., 2025). Generalizable beyond phenological research, this tool is particularly suited for environmental research that involves large volumes of imagery across multiple sites and long time periods.
 License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
