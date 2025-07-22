@@ -21,6 +21,7 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
   v_site <- list.dirs(file.path(dir, "raw"), recursive = F, full.names = F)
 
   raster_metadata <- get_raster_metadata(dir, v_site)
+  
   # Filter by cloud cover
   raster_metadata <- raster_metadata %>% filter(cloud_cover <= cloud_lim)
 
@@ -138,6 +139,11 @@ get_raster_metadata <- function(dir, v_site) {
         NA
       }
     })
+    
+    if (length(raster_files) == 0) {
+      next # Skip if no raster files found for this site
+    }
+    
     ls_df_metadata[[siteoi]] <- tibble(
       file = raster_files,
       date = str_extract(basename(file), "\\d{8}"), # Extract 8-digit date

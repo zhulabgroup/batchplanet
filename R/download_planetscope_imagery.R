@@ -26,7 +26,7 @@
 #' }
 #'
 #' @export
-download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017:(year(Sys.Date())), v_month = 1:12, setting, num_cores = 12, overwrite = F) {
+download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017:(lubridate::year(Sys.Date())), v_month = 1:12, setting, num_cores = 12, overwrite = F) {
   # If no sites are provided, list all available directories under dir/raw/
   if (is.null(v_site)) {
     v_site <- list.dirs(file.path(dir, "raw"), recursive = FALSE, full.names = FALSE)
