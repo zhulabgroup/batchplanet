@@ -32,7 +32,7 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
   }) %>% bind_rows()
 
   ui <- fluidPage(
-    titlePanel("PlanetScope true color imagery viewer"),
+    # titlePanel("PlanetScope true color imagery viewer"),
 
     # First row: site + brightness
     fluidRow(
@@ -58,7 +58,7 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
     fluidRow(
       column(
         12,
-        plotOutput("raster_plot", height = "700px")
+        plotOutput("raster_plot", width = "auto", height = "600px")
       )
     )
   )
@@ -88,34 +88,51 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
     })
 
     # Generate raster visualization
-    output$raster_plot <- renderPlot({
-      req(input$site, input$datetime, input$brightness)
+    output$raster_plot <- renderPlot(
+      {
+        req(input$site, input$datetime, input$brightness)
 
-      raster_metadata_site <- raster_metadata %>%
-        filter(site == input$site)
+        raster_metadata_site <- raster_metadata %>%
+          filter(site == input$site)
 
-      global_brightness <- global_brightness_lookup %>%
-        filter(site == input$site) %>%
-        pull(brightness)
+        global_brightness <- global_brightness_lookup %>%
+          filter(site == input$site) %>%
+          pull(brightness)
 
-      df_coordinates_site <- if (!is.null(df_coordinates)) {
-        df_coordinates %>% filter(site == input$site)
-      } else {
-        NULL
+        df_coordinates_site <- if (!is.null(df_coordinates)) {
+          df_coordinates %>% filter(site == input$site)
+        } else {
+          NULL
+        }
+
+        selected_file <- raster_metadata_site %>%
+          filter(datetime == input$datetime) %>%
+          pull(file) %>%
+          first()
+
+        visualize_true_color_imagery(
+          file = selected_file,
+          df_coordinates = df_coordinates_site,
+          brightness = input$brightness,
+          global_brightness = global_brightness
+        )
+      },
+      height = 500,
+      width = function() {
+        if (is.null(input$datetime)) {
+          return(500)
+        }
+        selected_file <- raster_metadata %>%
+          filter(site == input$site, datetime == input$datetime) %>%
+          pull(file) %>%
+          first()
+
+        ras <- terra::rast(selected_file)
+        ext <- terra::ext(ras)
+        aspect_ratio <- (ext[2] - ext[1]) / (ext[4] - ext[3])
+        return(as.numeric(500 * aspect_ratio))
       }
-
-      selected_file <- raster_metadata_site %>%
-        filter(datetime == input$datetime) %>%
-        pull(file) %>%
-        first()
-
-      visualize_true_color_imagery(
-        file = selected_file,
-        df_coordinates = df_coordinates_site,
-        brightness = input$brightness,
-        global_brightness = global_brightness
-      )
-    })
+    )
   }
 
   shinyApp(ui, server)

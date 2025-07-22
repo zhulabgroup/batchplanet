@@ -8,6 +8,7 @@ calculate_phenological_metrics_batch(
   dir,
   v_site = NULL,
   v_group = NULL,
+  v_year = NULL,
   df_thres = NULL,
   var_index = "evi",
   min_days = 80,
@@ -23,6 +24,8 @@ calculate_phenological_metrics_batch(
 \item{v_site}{Character vector, optional. Site identifiers to process; if \code{NULL}, all sites are included.}
 
 \item{v_group}{Character vector, optional. Group identifiers to process; if \code{NULL}, all groups are included.}
+
+\item{v_year}{Integer vector, optional. Years to process; if \code{NULL}, all years in the data are included.}
 
 \item{df_thres}{Data frame of thresholds as from \code{\link[=set_thresholds]{set_thresholds()}}; if \code{NULL}, uses default thresholds.}
 
@@ -54,6 +57,7 @@ calculate_phenological_metrics_batch(
   dir = "alldata/PSdata/",
   v_site = c("Site1", "Site2"),
   v_group = c("Group1", "Group2"),
+  v_year = c(2023, 2024),
   df_thres = df_thres,
   var_index = "evi",
   min_days = 80,

@@ -17,8 +17,8 @@ Prompts the user to enter a path to the data directory and saves it in a hidden 
 }
 \examples{
 \dontrun{
-set_data_directory()         # Set the data directory for the first time
-set_data_directory(change_directory = TRUE)     # Change the data directory
+set_data_directory() # Set the data directory for the first time
+set_data_directory(change_directory = TRUE) # Change the data directory
 }
 
 }

@@ -9,6 +9,7 @@ order_planetscope_imagery_batch(
   df_coordinates,
   v_site = NULL,
   v_year = 2017:(lubridate::year(Sys.Date())),
+  v_month = 1:12,
   setting
 )
 }
@@ -20,6 +21,8 @@ order_planetscope_imagery_batch(
 \item{v_site}{Character vector, optional. Site names to process; if \code{NULL}, all unique sites in \code{df_coordinates} are used.}
 
 \item{v_year}{Numeric vector. Years to process (default: 2017 to current year).}
+
+\item{v_month}{Integer vector. Months (1-12) to process (default: 1:12, i.e., all months).}
 
 \item{setting}{List. API settings including API key, item name, asset type, cloud limit, product bundle, and harmonized flag.}
 }
@@ -37,6 +40,7 @@ order_planetscope_imagery_batch(
   df_coordinates = df_coordinates,
   v_site = c("HARV", "SJER"),
   v_year = 2025,
+  v_month = 4:6,
   setting = setting
 )
 }

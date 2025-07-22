@@ -7,7 +7,8 @@
 download_planetscope_imagery_batch(
   dir,
   v_site = NULL,
-  v_year = 2017:(year(Sys.Date())),
+  v_year = 2017:(lubridate::year(Sys.Date())),
+  v_month = 1:12,
   setting,
   num_cores = 12,
   overwrite = F
@@ -19,6 +20,8 @@ download_planetscope_imagery_batch(
 \item{v_site}{Character vector, optional. Site names to filter; if \code{NULL}, all sites are used.}
 
 \item{v_year}{Numeric vector. Years for which to download data. Default is from 2017 to the current year.}
+
+\item{v_month}{Integer vector. Months (1-12) to download (default: 1:12, i.e., all months).}
 
 \item{setting}{List. Contains API settings including the API key (i.e., \code{setting$api_key}).}
 
@@ -38,6 +41,7 @@ download_planetscope_imagery_batch(
   dir = "alldata/PSdata/",
   v_site = c("HARV", "SJER"),
   v_year = 2025,
+  v_month = 4:6,
   setting = setting,
   num_cores = 3,
   overwrite = FALSE

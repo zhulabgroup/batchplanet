@@ -17,8 +17,8 @@ Prompts the user to enter a Planet API key and saves it in a hidden \code{.env} 
 }
 \examples{
 \dontrun{
-set_api_key()         # Set the API key for the first time
-set_api_key(change_key = TRUE)     # Change the API key
+set_api_key() # Set the API key for the first time
+set_api_key(change_key = TRUE) # Change the API key
 }
 
 }

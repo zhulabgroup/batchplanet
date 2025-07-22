@@ -33,7 +33,7 @@ search_planetscope_imagery(
 
 \item{ground_control}{Logical. If \code{TRUE}, require ground control metadata (default: \code{TRUE}).}
 
-\item{quality}{Character. Quality category filter (default: \code{"standard"}).}
+\item{quality}{Character. Quality category filter (default: "standard").}
 }
 \value{
 Character vector of image IDs with download permission. Returns \code{NULL} if none are found.
@@ -44,7 +44,6 @@ Returns only IDs for which you have download permission.
 }
 \examples{
 \dontrun{
-my_bbox <- list(xmin = -77.05, ymin = 38.80, xmax = -76.90, ymax = 39.00)
 ids <- search_planetscope_imagery(
   api_key = set_api_key(),
   bbox = my_bbox,

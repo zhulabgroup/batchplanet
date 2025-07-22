@@ -8,7 +8,7 @@ visualize_true_color_imagery(
   file,
   df_coordinates = NULL,
   brightness = 5,
-  global_brightness = 0.5
+  global_brightness = 0.05
 )
 }
 \arguments{
@@ -29,10 +29,10 @@ Reads a multi-band raster, converts the red, green, and blue bands to normalized
 \examples{
 \dontrun{
 visualize_true_color_imagery(
-  file = "raw/SJER/20240501_SR_harmonized_clip.tif",
+  file = "alldata/PSdata/raw/SJER/20240501_SR_harmonized_clip.tif",
   df_coordinates = df_coordinates_SJER,
   brightness = 5,
-  global_brightness = 0.5
+  global_brightness = 0.05
 )
 }
 
