@@ -257,14 +257,14 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
     geom_tile(aes(x = x, y = y, fill = rgb)) +
     scale_fill_identity() +
     labs(x = "Longitude", y = "Latitude") +
-    theme_minimal()
+    theme_minimal()+
+    coord_equal()
 
   if (!is.null(df_coordinates)) {
     p <- p +
-      geom_point(data = df_coordinates, aes(x = lon, y = lat), pch = 1, alpha = 0.8, color = "yellow") +
-      coord_equal()
+      geom_point(data = df_coordinates, aes(x = lon, y = lat), pch = 1, alpha = 0.8, color = "red")
   }
-
+  
   return(p)
 }
 

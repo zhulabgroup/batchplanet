@@ -73,10 +73,10 @@ A challenge for researchers using PlanetScope imagery is the need to download la
 
 `batchplanet` provides a series of functions to facilitate the entire R-native workflow of accessing and processing PlanetScope imagery, especially for temporal analysis. These include functions to order and download PlanetScope imagery, retrieve pixel-level time series data, clean reflectance time series, calculate the Enhanced Vegetation Index (EVI), and compute phenological metrics such as green-up and green-down dates. Apart from the streamlined batch processing functions, `batchplanet` provides individual functions for key steps of the workflow, allowing users to customize their data processing pipelines. `batchplanet` also provides functions to visualize true color images interactively, enabling users to explore spatiotemporal patterns in the data (Fig. 1).
 
-With this package, we significantly speed up the ordering, downloading, and processing of PlanetScope images. For example, images for an approximately $9 km^2$ area in one month was downloaded in $6.7$ seconds. As we allowed parallel downloading across months, the total time for downloading a year of PlanetScope images was similar. From on month of downloaded images at one site, we retrieved time series of reflectances, together with quality mask data and metadata, at 100 coordinates of interest in $20.9$ seconds. This retrieval could again be parallelized over multiple sites and groups of coordinates.
+With this package, we significantly speed up the ordering, downloading, and processing of PlanetScope images. For example, images for an approximately 9 km^2 area in one month was downloaded in 6.7 seconds. As we allowed parallel downloading across months, the total time for downloading a year of PlanetScope images was similar. From on month of downloaded images at one site, we retrieved time series of reflectances, together with quality mask data and metadata, at 100 coordinates of interest in 20.9 seconds. This retrieval could again be parallelized over multiple sites and groups of coordinates.
 
-
-**Figure 1.** Screenshot of the true color image viewer for PlanetScope imagery. The viewer allows users to visualize true color images at different site and time interactively, facilitating the exploration of spatiotemporal patterns.
+![**Figure 1.** A true color image from PlanetScope imagery in part of Austin, USA, captured on May 21, 2025, visualized using the `batchplanet` package.
+](Fig1.png)
 
 # Installation
 
