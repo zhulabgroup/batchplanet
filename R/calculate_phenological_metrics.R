@@ -7,6 +7,7 @@
 #' @param dir Character. Base directory containing remote sensing index files (expects `clean/` subdirectory).
 #' @param v_site Character vector, optional. Site identifiers to process; if `NULL`, all sites are included.
 #' @param v_group Character vector, optional. Group identifiers to process; if `NULL`, all groups are included.
+#' @param v_year Integer vector, optional. Years to process; if `NULL`, all years in the data are included.
 #' @param df_thres Data frame of thresholds as from [set_thresholds()]; if `NULL`, uses default thresholds.
 #' @param var_index Character. Name of the remote sensing index column in the input data frame `df_index` to analyze (default: "evi").
 #' @param min_days Numeric. Minimum required number of non-NA data points in one year (default: 80).
@@ -25,6 +26,7 @@
 #'   dir = "alldata/PSdata/",
 #'   v_site = c("Site1", "Site2"),
 #'   v_group = c("Group1", "Group2"),
+#'   v_year = c(2023, 2024),
 #'   df_thres = df_thres,
 #'   var_index = "evi",
 #'   min_days = 80,
@@ -39,6 +41,7 @@
 calculate_phenological_metrics_batch <- function(dir,
                                                  v_site = NULL,
                                                  v_group = NULL,
+                                                 v_year = NULL,
                                                  df_thres = NULL,
                                                  var_index = "evi",
                                                  min_days = 80,
@@ -67,7 +70,7 @@ calculate_phenological_metrics_batch <- function(dir,
     f_index <- file.path(dir, "clean", file)
     df_index <- read_rds(f_index)
 
-    df_doy <- calculate_phenological_metrics_sitegroup(df_index, df_thres, min_days, check_seasonality, var_index, extend_to_previous_year, extend_to_next_year)
+    df_doy <- calculate_phenological_metrics_sitegroup(df_index, df_thres, v_year, min_days, check_seasonality, var_index, extend_to_previous_year, extend_to_next_year)
 
     f_doy <- file.path(dir, "doy", file %>% str_replace("clean_", "doy_"))
     write_rds(df_doy, f_doy)
@@ -77,11 +80,13 @@ calculate_phenological_metrics_batch <- function(dir,
   invisible(NULL)
 }
 
-calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, min_days, check_seasonality, var_index = "evi", extend_to_previous_year = 275, extend_to_next_year = 90) {
-  v_year <- df_index %>%
-    pull(year) %>%
-    unique() %>%
-    sort()
+calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, v_year = NULL, min_days, check_seasonality, var_index = "evi", extend_to_previous_year = 275, extend_to_next_year = 90) {
+  if (is.null(v_year)) {
+    v_year <- df_index %>%
+      pull(year) %>%
+      unique() %>%
+      sort()
+  }
 
   ls_df_doy_year <- list()
   for (yearoi in v_year) {
