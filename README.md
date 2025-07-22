@@ -27,6 +27,8 @@ install.packages("devtools")
 devtools::install_github("zhulabgroup/phenology-batchplanet")
 ```
 
+This package was developed and tested using the [`rocker/rgeospatial:4.2.0-2023-04-25`](https://hub.docker.com/r/rocker/rgeospatial) Docker image, with RStudio 2024.04.01 and GCC 10.3.0.
+
 ***
 
 ## Example Workflow
