@@ -1,5 +1,5 @@
 ---
-title: "batchplanet: Batch access and processing of PlanetScope imagery for spatiotemporal analysis in R"
+title: "*batchplanet*: Batch access and processing of PlanetScope imagery for spatiotemporal analysis in R"
 tags:
   - R
   - remote sensing
@@ -37,6 +37,7 @@ affiliations:
     index: 4
 date: 2025-05-11
 repository: https://github.com/zhulabgroup/batchplanet
+bibliography: paper.bib
 ---
 
 # Summary
@@ -58,7 +59,7 @@ Planet Labs provides an official [Python SDK](https://planet-sdk-for-python-v2.r
 | **Time Series Analysis Tools**        | Not supported                    | Limited                          | Supported                            | Not supported                     | Supported                         |
 | **Interactive Visualization**         | Not supported                    | Limited                          | Supported                            | Not supported                     | Supported                         |
 
-: Table 1. Comparison of `batchplanet` with existing tools for PlanetScope data access and processing, including the official Planet Python SDK, Sentinel Hub, Google Earth Engine (GEE), the `planetR` package by Bevington.
+: **Table 1.** Comparison of `batchplanet` with existing tools for PlanetScope data access and processing, including the official Planet Python SDK, Sentinel Hub, Google Earth Engine (GEE), the `planetR` package by Bevington.
 
 # Key Features
 
@@ -75,8 +76,7 @@ A challenge for researchers using PlanetScope imagery is the need to download la
 
 With this package, we significantly speed up the ordering, downloading, and processing of PlanetScope images. For example, images for an approximately 9 km^2 area in one month was downloaded in 6.7 seconds. As we allowed parallel downloading across months, the total time for downloading a year of PlanetScope images was similar. From on month of downloaded images at one site, we retrieved time series of reflectances, together with quality mask data and metadata, at 100 coordinates of interest in 20.9 seconds. This retrieval could again be parallelized over multiple sites and groups of coordinates.
 
-![**Figure 1.** A true color image from PlanetScope imagery in part of Austin, USA, captured on May 21, 2025, visualized using the `batchplanet` package.
-](Fig1.png)
+![**Figure 1.** A true color image from PlanetScope imagery in part of Austin, USA, captured on May 21, 2025, visualized using the `batchplanet` package.](Fig1.png)
 
 # Installation
 
@@ -140,28 +140,3 @@ visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi"
 
 # Acknowledgements
 Yiluan Song was supported by the Eric and Wendy Schmidt AI in Science Postdoctoral Fellowship, a Schmidt Sciences program. Kai Zhu and Yiluan Song were supported by the National Science Foundation [grant numbers 2306198 (CAREER)]. We thank the Planet team for providing access to their API.
-
-# References
-@article{song2025phenology,
-  title={Predicting reproductive phenology of wind-pollinated trees via PlanetScope time series},
-  author={Song, Y. and Katz, D. S. and Zhu, Z. and Beaulieu, C. and Zhu, K.},
-  journal={Science of Remote Sensing},
-  year={2025},
-  pages={100205},
-  doi={10.1016/j.srs.2025.100205}
-}
-@article{moon2021phenology,
-  title={Multiscale assessment of land surface phenology from harmonized Landsat 8 and Sentinel-2, PlanetScope, and PhenoCam imagery},
-  author={Moon, M. and Richardson, A. D. and Friedl, M. A.},
-  journal={Remote Sensing of Environment},
-  volume={266},
-  pages={112716},
-  year={2021},
-  doi={10.1016/j.rse.2021.112716}
-}
-@misc{planet2017api,
-  author = {Planet Team},
-  title = {Planet application program interface: In space for life on Earth},
-  year = {2017},
-  howpublished = {\url{https://api.planet.com}}
-}
