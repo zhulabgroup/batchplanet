@@ -11,27 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(batchplanet)
-
-# Read the data file with coordinates
-df_coordinates <- read_csv(system.file("extdata", "example_neon_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
-head(df_coordinates)
-
-# Set the parameters for the PlanetScope API
-setting <- set_planetscope_parameters(
-  api_key = set_api_key(),
-  item_name = "PSScene",
-  asset = "ortho_analytic_4b_sr",
-  product_bundle = "analytic_sr_udm2",
-  cloud_lim = 1,
-  harmonized = T
-)
-
-# Set the data directory
-# You should use `set_data_directory()` to set the data directory, but for demonstration purpose, we use the package's extdata folder.
-dir_data <- system.file("extdata", package = "batchplanet")
-
-# Set the bounding box for the site of interest
-bbox <- set_bbox(df_coordinates, "SJER")
 ```
 
 We understand that you may want to have more control over your workflow. Here are some examples of how you can use the functions in the package to customize your workflow.
@@ -41,7 +20,7 @@ We understand that you may want to have more control over your workflow. Here ar
 If you would like to customize your batch downloading process, you may use the functions `search_planetscope_imagery()` and `order_planetscope_imagery()` to search and order images for a single site and time period. Be careful not to order too many images at once, as the Planet API has an internal limit. The `order_planetscope_imagery_batch()` function is designed to handle multiple sites and years in a more streamlined manner.
 ```{r, eval = F}
 # Set the bounding box for the site of interest
-bbox <- set_bbox(df_coordinates, "SJER")
+bbox <- set_bbox(df_coordinates_NEON, "SJER")
 
 images <- search_planetscope_imagery(
   api_key = setting$api_key,
@@ -69,7 +48,7 @@ If you would like to customize your batch downloading process, you may use the f
 ```{r, eval = F}
 download_planetscope_imagery(
   order_id = order_id,
-  exportfolder = file.path(dir_data, "raw", "SJER", "SJER_2025_60_90"),
+  exportfolder = path,
   api_key = setting$api_key,
   overwrite = F
 )
@@ -79,7 +58,7 @@ download_planetscope_imagery(
 
 You can visualize the true color imagery of single images using the `visualize_true_color_imagery()` function. You can overlay the coordinates from the relevant site on the imagery (optional). You can specify the brightness of the image using the `brightness` parameter.
 ```{r}
-df_coordinates_SJER <- df_coordinates %>% filter(site == "SJER")
+df_coordinates_SJER <- df_coordinates_NEON %>% filter(site == "SJER")
 
 visualize_true_color_imagery(
   file = system.file("extdata", "raw/SJER/SJER_2025_60_90/20250318_190514_92_24d3_3B_AnalyticMS_SR_harmonized_clip.tif", package = "batchplanet"),
@@ -92,9 +71,9 @@ visualize_true_color_imagery(
 
 If you would like to customize your time series retrieval process, you may use the function `retrieve_planetscope_time_series()` for a single folder `dir_site` and a set of coordinates you specify. 
 ```{r, eval = F}
-df_coordinates_example <- df_coordinates %>% filter(site == "SJER", group == "Quercus")
+df_coordinates_example <- df_coordinates_NEON %>% filter(site == "SJER", group == "Quercus")
 df_ts_example <- retrieve_planetscope_time_series(
-  dir_site = file.path(dir_data, "raw", "SJER"),
+  dir_site = file.path(dir_data, "NEON", "raw", "SJER"),
   sf_coordinates = df_coordinates_example %>% sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(4326)),
   num_cores = 10
 )
@@ -104,7 +83,7 @@ df_ts_example <- retrieve_planetscope_time_series(
 
 To process a single set of time series in a data frame, you can use the `clean_planetscope_time_series()` function.
 ```{r}
-df_ts_example <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "ts")
+df_ts_example <- read_data_product(dir = path(dir_data, "NEON"), v_site = "SJER", v_group = "Quercus", product_type = "ts")
 df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = T)
 ```
 
@@ -113,7 +92,7 @@ df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calcula
 You can customize your own phenological metrics calculation, not necessarily PlanetScope data or even EVI data, using the `calculate_phenological_metrics()` function that takes a data frame of time series data and a data frame of thresholds and returns a data frame with the calculated phenological metrics.
 
 ```{r}
-df_clean_example <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "clean")
+df_clean_example <- read_data_product(dir = path(dir_data, "NEON"), v_site = "SJER", v_group = "Quercus", product_type = "clean")
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 df_doy_example <- calculate_phenological_metrics(df_index = df_clean_example, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F)
 ```
