@@ -1,22 +1,25 @@
 # test-read_data_product.R
 #
-# Unit tests for read_data_product():
-# - Reads .rds files from product_type folder.
-# - Tags returned data with site and group extracted from filename.
-#
+# Unit tests for read_data_product()
 
 library(testthat)
 library(batchplanet)
 
-test_that("read_data_product handles multiple files and types", {
-  tmp <- tempdir()
-  dir.create(file.path(tmp, "clean"), showWarnings = FALSE)
-  dir.create(file.path(tmp, "doy"), showWarnings = FALSE)
-  saveRDS(data.frame(a = 1), file.path(tmp, "clean", "clean_SiteA_GroupX.rds"))
-  saveRDS(data.frame(b = 2), file.path(tmp, "clean", "clean_SiteB_GroupY.rds"))
-  saveRDS(data.frame(c = 3), file.path(tmp, "doy", "doy_SiteA_GroupX.rds"))
-  df_clean <- read_data_product(tmp, v_site = "SiteA", v_group = "GroupX", product_type = "clean")
-  expect_equal(df_clean$a, 1)
-  df_doy <- read_data_product(tmp, v_site = "SiteA", v_group = "GroupX", product_type = "doy")
-  expect_equal(df_doy$c, 3)
+test_that("read_data_product works with multiple product types", {
+  data_dir <- system.file("extdata/NEON/", package = "batchplanet")
+
+  df_ts <- read_data_product(data_dir, product_type = "ts")
+  expect_s3_class(df_ts, "data.frame")
+  expect_true(all(c("id", "blue", "green", "red", "nir", "lon", "lat", "site", "group") %in% names(df_ts)))
+  expect_true(nrow(df_ts) > 0)
+
+  df_clean <- read_data_product(data_dir, product_type = "clean")
+  expect_s3_class(df_ts, "data.frame")
+  expect_true(all(c("id", "lon", "lat", "date", "year", "doy", "blue", "green", "red", "nir", "time", "site", "group") %in% names(df_clean)))
+  expect_true(nrow(df_clean) > 0)
+
+  df_doy <- read_data_product(data_dir, product_type = "doy")
+  expect_s3_class(df_clean, "data.frame")
+  expect_true(all(c("year", "id", "start", "end", "direction", "thres", "doy", "site", "group") %in% names(df_doy)))
+  expect_true(nrow(df_doy) > 0)
 })

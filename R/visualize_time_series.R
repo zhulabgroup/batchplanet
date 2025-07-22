@@ -110,37 +110,6 @@ visualize_time_series <- function(df_ts,
   g
 }
 
-#' Visualize coordinates from a data frame
-#'
-#' Creates a scatter plot of coordinate data.
-#' @param df_coordinates Data frame containing longitude and latitude columns.
-#'
-#' @return A ggplot object displaying the coordinate points.
-#'
-#' @examples
-#' \dontrun{
-#' visualize_coordinates(df_coordinates)
-#' }
-#'
-#' @export
-visualize_coordinates <- function(df_coordinates) {
-  # Validate required columns
-  if (!all(c("lon", "lat") %in% names(df_coordinates))) {
-    stop("Data frame must contain 'lon' and 'lat' columns.")
-  }
-
-  p <- ggplot(df_coordinates, aes(
-    x = lon, y = lat,
-    text = str_c("ID: ", id, "<br>Longitude: ", lon, "<br>Latitude: ", lat)
-  )) +
-    geom_point(size = 0.5) +
-    labs(x = "Longitude", y = "Latitude")
-
-  p <- apply_plot_style(p)
-
-  plotly::ggplotly(p, tooltip = "text")
-}
-
 apply_plot_style <- function(p) {
   p <- p +
     theme_minimal() +

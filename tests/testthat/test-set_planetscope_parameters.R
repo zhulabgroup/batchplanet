@@ -21,8 +21,8 @@ test_that("set_api_key runs (skipped by default)", {
 
 test_that("set_data_directory runs (skipped by default)", {
   skip_on_cran()
-  skip("File system test not run by default")
+  skip("User input test not run by default")
   # Example (do not actually run):
-  # set_data_directory("dummy_dir")
+  # set_data_directory()
   expect_true(TRUE)
 })

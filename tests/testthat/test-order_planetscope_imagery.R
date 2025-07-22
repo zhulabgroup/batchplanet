@@ -7,7 +7,7 @@ library(batchplanet)
 
 test_that("order_planetscope_imagery_batch runs (skipped by default)", {
   skip_on_cran()
-  skip("API/long-running test not run by default")
+  skip("Test that requires API not run by default")
   # Example (do not actually run):
   # order_planetscope_imagery_batch(dir = tempdir(), df_coordinates = data.frame())
   expect_true(TRUE)
@@ -15,9 +15,9 @@ test_that("order_planetscope_imagery_batch runs (skipped by default)", {
 
 test_that("order_planetscope_imagery runs (skipped by default)", {
   skip_on_cran()
-  skip("API/long-running test not run by default")
+  skip("Test that requires API not run by default")
   # Example (do not actually run):
-  # order_planetscope_imagery(api_key = "dummy", bbox = list(xmin=0, ymin=0, xmax=1, ymax=1), items = c("id1"), item_name = "PSScene", product_bundle = "analytic_sr_udm2", harmonized = TRUE, order_name = "test", mostrecent = 0)
+  # order_planetscope_imagery(api_key = "dummy", bbox = list(xmin=0, ymin=0, xmax=1, ymax=1), items = c("id1"), item_name = "PSScene", product_bundle = "analytic_sr_udm2", harmonized = TRUE, order_name = "dummy", mostrecent = 0)
   expect_true(TRUE)
 })
 

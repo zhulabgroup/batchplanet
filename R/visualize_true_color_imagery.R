@@ -21,7 +21,7 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
   v_site <- list.dirs(file.path(dir, "raw"), recursive = F, full.names = F)
 
   raster_metadata <- get_raster_metadata(dir, v_site)
-  
+
   # Filter by cloud cover
   raster_metadata <- raster_metadata %>% filter(cloud_cover <= cloud_lim)
 
@@ -122,6 +122,7 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
 }
 
 # Helper to parse site and date from directory structure and extract cloud cover
+#' @export
 get_raster_metadata <- function(dir, v_site) {
   ls_df_metadata <- list()
   for (siteoi in v_site) {
@@ -139,11 +140,11 @@ get_raster_metadata <- function(dir, v_site) {
         NA
       }
     })
-    
+
     if (length(raster_files) == 0) {
       next # Skip if no raster files found for this site
     }
-    
+
     ls_df_metadata[[siteoi]] <- tibble(
       file = raster_files,
       date = str_extract(basename(file), "\\d{8}"), # Extract 8-digit date
@@ -159,9 +160,12 @@ get_raster_metadata <- function(dir, v_site) {
   return(df_metadata)
 }
 
+# Helper function to estimate global average brightness from sampled images
+#' @export
 estimate_global_brightness <- function(raster_metadata) {
   # Sample up to 100 images to estimate average brightness (after cloud filter)
   if (nrow(raster_metadata) > 0) {
+    set.seed(42)
     sample_files <- raster_metadata %>% sample_n(min(100, nrow(raster_metadata)))
     brightness_vals <- c()
     for (i in seq_len(nrow(sample_files))) {
@@ -173,13 +177,15 @@ estimate_global_brightness <- function(raster_metadata) {
         colnames(df_ras)[3:6] <- c("blue", "green", "red", "nir")
         if (nrow(df_ras) > 0) {
           mean_brightness <- mean((df_ras$red + df_ras$green + df_ras$blue) * 0.0001 / 3, na.rm = TRUE)
-          brightness_vals <- c(brightness_vals, mean_brightness)
+          if (mean_brightness <= 0.2) {
+            brightness_vals <- c(brightness_vals, mean_brightness)
+          }
         }
       }
     }
     global_brightness <- mean(brightness_vals, na.rm = TRUE)
-    # cap at 0.2 in case most images are still cloudy
-    global_brightness <- min(global_brightness, 0.2)
+    # # cap at 0.1 in case most images are still cloudy
+    # global_brightness <- min(global_brightness, 0.1)
   } else {
     global_brightness <- NA
   }
@@ -243,4 +249,35 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
   }
 
   return(p)
+}
+
+#' Visualize coordinates from a data frame
+#'
+#' Creates a scatter plot of coordinate data.
+#' @param df_coordinates Data frame containing longitude and latitude columns.
+#'
+#' @return A ggplot object displaying the coordinate points.
+#'
+#' @examples
+#' \dontrun{
+#' visualize_coordinates(df_coordinates)
+#' }
+#'
+#' @export
+visualize_coordinates <- function(df_coordinates) {
+  # Validate required columns
+  if (!all(c("lon", "lat") %in% names(df_coordinates))) {
+    stop("Data frame must contain 'lon' and 'lat' columns.")
+  }
+
+  p <- ggplot(df_coordinates, aes(
+    x = lon, y = lat,
+    text = str_c("ID: ", id, "<br>Longitude: ", lon, "<br>Latitude: ", lat)
+  )) +
+    geom_point(size = 0.5) +
+    labs(x = "Longitude", y = "Latitude")
+
+  p <- apply_plot_style(p)
+
+  plotly::ggplotly(p, tooltip = "text")
 }

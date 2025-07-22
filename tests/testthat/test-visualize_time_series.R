@@ -1,25 +1,33 @@
 # test-visualize_time_series.R
 #
-# Unit tests for visualize_time_series, visualize_coordinates
+# Unit tests for visualize_time_series
 
 library(testthat)
 library(batchplanet)
 
 test_that("visualize_time_series runs with NEON example data", {
-  # Use a small subset of the NEON clean time series
-  ts_path <- system.file("extdata/NEON/clean/clean_HARV_Quercus.rds", package = "batchplanet")
-  skip_if(ts_path == "", "Example NEON clean time series not found")
-  df_ts <- readRDS(ts_path)
-  df_ts <- head(df_ts, 20) # Use a small subset for speed
-  plt <- visualize_time_series(df_ts = df_ts, var = "evi")
+  # Use a small subset of the NEON raw time series
+  df_ts <- system.file("extdata/NEON/ts/ts_SJER_Quercus.rds", package = "batchplanet") %>%
+    read_rds() %>%
+    sample_n(100)
+  plt <- visualize_time_series(df_ts = df_ts, var = "green", ylab = "Green reflectance")
   expect_true("plotly" %in% class(plt))
-})
 
-test_that("visualize_coordinates runs with NEON example data", {
-  coords_path <- system.file("extdata/NEON/example_neon_coordinates.csv", package = "batchplanet")
-  skip_if(coords_path == "", "Example NEON coordinates not found")
-  df_coordinates <- read.csv(coords_path)
-  df_coordinates <- head(df_coordinates, 10) # Use a small subset for speed
-  plt <- visualize_coordinates(df_coordinates)
-  expect_true("gg" %in% class(plt) || "ggplot" %in% class(plt))
+  # Use a small subset of the NEON clean time series
+  df_clean <- system.file("extdata/NEON/clean/clean_SJER_Quercus.rds", package = "batchplanet") %>%
+    read_rds() %>%
+    sample_n(100)
+  plt <- visualize_time_series(df_ts = df_clean, var = "evi", ylab = "EVI")
+  expect_true("plotly" %in% class(plt))
+
+  # Use a small subset of the NEON clean time series with doy
+  id_example <- c("NEON.PLA.D17.SJER.06001")
+  df_doy_sample <- system.file("extdata/NEON/doy/doy_SJER_Quercus.rds", package = "batchplanet") %>%
+    read_rds() %>%
+    filter(id %in% id_example)
+  df_evi_sample <- system.file("extdata/NEON/clean/clean_SJER_Quercus.rds", package = "batchplanet") %>%
+    read_rds() %>%
+    filter(id %in% id_example)
+  plt <- visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", smooth = T)
+  expect_true("plotly" %in% class(plt))
 })

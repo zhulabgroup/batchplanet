@@ -57,7 +57,7 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, v_mo
   # If there are orders to process, initiate parallel download
   if (nrow(df_order) > 0) {
     df_order <- df_order[df_order$month %in% v_month, ]
-    
+
     cl <- makeCluster(num_cores, outfile = "")
     registerDoSNOW(cl)
 
