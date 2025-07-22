@@ -1,6 +1,6 @@
 ---
 title: "Vignette"
-author: "Yiluan Song, Ken Reid"
+author: "Yiluan Song"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -91,28 +91,6 @@ The function will create a folder `raw/` in the data directory you specified, an
 order_planetscope_imagery_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting)
 ```
 
-If you would like to customize your batch downloading process, you may use the functions `search_planetscope_imagery()` and `order_planetscope_imagery()` to search and order images for a single site and time period. Be careful not to order too many images at once, as the Planet API has an internal limit. The `order_planetscope_imagery_batch()` function is designed to handle multiple sites and years in a more streamlined manner.
-```{r, eval = F}
-images <- search_planetscope_imagery(
-  api_key = setting$api_key,
-  bbox = set_bbox(df_coordinates, "SJER"),
-  date_end = "2025-03-31",
-  date_start = "2025-03-01",
-  item_name = setting$item_name,
-  asset = setting$asset,
-  cloud_lim = setting$cloud_lim
-)
-order_id <- order_planetscope_imagery(
-  api_key = setting$api_key,
-  bbox = set_bbox(df_coordinates, "SJER"),
-  items = images,
-  item_name = setting$item_name,
-  product_bundle = setting$product_bundle,
-  harmonized = setting$harmonized,
-  order_name = "SJER_2025_60_90"
-)
-```
-
 After successful ordering, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
 
 > Why would you see failed orders?
@@ -127,16 +105,6 @@ Use the `download_planetscope_imagery_batch()` function to download the ordered 
 
 ```{r, eval = F}
 download_planetscope_imagery_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_year = 2025, setting = setting, num_cores = 3, overwrite = F)
-```
-
-If you would like to customize your batch downloading process, you may use the function `download_planetscope_imagery()` to download images from a single order. You can find the order ID saved in the `raw/` folder, or you can find it in the past orders in your Planet account, if you did not use `order_planetscope_imagery_batch()` to order images.
-```{r, eval = F}
-download_planetscope_imagery(
-  order_id = order_id,
-  exportfolder = file.path(dir_data, "raw", "SJER", "SJER_2025_60_90"),
-  api_key = setting$api_key,
-  overwrite = F
-)
 ```
 
 At this point, you might have downloaded a large amount of images. Consider archiving these raw images and removing the local copy after you have completed your downstream analyses.
@@ -176,16 +144,6 @@ This function will create a folder `ts/` in the data directory you specified and
 retrieve_planetscope_time_series_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), max_sample = 2000, num_cores = 10)
 ```
 
-If you would like to customize your time series retrieval process, you may use the function `retrieve_planetscope_time_series()` for a single folder `dir_site` and a set of coordinates you specify. 
-```{r, eval = F}
-df_coordinates_example <- df_coordinates %>% filter(site == "SJER", group == "Quercus")
-df_ts_example <- retrieve_planetscope_time_series(
-  dir_site = file.path(dir_data, "raw", "SJER"),
-  sf_coordinates = df_coordinates_example %>% sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(4326)),
-  num_cores = 10
-)
-```
-
 You can read in processed data using the `read_data_product()` function. To read in time series retrieved from raw imagery, set `product_type = "ts"`. The function will read in all time series data from the `ts/` folder and combine them into one data frame. You can specify the sites and groups you want to read in using the `v_site` and `v_group` parameters. If you do not specify these parameters, the function will read in all time series data.
 
 You can visualize time series data using the `visualize_time_series()` function. You can specify the variable you want to plot, which needs to be a column in the supplies data frame, and the corresponding y-axis label. The optional `facet_var` parameter allows you to specify the variable you want to use for faceting the plot (e.g., site, group, or id). The `smooth` parameter allows you to specify whether you want to smooth the time series data or not. If `smooth = TRUE`, the function will use a weighted Whittaker smoothing method to smooth and fill the time series data (see Section 4). This function is not specific to PlanetScope data and can be used with any time series data, as long as the data frame has `date` or `time` at regular intervals, as well as the variable you want to plot. Each color represents a pixel.
@@ -210,12 +168,6 @@ The function will create a folder `clean/` in the data directory you specified a
 
 ```{r, eval = F}
 clean_planetscope_time_series_batch(dir = dir_data, v_site = c("HARV", "SJER"), v_group = c("Acer", "Quercus"), num_cores = 3, calculate_evi = T)
-```
-
-To process a single set of time series in a data frame, you can use the `clean_planetscope_time_series()` function.
-```{r}
-df_ts_example <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "ts")
-df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = T)
 ```
 
 Similar to Section 3.1, you can read in cleaned time series data using the `read_data_product()` function, with `product_type = "clean"`. You can then visualize the cleaned time series data using the `visualize_time_series()` function. The cleaned time series data will have a new column `evi` that we can visualize, if you set `calculate_evi = T` in the previous step.
@@ -249,14 +201,7 @@ df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
 calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 3)
 ```
-
-This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `inst/extdata/clean/` folder of the package. You can also customize your own workflow using the `calculate_phenological_metrics()` function that takes a data frame of time series data and a data frame of thresholds and returns a data frame with the calculated phenological metrics.
-
-```{r}
-df_clean_example <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "clean")
-df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
-df_doy_example <- calculate_phenological_metrics(df_index = df_clean_example, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F)
-```
+This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `inst/extdata/clean/` folder of the package. 
 
 Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}
@@ -265,73 +210,4 @@ df_doy_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Q
 df_evi_sample <- read_data_product(dir = dir_data, v_site = "SJER", v_group = "Quercus", product_type = "clean") %>% filter(id %in% v_id)
 
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
-```
-
-## 4 Miscellaneous time series processing tools
-
-This package also provides tools for time series processing. These tools are not specific to PlanetScope data and can be used with any time series data, especially those with seasonality.
-
-We set up a simulated time series with a double logistic function, which resembles the greenness of deciduous trees. We add noise to the time series and introduce some missing data.
-```{r}
-t <- 1:365
-
-# Double logistic function: leaf-on and leaf-off phases
-double_logistic <- function(t, L = 0.1, U = 0.6, k1 = 0.1, k2 = 0.1, t1 = 120, t2 = 280) {
-  L + (U - L) * (1 / (1 + exp(-k1 * (t - t1)))) * (1 / (1 + exp(k2 * (t - t2))))
-}
-
-# Generate simulate_ts values using double logistic
-simulate_ts <- double_logistic(t)
-
-# Add Gaussian noise
-set.seed(42)
-simulate_ts <- simulate_ts + rnorm(length(t), mean = 0, sd = 0.1)
-
-# Introduce missing data (e.g., cloud cover)
-missing_idx <- sample(1:length(t), size = round(0.2 * length(t))) # 10% missing
-simulate_ts[missing_idx] <- NA
-```
-
-The `whittaker_smoothing_filling()` function is used to smooth the time series and fill in missing values within one step. Under the hood, it uses a weighted Whittaker smoothing (the `whit1` funtion from the `ptw` package), but we assign zero weight to any missing value and equal weight to all other values, such that the missing values are filled with the smoothed values.
-
-The `lambda` parameter controls the smoothness of the output. A larger value results in a smoother output, while a smaller value retains more of the original signal. It is recommended to try different values and visualize the time series before and after smoothing. The `maxgap` parameter specifies the maximum gap size for filling missing values. Any consecutive missing values larger than `maxgap` will not be filled. The `minseg` parameter specifies the minimum segment length for smoothing. Segments shorter than this length will be treated as missing and then either left missing or filled with smoothed values, depending on `maxgap`. This option allows us to avoid smoothing over very short segments of data that may not be representative of the overall trend.
-
-```{r}
-smoothed_ts <- whittaker_smoothing_filling(
-  x = simulate_ts,
-  lambda = 50,
-  maxgap = 30,
-  minseg = 2
-)
-
-# Compare original and smoothed time series
-df_compare <- data.frame(
-  original = simulate_ts,
-  smoothed = smoothed_ts
-) %>%
-  mutate(timestep = row_number())
-
-ggplot(df_compare) +
-  geom_point(aes(x = timestep, y = original, color = "original")) +
-  geom_line(aes(x = timestep, y = smoothed, color = "smoothed"), linewidth = 2, alpha = 0.75) +
-  scale_color_manual(values = c("original" = "black", "smoothed" = "dark green")) +
-  theme_minimal() +
-  labs(
-    x = "Timestep",
-    y = "Value",
-    color = ""
-  ) +
-  theme(legend.position = "bottom")
-```
-
-The `determine_seasonality()` function is used to check if a time series from one year (or one life cycle) has seasonal variations or has no significant variations. In practice, we can use this function to distinguish if the greenness of a tree within a year has seasonal variations (e.g., deciduous trees) or remains relatively constant (e.g., evergreen trees). Under the hood, the function fits a simple linear regression model and segmented regression models with 1 to 3 breakpoints to a given time series. It then compares their Akaike Information Criterion (AIC) values (with a penalty parameter k) to assess whether a simple linear regression (i.e., non-segmented) model is preferred. The `k` parameter controls the penalty for the number of breakpoints in the calculation of AIC. A larger `k` means that the favored model is more likely to be a simple linear regression model, such that we are more conservative in concluding that the time series has seasonal variations.
-
-```{r}
-# Check if a time series is flat
-example_seasonality <- determine_seasonality(
-  ts = simulate_ts,
-  k = 50
-)
-
-print(str_c("Time series has significant seasonal variation: ", example_seasonality))
 ```
