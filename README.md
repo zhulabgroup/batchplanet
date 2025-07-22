@@ -29,30 +29,20 @@ devtools::install_github("zhulabgroup/phenology-batchplanet")
 
 ***
 
+## Example Workflow
+
+For a complete example of the package in action, see **vignettes/vignette.Rmd**. This document demonstrates steps in downloading PlanetScope data and processing time series using a subset of NEON site data.
+
+***
+
 ## Testing
 
-We have basic **testthat** unit tests covering our core, pure-R functionality:
-
-- **whittaker_smoothing_filling()**  
-  Checks that a perfect linear ramp remains highly correlated after smoothing, and that gaps longer than `maxgap` stay as `NA`.
-
-- **determine_seasonality()**  
-  Verifies that a flat sequence is correctly flagged non-seasonal, and a sinusoidal sequence is flagged seasonal (with warnings suppressed).
-
-- **read_data_product()**  
-  Confirms that `.rds` files in a product folder are read into a single data frame and that `site`/`group` are extracted from the filename.
-
-To run all tests from your package root in R:
+We have developed **testthat** unit tests covering all core functions.
 
 ```r
 # from within R or RStudio, with your working directory set to the package root
 devtools::test()
 ```
-***
-
-## Example Workflow
-
-For a complete example of the package in action, see **vignettes/vignette.Rmd**. This document demonstrates steps in downloading PlanetScope data and processing time series using a subset of NEON site data.
 
 ***
 
