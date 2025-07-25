@@ -80,12 +80,17 @@ With this package, we significantly speed up the ordering, downloading, and proc
 
 # Installation
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy = TRUE, tidy.opts = list(width.cutoff = 60))
+```
+
 ```r
 # Install from GitHub using remotes
 remotes::install_github("zhulabgroup/batchplanet")
 ```
 
 # Example Usage
+
 ```r
 library(batchplanet)
 
@@ -140,3 +145,5 @@ visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi"
 
 # Acknowledgements
 Yiluan Song was supported by the Eric and Wendy Schmidt AI in Science Postdoctoral Fellowship, a Schmidt Sciences program. Kai Zhu and Yiluan Song were supported by the National Science Foundation [grant numbers 2306198 (CAREER)]. We thank the Planet team for providing access to their API.
+
+# References
