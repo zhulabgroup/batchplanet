@@ -78,16 +78,12 @@ With this package, we significantly speed up the ordering, downloading, and proc
 
 ![**Figure 1.** A true color image from PlanetScope imagery in part of Austin, USA, captured on May 21, 2025, visualized using the `batchplanet` package.](Fig1.png)
 
-# Installation
-
-```r
-# Install from GitHub using remotes
-remotes::install_github("zhulabgroup/batchplanet")
-```
-
 # Example Usage
 
+Install from GitHub using remotes and load package.
+
 ```r
+remotes::install_github("zhulabgroup/batchplanet")
 library(batchplanet)
 ```
 
