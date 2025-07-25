@@ -80,10 +80,6 @@ With this package, we significantly speed up the ordering, downloading, and proc
 
 # Installation
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(tidy = TRUE, tidy.opts = list(width.cutoff = 60))
-```
-
 ```r
 # Install from GitHub using remotes
 remotes::install_github("zhulabgroup/batchplanet")
@@ -93,14 +89,21 @@ remotes::install_github("zhulabgroup/batchplanet")
 
 ```r
 library(batchplanet)
+```
 
-# Read example coordinates
-df_coordinates <- read.csv(system.file("extdata/NEON/example_neon_coordinates.csv", package = "batchplanet"))
+Read example coordinates.
+
+```r
+df_coordinates <- read.csv(
+  system.file("extdata/NEON/example_neon_coordinates.csv",
+              package = "batchplanet")
+)
 visualize_coordinates(df_coordinates)
 ```
 
+Set download parameters and data directory.
+
 ```r
-# Set download parameters and data directory
 setting <- set_planetscope_parameters(
   api_key = set_api_key(),
   item_name = "PSScene",
@@ -109,38 +112,116 @@ setting <- set_planetscope_parameters(
   cloud_lim = 0.3,
   harmonized = TRUE
 )
+
 dir_data <-  system.file("extdata/NEON", package = "batchplanet")
 ```
 
-```r
-# Order and download imagery (slow process, uncomment to run)
-# order_planetscope_imagery_batch(dir = dir_data, df_coordinates = df_coordinates, v_site = c("HARV", "SJER"), v_year = 2024, setting = setting)
-# download_planetscope_imagery_batch(dir = dir_data, setting = setting, num_cores = 3)
-visualize_true_color_imagery_batch(dir = dir_data, df_coordinates = df_coordinates)
-```
+Order and download imagery.
 
 ```r
-# Retrieve time series
-# retrieve_planetscope_time_series_batch(dir = dir_data, df_coordinates = df_coordinates, num_cores = 10)
-df_ts <- read_data_product(dir = dir_data, product_type = "ts")
-visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "site", smooth = F)
+order_planetscope_imagery_batch(
+  dir = dir_data,
+  df_coordinates = df_coordinates,
+  v_site = c("HARV", "SJER"),
+  v_year = 2024,
+  setting = setting
+)
+
+download_planetscope_imagery_batch(
+  dir = dir_data,
+  setting = setting,
+  num_cores = 12
+)
+
+visualize_true_color_imagery_batch(
+  dir = dir_data,
+  df_coordinates = df_coordinates
+)
 ```
 
-```r
-# Clean time series and calculate EVI
-# clean_planetscope_time_series_batch(dir = dir_data, num_cores = 3, calculate_evi = T)
-df_clean <- read_data_product(dir = dir_data, product_type = "clean")
-visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
-```
+Retrieve time series at coordinates of interest.
 
 ```r
-# Calculate phenological metrics
-df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
-# calculate_phenological_metrics_batch(dir = dir_data, v_site = "SJER", v_group = "Quercus", df_thres = df_thres, var_index = "evi", num_cores = 3)
-v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJER.06310")
-df_doy_sample <- read_data_product(dir = dir_data, product_type = "doy") %>% filter(id %in% v_id)
-df_evi_sample <- read_data_product(dir = dir_data, product_type = "clean") %>% filter(id %in% v_id)
-visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
+retrieve_planetscope_time_series_batch(
+  dir = dir_data,
+  df_coordinates = df_coordinates,
+  num_cores = 12
+)
+
+df_ts <- read_data_product(
+  dir = dir_data,
+  product_type = "ts"
+)
+
+visualize_time_series(
+  df_ts = df_ts,
+  var = "green",
+  ylab = "Green reflectance",
+  facet_var = "site",
+  smooth = F)
+```
+
+Clean time series and calculate EVI.
+
+```r
+clean_planetscope_time_series_batch(
+  dir = dir_data,
+  num_cores = 3,
+  calculate_evi = T
+)
+
+df_clean <- read_data_product(
+  dir = dir_data,
+  product_type = "clean"
+)
+
+visualize_time_series(
+  df_ts = df_clean,
+  var = "evi",
+  ylab = "EVI",
+  facet_var = "site",
+  smooth = T
+)
+```
+
+Calculate phenological metrics.
+
+```r
+df_thres <- set_thresholds(
+  thres_up = c(0.3, 0.4, 0.5),
+  thres_down = NULL
+)
+
+calculate_phenological_metrics_batch(
+  dir = dir_data,
+  v_site = "SJER",
+  v_group = "Quercus",
+  df_thres = df_thres,
+  var_index = "evi",
+  num_cores = 12
+)
+
+v_id <- c("NEON.PLA.D17.SJER.06001",
+          "NEON.PLA.D17.SJER.06337",
+          "NEON.PLA.D17.SJER.06310")
+df_doy_sample <- read_data_product(
+  dir = dir_data,
+  product_type = "doy"
+  ) %>%
+  filter(id %in% v_id)
+df_evi_sample <- read_data_product(
+  dir = dir_data,
+  product_type = "clean"
+  ) %>%
+  filter(id %in% v_id)
+visualize_time_series(
+  df_ts = df_evi_sample,
+  df_doy = df_doy_sample,
+  var = "evi",
+  ylab = "EVI",
+  facet_var = "id",
+  smooth = T
+)
 ```
 
 # Acknowledgements
