@@ -10,10 +10,10 @@ tags:
 authors:
   - name: Yiluan Song
     orcid: 0000-0003-3660-3797
-    affiliation: 1,2
+    affiliation: "1, 2"
   - name: Alexandre R. Bevington
     orcid: 0000-0003-1587-3317
-    affiliation: 3 4
+    affiliation: "3, 4"
   - name: Ken Reid
     orcid: 0000-0001-8654-2430
     affiliation: 1
