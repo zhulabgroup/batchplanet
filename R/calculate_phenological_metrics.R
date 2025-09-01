@@ -73,7 +73,7 @@ calculate_phenological_metrics_batch <- function(dir,
     df_doy <- calculate_phenological_metrics_sitegroup(df_index, df_thres, v_year, min_days, check_seasonality, var_index, extend_to_previous_year, extend_to_next_year)
 
     f_doy <- file.path(dir, "doy", file %>% str_replace("clean_", "doy_"))
-    write_rds(df_doy, f_doy)
+    write_rds(df_doy, f_doy, compress = "gz")
   }
   stopCluster(cl)
 

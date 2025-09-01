@@ -90,7 +90,7 @@ retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, site
 
   # If processed file does not exist, process and save the satellite data
   df_ps_full <- retrieve_planetscope_time_series(dir_site, sf_coordinates, num_cores)
-  write_rds(df_ps_full, f_ts)
+  write_rds(df_ps_full, f_ts， compress = "gz")
   message("Saved processed data: ", f_ts)
 }
 
