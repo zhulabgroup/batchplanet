@@ -109,7 +109,10 @@ calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, v_year 
       message(str_c("Processing time series for ", yearoi, " ", idoi))
       df_index_id <- df_index_year %>%
         filter(id == idoi)
-
+      if (nrow(df_index_id) == 0){
+        message(str_c("No data found for ", idoi, " in year ", yearoi))
+        next
+      }
       ls_df_doy_id[[idoi]] <- calculate_phenological_metrics(df_index = df_index_id, df_thres, min_days, check_seasonality, var_index) %>%
         mutate(year = yearoi, id = idoi) %>%
         select(year, id, everything())
