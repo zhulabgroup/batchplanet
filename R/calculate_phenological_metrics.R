@@ -204,29 +204,34 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
       print("not typical growth curve")
     } else {
       greendown_thres <- rep(NA, length(thres_list_down))
-      for (t in 1:length(thres_list_down)) {
-        if (thres_list_down[t] == 1) {
-          greendown_thres[t] <- max_index
-        } else if (thres_list_down[t] == 0) {
-          greendown_thres[t] <- min_index
-        } else {
-          greendown_thres[t] <- (max_index - min_index) * thres_list_down[t] + min_index
+      if (is.na(max_index) | is.na(min_index)){
+        greendown_doy <- rep(NA, length(thres_list_down))
+        start_doy <- NA
+        end_doy <- NA
+      } else {
+        for (t in 1:length(thres_list_down)) {
+          if (thres_list_down[t] == 1) {
+            greendown_thres[t] <- max_index
+          } else if (thres_list_down[t] == 0) {
+            greendown_thres[t] <- min_index
+          } else {
+            greendown_thres[t] <- (max_index - min_index) * thres_list_down[t] + min_index
+          }
         }
-      }
-      greendown_thres <- (max_index - min_index) * thres_list_down + min_index
-
-      greendown_doy <- rep(NA, length(greendown_thres))
-      for (t in 1:length(greendown_thres)) {
-        df_index_doy <- df_index %>%
-          filter(
-            doy >= start_doy,
-            doy <= end_doy
-          ) %>%
-          filter(index_sm <= greendown_thres[t]) %>%
-          arrange(doy) %>%
-          slice(1)
-        greendown_doy[t] <- df_index_doy$doy
-      }
+        greendown_thres <- (max_index - min_index) * thres_list_down + min_index
+  
+        greendown_doy <- rep(NA, length(greendown_thres))
+        for (t in 1:length(greendown_thres)) {
+          df_index_doy <- df_index %>%
+            filter(
+              doy >= start_doy,
+              doy <= end_doy
+            ) %>%
+            filter(index_sm <= greendown_thres[t]) %>%
+            arrange(doy) %>%
+            slice(1)
+          greendown_doy[t] <- df_index_doy$doy
+      }}
     }
     df_down <- data.frame(start = start_doy, end = end_doy, direction = "down", thres = thres_list_down, doy = greendown_doy)
   }
@@ -261,6 +266,11 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
       print("not typical growth curve")
     } else {
       greenup_thres <- rep(NA, length(thres_list_up))
+      if (is.na(max_index) | is.na(min_index)){
+        greenup_doy <- rep(NA, length(thres_list_down))
+        start_doy <- NA
+        end_doy <- NA
+      } else {
       for (t in 1:length(thres_list_up)) {
         if (thres_list_up[t] == 1) {
           greenup_thres[t] <- max_index
@@ -282,7 +292,7 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
           arrange(doy) %>%
           slice(1)
         greenup_doy[t] <- df_index_doy$doy
-      }
+      }}
     }
     df_up <- data.frame(start = start_doy, end = end_doy, direction = "up", thres = thres_list_up, doy = greenup_doy)
   }
