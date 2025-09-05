@@ -113,9 +113,12 @@ calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, v_year 
         message(str_c("No data found for ", idoi, " in year ", yearoi))
         next
       }
-      ls_df_doy_id[[idoi]] <- calculate_phenological_metrics(df_index = df_index_id, df_thres, min_days, check_seasonality, var_index) %>%
-        mutate(year = yearoi, id = idoi) %>%
-        select(year, id, everything())
+      res <- calculate_phenological_metrics(df_index = df_index_id, df_thres, min_days, check_seasonality, var_index)
+      if (!is.null(res)){
+        ls_df_doy_id[[idoi]] <- res %>%
+          mutate(year = yearoi, id = idoi) %>%
+          select(year, id, everything())
+      }
     }
     ls_df_doy_year[[yearoi %>% as.character()]] <- bind_rows(ls_df_doy_id)
   }
