@@ -152,7 +152,7 @@ wait_for_order_success <- function(order_id, api_key) {
   get_order <- httr::GET(url = url2, username = api_key)
   get_content <- httr::content(get_order)
 
-  while (get_content$state != "success") {
+  while (!get_content$state %in% c("success", "partial")) {
     message("Order still being processed, trying again in 60 seconds...")
     message(get_content$state)
     Sys.sleep(60)

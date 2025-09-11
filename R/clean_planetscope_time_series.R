@@ -47,7 +47,7 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
     df_clean <- clean_planetscope_time_series(df_ts, calculate_evi)
 
     f_clean <- file.path(dir, "clean", file %>% str_replace("ts_", "clean_"))
-    write_rds(df_clean, f_clean)
+    write_rds(df_clean, f_clean, compress = "gz")
   }
   stopCluster(cl)
 
