@@ -1,4 +1,4 @@
-Package: batchplanet
+Package: BatchPlanet
 Title: Streamlined Processing and Analysis of PlanetScope and Satellite Imagery Data
 Version: 0.1.0
 Authors@R: c(
