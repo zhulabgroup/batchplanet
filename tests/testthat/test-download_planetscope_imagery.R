@@ -3,7 +3,7 @@
 # Unit tests for download_planetscope_imagery_batch, download_planetscope_imagery_siteyear, download_planetscope_imagery
 
 library(testthat)
-library(batchplanet)
+library(BatchPlanet)
 
 test_that("download_planetscope_imagery_batch runs (skipped by default)", {
   skip_on_cran()

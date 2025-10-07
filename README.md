@@ -24,7 +24,7 @@ Install the development version from GitHub:
 ```r
 # Install devtools if not already installed
 install.packages("devtools")
-devtools::install_github("zhulabgroup/batchplanet")
+devtools::install_github("zhulabgroup/BatchPlanet")
 ```
 
 This package was developed and tested using the [`rocker/geospatial:4.2.0-2023-04-25`](https://hub.docker.com/r/rocker/geospatial) Docker image, with RStudio 2024.04.01 and GCC 10.3.0.
@@ -50,7 +50,7 @@ devtools::test()
 
 ## Planned Features (Coming Soon)
 
-The following features are planned for future releases of batchplanet:
+The following features are planned for future releases of BatchPlanet:
 
 - **Polygon support:** Ability to use polygons (or multiple polygons) as the area of interest (AOI) for ordering, downloading, and extracting data, in addition to points.
 - **Band math and raster processing tools:** Integration with the Planet Orders API's processing tools (such as band math, clip, harmonize, reproject, tile, and more) to allow on-the-fly calculation of indices (e.g., NDVI, EVI) and other raster operations before download. See [Planet Orders API Tools documentation](https://docs.planet.com/develop/apis/orders/tools/).

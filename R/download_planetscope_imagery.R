@@ -63,7 +63,7 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, v_mo
 
     foreach(
       i = 1:nrow(df_order),
-      .packages = c("lubridate", "stringr", "httr", "batchplanet")
+      .packages = c("lubridate", "stringr", "httr", "BatchPlanet")
     ) %dopar% {
       # Extract month and order ID for the current order
       monthoi <- df_order$month[i]

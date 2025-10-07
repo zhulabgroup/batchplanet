@@ -3,13 +3,13 @@
 # Unit tests for clean_planetscope_time_series_batch and clean_planetscope_time_series
 
 library(testthat)
-library(batchplanet)
+library(BatchPlanet)
 
 test_that("clean_planetscope_time_series_batch runs with example data", {
   temp_dir <- withr::local_tempdir()
 
   # Test with example data
-  data_dir <- system.file("extdata/NEON/", package = "batchplanet")
+  data_dir <- system.file("extdata/NEON/", package = "BatchPlanet")
   dir.create(file.path(temp_dir, "ts"), recursive = TRUE, showWarnings = FALSE)
 
   file.copy(
@@ -39,7 +39,7 @@ test_that("clean_planetscope_time_series_batch runs with example data", {
 })
 
 test_that("clean_planetscope_time_series cleans example data", {
-  data_dir <- system.file("extdata/NEON/", package = "batchplanet")
+  data_dir <- system.file("extdata/NEON/", package = "BatchPlanet")
   df_ts <- list.files(file.path(data_dir, "ts"), full.names = TRUE, pattern = "ts_SJER_Quercus") %>%
     read_rds()
 

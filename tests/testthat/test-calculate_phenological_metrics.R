@@ -3,13 +3,13 @@
 # Unit tests for calculate_phenological_metrics_batch, calculate_phenological_metrics, set_thresholds
 
 library(testthat)
-library(batchplanet)
+library(BatchPlanet)
 
 test_that("calculate_phenological_metrics_batch runs with example data", {
   temp_dir <- withr::local_tempdir()
 
   # Test with example data
-  data_dir <- system.file("extdata/NEON/", package = "batchplanet")
+  data_dir <- system.file("extdata/NEON/", package = "BatchPlanet")
   dir.create(file.path(temp_dir, "clean"), recursive = TRUE, showWarnings = FALSE)
 
   file.copy(
@@ -45,7 +45,7 @@ test_that("calculate_phenological_metrics_batch runs with example data", {
 })
 
 test_that("calculate_phenological_metrics runs with example data", {
-  data_dir <- system.file("extdata/NEON/", package = "batchplanet")
+  data_dir <- system.file("extdata/NEON/", package = "BatchPlanet")
   df_clean <- list.files(file.path(data_dir, "clean"), full.names = TRUE, pattern = "clean_SJER_Quercus") %>%
     read_rds() %>%
     filter(year == 2024) %>%

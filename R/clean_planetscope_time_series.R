@@ -39,7 +39,7 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
 
   foreach(
     file = v_file,
-    .packages = c("tidyverse", "batchplanet")
+    .packages = c("tidyverse", "BatchPlanet")
   ) %dopar% {
     f_ts <- file.path(dir, "ts", file)
     df_ts <- read_rds(f_ts)

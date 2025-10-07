@@ -3,7 +3,7 @@
 # Unit tests for set_planetscope_parameters, set_api_key, set_data_directory
 
 library(testthat)
-library(batchplanet)
+library(BatchPlanet)
 
 test_that("set_planetscope_parameters returns a named list", {
   params <- set_planetscope_parameters(api_key = "dummy", item_name = "PSScene", asset = "ortho_analytic_4b_sr", product_bundle = "analytic_sr_udm2", cloud_lim = 1, harmonized = TRUE)

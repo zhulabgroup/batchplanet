@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Overview
 
-This workflow demonstrates the features of the _batchplanet_ package. It provides a step-by-step guide to downloading PlanetScope imagery, processing time series data, and calculating phenological metrics. The package is designed to work with the PlanetScope API and is particularly useful for researchers and practitioners in environmental studies and remote sensing. This package has been used for our peer-reviewed publication ([Song et al., (2025)](https://doi.org/10.1016/j.srs.2025.100205)), to predict reproductive phenology of wind-pollinated trees via PlanetScope time series.
+This workflow demonstrates the features of the _BatchPlanet_ package. It provides a step-by-step guide to downloading PlanetScope imagery, processing time series data, and calculating phenological metrics. The package is designed to work with the PlanetScope API and is particularly useful for researchers and practitioners in environmental studies and remote sensing. This package has been used for our peer-reviewed publication ([Song et al., (2025)](https://doi.org/10.1016/j.srs.2025.100205)), to predict reproductive phenology of wind-pollinated trees via PlanetScope time series.
 
 Who should use this package?
 - If you prefer using R over Python for batch downloading PlanetScope data across multiple locations and extended time periods, as well as for processing tasks such as time series retrieval and metric calculation.
@@ -19,14 +19,14 @@ Who should use this package?
 - If reproducibility and control over data are your top priorities.
 
 ```{r}
-library(batchplanet)
+library(BatchPlanet)
 ```
 
 ## 1 Read coordinate data
 In order to download PlanetScope imagery, you need to provide coordinates of points of interest. For this example, we will use several street tree inventories retrieved from the [OpenTrees.org](https://opentrees.org/).
 ```{r}
 # Read the data file with coordinates
-df_coordinates_urban <- read_csv(system.file("extdata", "urban/example_urban_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
+df_coordinates_urban <- read_csv(system.file("extdata", "urban/example_urban_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 head(df_coordinates_urban)
 ```
 You should create your own data frame with coordinates. Make sure your data frame for coordinates have the columns: `id` (unique id for each point of interest), `lon` for longitude, and `lat` for latitude. You may have a character column `site` if you have clustered coordinates at dispersed sites. You may also a character column `group` you can use to group coordinates later on.
@@ -76,7 +76,7 @@ dir_data <- set_data_directory()
 
 For demonstration purpose, we are going to set the data directory to the package's extdata folder, but you should use `set_data_directory()` as above when you carry out your own analysis.
 ```{r}
-dir_data <- system.file("extdata", package = "batchplanet")
+dir_data <- system.file("extdata", package = "BatchPlanet")
 ```
 
 ### 2.2 Order
@@ -126,7 +126,7 @@ visualize_true_color_imagery_batch(
 To demonstrate the capacity in processing long time series, we will use a sample data file retrieved from the [National Ecological Observatory Network (NEON)](https://www.neonscience.org/) [plant phenology observations data product](https://data.neonscience.org/data-products/DP1.10055.001).
 ```{r}
 # Read the data file with coordinates
-df_coordinates_NEON <- read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "batchplanet"), show_col_types = FALSE)
+df_coordinates_NEON <- read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 head(df_coordinates_NEON)
 ```
 

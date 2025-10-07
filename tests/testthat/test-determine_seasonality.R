@@ -2,7 +2,7 @@
 #
 # Unit tests for determine_seasonality()
 library(testthat)
-library(batchplanet)
+library(BatchPlanet)
 
 test_that("Flat series is not seasonal", {
   ts_flat <- seq(0.4, 0.5, length.out = 365)

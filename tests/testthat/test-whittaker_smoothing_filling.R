@@ -6,7 +6,7 @@
 #
 
 library(testthat)
-library(batchplanet)
+library(BatchPlanet)
 
 test_that("Whittaker smoothing fills short gaps and smooths noise", {
   t <- 1:365

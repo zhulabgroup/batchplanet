@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-library(batchplanet)
+library(BatchPlanet)
 ```
 
 This package also provides tools for time series processing. These tools are not specific to PlanetScope data and can be used with any time series data, especially those with seasonality.

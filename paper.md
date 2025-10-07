@@ -1,5 +1,5 @@
 ---
-title: "*batchplanet*: Batch access and processing of PlanetScope imagery for spatiotemporal analysis in R"
+title: "*BatchPlanet*: Batch access and processing of PlanetScope imagery for spatiotemporal analysis in R"
 tags:
   - R
   - remote sensing
@@ -36,21 +36,21 @@ affiliations:
   - name: Ministry of Forests, Province of British Columbia, Prince George, BC, Canada
     index: 4
 date: 2025-07-25
-repository: https://github.com/zhulabgroup/batchplanet
+repository: https://github.com/zhulabgroup/BatchPlanet
 bibliography: paper.bib
 ---
 
 # Summary
 
-The `batchplanet` R package provides a reproducible and scalable workflow for accessing and processing PlanetScope satellite imagery, enabling environmental researchers to efficiently perform spatiotemporal analysis of high-resolution remote sensing data. The package streamlines the steps required to work with the PlanetScope API, including the ordering and downloading of imagery, retrieving and cleaning pixel-level time series, and computing derived metrics such as the Enhanced Vegetation Index (EVI) and green-up/down time. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology]. Generalizable beyond phenological research, this tool is particularly suited for environmental research that involves large volumes of imagery across multiple sites and long time periods.
+The `BatchPlanet` R package provides a reproducible and scalable workflow for accessing and processing PlanetScope satellite imagery, enabling environmental researchers to efficiently perform spatiotemporal analysis of high-resolution remote sensing data. The package streamlines the steps required to work with the PlanetScope API, including the ordering and downloading of imagery, retrieving and cleaning pixel-level time series, and computing derived metrics such as the Enhanced Vegetation Index (EVI) and green-up/down time. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology]. Generalizable beyond phenological research, this tool is particularly suited for environmental research that involves large volumes of imagery across multiple sites and long time periods.
 
 # Statement of Need
 
 PlanetScope is a commercial high-resolution (~3-meter), near-daily satellite imagery product provided by Planet Labs. With its global coverage, high spatial resolution, and rapid revisit time, PlanetScope data has become increasingly valuable for scientific research and operational monitoring — enabling detailed analyses of land use change, ecosystem dynamics, disaster impacts, and more [@moon2021phenology]. While access to Planet data has been facilitated through the Planet API [@planet2017api], using such data still poses challenges: complex API interactions, large-volume data downloads, and non-trivial processing workflows often limit accessibility and reproducibility.
 
-Planet Labs provides an official [Python SDK](https://planet-sdk-for-python-v2.readthedocs.io/en/latest/python/sdk-guide/) for programmatic access to the Planet APIs, supporting both Python scripting and a no-code CLI. Cloud-based platforms such as Sentinel Hub and Google Earth Engine (GEE) provide powerful PlanetScope imagery access and processing capabilities, but their cloud-based nature restricts user control over processing environments and data storage, which can complicate reproducibility and transparency in scientific workflows. The programming languages (Python and JavaScript) used on these three platforms might be less familiar to R users. An existing R package `planetR` offers an R-native interface to the Planet API. Nevertheless, these existing tools usually require users to write custom scripts to download and process data in batch over multiple sites, which can be time-consuming and is easily limited by users' computing and storage resources. `batchplanet` fills key gaps in the existing ecosystem (Table 1) with R-native, locally reproducible batch downloading and processing of PlanetScope imagery. It also includes features such as time series analysis tools and interactive visualization. `batchplanet` is particularly suitable for scientific research workflows that require scalability, transparency, and reproducibility over the data pipeline.
+Planet Labs provides an official [Python SDK](https://planet-sdk-for-python-v2.readthedocs.io/en/latest/python/sdk-guide/) for programmatic access to the Planet APIs, supporting both Python scripting and a no-code CLI. Cloud-based platforms such as Sentinel Hub and Google Earth Engine (GEE) provide powerful PlanetScope imagery access and processing capabilities, but their cloud-based nature restricts user control over processing environments and data storage, which can complicate reproducibility and transparency in scientific workflows. The programming languages (Python and JavaScript) used on these three platforms might be less familiar to R users. An existing R package `planetR` offers an R-native interface to the Planet API. Nevertheless, these existing tools usually require users to write custom scripts to download and process data in batch over multiple sites, which can be time-consuming and is easily limited by users' computing and storage resources. `BatchPlanet` fills key gaps in the existing ecosystem (Table 1) with R-native, locally reproducible batch downloading and processing of PlanetScope imagery. It also includes features such as time series analysis tools and interactive visualization. `BatchPlanet` is particularly suitable for scientific research workflows that require scalability, transparency, and reproducibility over the data pipeline.
 
-| Feature / Tool                        | **Planet Python SDK**            | **Sentinel Hub**                 | **Google Earth Engine (GEE)**        | **planetR (Bevington)**           | **batchplanet**                   |
+| Feature / Tool                        | **Planet Python SDK**            | **Sentinel Hub**                 | **Google Earth Engine (GEE)**        | **planetR (Bevington)**           | **BatchPlanet**                   |
 |---------------------------------------|----------------------------------|----------------------------------|--------------------------------------|-----------------------------------|-----------------------------------|
 | **Primary Language**                  | Python                           | Python                           | JavaScript / Python                  | R                                 | R                                 |
 | **Processing Environment**            | Local/Cloud                      | Cloud                            | Cloud                                | Local                             | Local                             |
@@ -59,7 +59,7 @@ Planet Labs provides an official [Python SDK](https://planet-sdk-for-python-v2.r
 | **Time Series Analysis Tools**        | Not supported                    | Limited                          | Supported                            | Not supported                     | Supported                         |
 | **Interactive Visualization**         | Not supported                    | Limited                          | Supported                            | Not supported                     | Supported                         |
 
-: **Table 1.** Comparison of `batchplanet` with existing tools for PlanetScope data access and processing, including the official Planet Python SDK, Sentinel Hub, Google Earth Engine (GEE), the `planetR` package by Bevington.
+: **Table 1.** Comparison of `BatchPlanet` with existing tools for PlanetScope data access and processing, including the official Planet Python SDK, Sentinel Hub, Google Earth Engine (GEE), the `planetR` package by Bevington.
 
 # Key Features
 
@@ -70,21 +70,23 @@ The package is particularly beneficial to researchers and practitioners who:
 - Use high-performance computing (HPC) infrastructure.
 - Visualize PlanetScope imagery, and processed data products, interactively.
 
-A challenge for researchers using PlanetScope imagery is the need to download large volumes of data over a long timespan. This is particularly important for those working on phenology (the seasonality of the biological systems), as this type of research requires reflectances on high frequency to capture critical events, as well as multiple years to monitor interannual changes. Users often hit Planet API rate limit when trying to download thousands of images at once. The `batchplanet` package addresses this challenge by providing a streamlined workflow for batch ordering and downloading, by searching for images by month and splitting large amount of available images into smaller orders. This ensures that users will get complete data for their sites of interest without hitting the API rate limit. Another challenge is the need to download images from multiple sites that are spatially distant. If attempting to use one area of interest that covers all sites, users may end up downloading many images that are not relevant to their sites of interest. The `batchplanet` package allows users to specify multiple sites, each with a set of coordinates of interest, and can parallelize the downloading process across these sites.
+A challenge for researchers using PlanetScope imagery is the need to download large volumes of data over a long timespan. This is particularly important for those working on phenology (the seasonality of the biological systems), as this type of research requires reflectances on high frequency to capture critical events, as well as multiple years to monitor interannual changes. Users often hit Planet API rate limit when trying to download thousands of images at once. The `BatchPlanet` package addresses this challenge by providing a streamlined workflow for batch ordering and downloading, by searching for images by month and splitting large amount of available images into smaller orders. This ensures that users will get complete data for their sites of interest without hitting the API rate limit. Another challenge is the need to download images from multiple sites that are spatially distant. If attempting to use one area of interest that covers all sites, users may end up downloading many images that are not relevant to their sites of interest. The `BatchPlanet` package allows users to specify multiple sites, each with a set of coordinates of interest, and can parallelize the downloading process across these sites.
 
-`batchplanet` provides a series of functions to facilitate the entire R-native workflow of accessing and processing PlanetScope imagery, especially for temporal analysis. These include functions to order and download PlanetScope imagery, retrieve pixel-level time series data, clean reflectance time series, calculate the Enhanced Vegetation Index (EVI), and compute phenological metrics such as green-up and green-down dates. Apart from the streamlined batch processing functions, `batchplanet` provides individual functions for key steps of the workflow, allowing users to customize their data processing pipelines. `batchplanet` also provides functions to visualize true color images interactively, enabling users to explore spatiotemporal patterns in the data (Fig. 1).
+`BatchPlanet` provides a series of functions to facilitate the entire R-native workflow of accessing and processing PlanetScope imagery, especially for temporal analysis. These include functions to order and download PlanetScope imagery, retrieve pixel-level time series data, clean reflectance time series, calculate the Enhanced Vegetation Index (EVI), and compute phenological metrics such as green-up and green-down dates. Apart from the streamlined batch processing functions, `BatchPlanet` provides individual functions for key steps of the workflow, allowing users to customize their data processing pipelines. `BatchPlanet` also provides functions to visualize true color images interactively, enabling users to explore spatiotemporal patterns in the data (Figs. 1,2).
 
 With this package, we significantly speed up the ordering, downloading, and processing of PlanetScope images. For example, images for an approximately 9 km^2 area in one month was downloaded in 6.7 seconds. As we allowed parallel downloading across months, the total time for downloading a year of PlanetScope images was similar. From on month of downloaded images at one site, we retrieved time series of reflectances, together with quality mask data and metadata, at 100 coordinates of interest in 20.9 seconds. This retrieval could again be parallelized over multiple sites and groups of coordinates.
 
-![**Figure 1.** A true color image from PlanetScope imagery in part of Austin, USA, captured on May 21, 2025, visualized using the `batchplanet` package.](Fig1.png)
+![**Figure 1.** A true color image from PlanetScope imagery in part of Austin, USA, captured on May 21, 2025, visualized using the `BatchPlanet` package.](Fig1.png)
+
+![**Figure 2.** Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with phenological metrics annotated, with indices and metrics calculated and visualized using the `BatchPlanet` package.](Fig2.png)
 
 # Example Usage
 
 Install from GitHub using remotes and load package.
 
 ```r
-remotes::install_github("zhulabgroup/batchplanet")
-library(batchplanet)
+remotes::install_github("zhulabgroup/BatchPlanet")
+library(BatchPlanet)
 ```
 
 Read example coordinates.
@@ -92,7 +94,7 @@ Read example coordinates.
 ```r
 df_coordinates <- read.csv(
   system.file("extdata/NEON/example_neon_coordinates.csv",
-              package = "batchplanet")
+              package = "BatchPlanet")
 )
 visualize_coordinates(df_coordinates)
 ```
@@ -109,7 +111,7 @@ setting <- set_planetscope_parameters(
   harmonized = TRUE
 )
 
-dir_data <-  system.file("extdata/NEON", package = "batchplanet")
+dir_data <-  system.file("extdata/NEON", package = "BatchPlanet")
 ```
 
 Order and download imagery.

@@ -3,7 +3,7 @@
 # Unit test for search_planetscope_imagery
 
 library(testthat)
-library(batchplanet)
+library(BatchPlanet)
 
 test_that("search_planetscope_imagery runs (skipped by default)", {
   skip_on_cran()

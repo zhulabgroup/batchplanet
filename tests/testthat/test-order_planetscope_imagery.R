@@ -3,7 +3,7 @@
 # Unit tests for order_planetscope_imagery_batch, order_planetscope_imagery, set_bbox
 
 library(testthat)
-library(batchplanet)
+library(BatchPlanet)
 
 test_that("order_planetscope_imagery_batch runs (skipped by default)", {
   skip_on_cran()
