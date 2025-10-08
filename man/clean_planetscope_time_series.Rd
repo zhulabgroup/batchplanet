@@ -25,6 +25,8 @@ Low-quality data are defined as:
 }
 }
 \examples{
+\dontrun{
 df_clean <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = TRUE)
+}
 
 }
