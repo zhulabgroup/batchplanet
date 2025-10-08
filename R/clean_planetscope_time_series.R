@@ -27,6 +27,10 @@
 #' )
 #' }
 #'
+#' @importFrom magrittr %>%
+#' @importFrom parallel makeCluster stopCluster
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach foreach %dopar%
 #' @export
 clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NULL, num_cores = 3, calculate_evi = T) {
   dir.create(file.path(dir, "clean"), showWarnings = F)
@@ -39,15 +43,15 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
 
   foreach(
     file = v_file,
-    .packages = c("tidyverse", "BatchPlanet")
+    .packages = c("readr", "stringr", "BatchPlanet")
   ) %dopar% {
     f_ts <- file.path(dir, "ts", file)
-    df_ts <- read_rds(f_ts)
+    df_ts <- readr::read_rds(f_ts)
 
     df_clean <- clean_planetscope_time_series(df_ts, calculate_evi)
 
-    f_clean <- file.path(dir, "clean", file %>% str_replace("ts_", "clean_"))
-    write_rds(df_clean, f_clean, compress = "gz")
+    f_clean <- file.path(dir, "clean", file %>% stringr::str_replace("ts_", "clean_"))
+    readr::write_rds(df_clean, f_clean, compress = "gz")
   }
   stopCluster(cl)
 
@@ -73,32 +77,33 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
 #' df_clean <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = TRUE)
 #' }
 #'
+#' @importFrom magrittr %>%
 #' @export
 clean_planetscope_time_series <- function(df_ts, calculate_evi) {
   df_clean <- df_ts %>%
-    drop_na() %>%
-    mutate(date = as.Date(time)) %>%
-    mutate(
+    tidyr::drop_na() %>%
+    dplyr::mutate(date = as.Date(time)) %>%
+    dplyr::mutate(
       year = format(time, "%Y") %>% as.integer(),
       doy = format(time, "%j") %>% as.integer(),
       hour = format(strptime(time, "%Y-%m-%d %H:%M:%S"), "%H") %>% as.integer()
     ) %>%
-    filter(sun_elevation > 0) %>% # remove night time images, but there should not be any in this data product
-    filter(red > 0, green > 0, blue > 0) %>%
-    filter(clear == 1, snow == 0, shadow == 0, haze_light == 0, haze_heavy == 0, cloud == 0, confidence >= 80) %>%
-    group_by(id, lon, lat, date, year, doy) %>%
-    summarise(
+    dplyr::filter(sun_elevation > 0) %>% # remove night time images, but there should not be any in this data product
+    dplyr::filter(red > 0, green > 0, blue > 0) %>%
+    dplyr::filter(clear == 1, snow == 0, shadow == 0, haze_light == 0, haze_heavy == 0, cloud == 0, confidence >= 80) %>%
+    dplyr::group_by(id, lon, lat, date, year, doy) %>%
+    dplyr::summarise(
       blue = mean(blue),
       green = mean(green),
       red = mean(red),
       nir = mean(nir)
     ) %>%
-    ungroup()
+    dplyr::ungroup()
 
   if (calculate_evi) {
     df_clean <- df_clean %>%
-      mutate(evi = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)) %>%
-      filter(evi > 0, evi <= 1)
+      dplyr::mutate(evi = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)) %>%
+      dplyr::filter(evi > 0, evi <= 1)
   }
 
   return(df_clean)

@@ -4,6 +4,7 @@
 
 library(testthat)
 library(BatchPlanet)
+library(sf)
 
 test_that("retrieve_planetscope_time_series_batch works with example data", {
   temp_dir <- withr::local_tempdir()
@@ -18,7 +19,7 @@ test_that("retrieve_planetscope_time_series_batch works with example data", {
   )
 
   # Run the function
-  df_coordinates <- read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
+  df_coordinates <- readr::read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 
   result <- retrieve_planetscope_time_series_batch(
     dir = temp_dir,
@@ -35,7 +36,7 @@ test_that("retrieve_planetscope_time_series_batch works with example data", {
   # Check cleaned file
   ts_files <- list.files(file.path(temp_dir, "ts"), full.names = TRUE, pattern = "ts_SJER_Quercus.rds")
   expect_gt(length(ts_files), 0)
-  df_ts <- read_rds(ts_files[1])
+  df_ts <- readr::read_rds(ts_files[1])
   expect_s3_class(df_ts, "data.frame")
   expect_true(all(c("id", "blue", "green", "red", "nir", "time", "lon", "lat") %in% names(df_ts)))
   expect_true(all(!is.na(df_ts$green)))
@@ -45,8 +46,8 @@ test_that("retrieve_planetscope_time_series works with example data", {
   # Test with example data
   data_dir <- "sample-data/NEON"
 
-  df_coordinates <- read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
-  df_coordinates_example <- df_coordinates %>% filter(site == "SJER", group == "Quercus")
+  df_coordinates <- readr::read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
+  df_coordinates_example <- df_coordinates %>% dplyr::filter(site == "SJER", group == "Quercus")
 
   # Run the function
   df_ts_example <- retrieve_planetscope_time_series(

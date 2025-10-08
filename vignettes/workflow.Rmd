@@ -1,8 +1,12 @@
 ---
-title: "Vignette"
+title: "1 Workflow"
 author: "Yiluan Song"
 date: "`r Sys.Date()`"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{1 Workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -20,21 +24,22 @@ Who should use this package?
 
 ```{r}
 library(BatchPlanet)
+library(magrittr)
 ```
 
 ## 1 Read coordinate data
 In order to download PlanetScope imagery, you need to provide coordinates of points of interest. For this example, we will use several street tree inventories retrieved from the [OpenTrees.org](https://opentrees.org/).
 ```{r}
 # Read the data file with coordinates
-df_coordinates_urban <- read_csv(system.file("extdata", "urban/example_urban_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
+df_coordinates_urban <- readr::read_csv(system.file("extdata", "urban/example_urban_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 head(df_coordinates_urban)
 ```
 You should create your own data frame with coordinates. Make sure your data frame for coordinates have the columns: `id` (unique id for each point of interest), `lon` for longitude, and `lat` for latitude. You may have a character column `site` if you have clustered coordinates at dispersed sites. You may also a character column `group` you can use to group coordinates later on.
 
 What do we mean by "clustered coordinates at dispersed sites?" Use the function `visualize_coordinates()` to visualize the coordinates. Our sample coordinates are dispersed across four cities. Within each city, there are hundreds or thousands of coordinates, representing individual trees.
 ```{r}
-visualize_coordinates(df_coordinates_urban %>% sample_n(2000)) # Multiple sites across continental US
-visualize_coordinates(df_coordinates_urban %>% filter(site == "NY") %>% sample_n(2000)) # Zoom in to one site NY
+visualize_coordinates(df_coordinates_urban %>% dplyr::sample_n(2000)) # Multiple sites across continental US
+visualize_coordinates(df_coordinates_urban %>% dplyr::filter(site == "NY") %>% dplyr::sample_n(2000)) # Zoom in to one site NY
 ```
 Why is it important to label the coordinates with sites? If we treat all coordinates as a single set and try to download PlanetScope imagery that cover them, we will end up with a tremendous amount of imagery that cover most of continental US. Instead, we will use the site labels to group the coordinates and create bounding boxes that cover each site. This way, we can download imagery that only cover the sites of interest. If your coordinates are already clustered in a small area, you don't have to supply the site labels. The package will process all coordinates as a single site.
 
@@ -124,7 +129,7 @@ visualize_true_color_imagery_batch(
 To demonstrate the capacity in processing long time series, we will use a sample data file retrieved from the [National Ecological Observatory Network (NEON)](https://www.neonscience.org/) [plant phenology observations data product](https://data.neonscience.org/data-products/DP1.10055.001).
 ```{r}
 # Read the data file with coordinates
-df_coordinates_NEON <- read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
+df_coordinates_NEON <- readr::read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 head(df_coordinates_NEON)
 
 # Set data directory
@@ -207,8 +212,8 @@ This step is not specific to PlanetScope data. Neither it's specific to the EVI 
 Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}
 v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJER.06310")
-df_doy_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "doy") %>% filter(id %in% v_id)
-df_evi_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "clean") %>% filter(id %in% v_id)
+df_doy_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "doy") %>% dplyr::filter(id %in% v_id)
+df_evi_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "clean") %>% dplyr::filter(id %in% v_id)
 
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
 ```

@@ -23,20 +23,26 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends:
     R (>= 3.3),
-    tidyverse,
-    sf,
+Imports:
+    ggplot2,
+    magrittr,
+    tidyr,
+    dplyr,
+    stringr,
+    readr,
+    tibble,
+    rlang,
     terra,
+    sf,
     foreach,
     doSNOW,
-    parallel
-Imports:
+    parallel,
     dotenv,
     ptw,
     imputeTS,
     segmented,
     jsonlite,
     lubridate,
-    stringr,
     httr,
     plotly,
     shiny,
@@ -44,5 +50,6 @@ Imports:
 Suggests:
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    withr
 VignetteBuilder: knitr

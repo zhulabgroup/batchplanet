@@ -26,7 +26,7 @@
 #' }
 #'
 #' @export
-download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017:(lubridate::year(Sys.Date())), v_month = 1:12, setting, num_cores = 12, overwrite = F) {
+download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017:(as.integer(format(Sys.Date(), "%Y"))), v_month = 1:12, setting, num_cores = 12, overwrite = F) {
   # If no sites are provided, list all available directories under dir/raw/
   if (is.null(v_site)) {
     v_site <- list.dirs(file.path(dir, "raw"), recursive = FALSE, full.names = FALSE)
@@ -44,14 +44,17 @@ download_planetscope_imagery_batch <- function(dir, v_site = NULL, v_year = 2017
   invisible(NULL)
 }
 
+#' @importFrom parallel makeCluster stopCluster
+#' @importFrom doSNOW registerDoSNOW
+#' @importFrom foreach foreach %dopar%
 download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, v_month = 1:12, setting, num_cores, overwrite) {
   # Construct the order summary file path and read the file
-  order_file <- file.path(dir_site, "orders", str_c("order_", yearoi, ".rds"))
+  order_file <- file.path(dir_site, "orders", stringr::str_c("order_", yearoi, ".rds"))
   if (!file.exists(order_file)) {
     message("Order file not found: ", order_file)
     df_order <- data.frame()
   } else {
-    df_order <- read_rds(order_file)
+    df_order <- readr::read_rds(order_file)
   }
 
   # If there are orders to process, initiate parallel download
@@ -148,7 +151,7 @@ download_planetscope_imagery <- function(order_id, exportfolder, api_key, overwr
 }
 
 wait_for_order_success <- function(order_id, api_key) {
-  url2 <- paste0("https://api.planet.com/compute/ops/orders/v2/", order_id)
+  url2 <- stringr::str_c("https://api.planet.com/compute/ops/orders/v2/", order_id)
   get_order <- httr::GET(url = url2, username = api_key)
   get_content <- httr::content(get_order)
 

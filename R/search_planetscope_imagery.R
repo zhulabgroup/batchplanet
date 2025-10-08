@@ -38,7 +38,7 @@ search_planetscope_imagery <- function(api_key,
                                        cloud_lim = 0.1,
                                        ground_control = TRUE,
                                        quality = "standard") {
-  message(str_c("Searching for satellite imagery from ", date_start, " to ", date_end))
+  message(paste0("Searching for satellite imagery from ", date_start, " to ", date_end))
   # Build filters
   geometry_filter <- build_geometry_filter(bbox)
   date_filter <- build_date_range_filter(date_start, date_end)

@@ -28,6 +28,8 @@
 #' )
 #' }
 #'
+#' @importFrom magrittr %>%
+#' @import ggplot2
 #' @export
 visualize_time_series <- function(df_ts,
                                   df_doy = NULL,
@@ -38,28 +40,28 @@ visualize_time_series <- function(df_ts,
                                   facet_var = NULL,
                                   color_palette = "viridis") {
   if ("time" %in% colnames(df_ts)) {
-    df_ts <- df_ts %>% mutate(x_var = time)
+    df_ts <- df_ts %>% dplyr::mutate(x_var = time)
   } else if ("date" %in% colnames(df_ts)) {
-    df_ts <- df_ts %>% mutate(x_var = date)
+    df_ts <- df_ts %>% dplyr::mutate(x_var = date)
   } else {
     stop("Data frame must contain a 'time' or 'date' column for time series visualization.")
   }
 
   set.seed(1)
   df_ts <- df_ts %>%
-    mutate(value = !!sym(var)) %>%
-    mutate(id_shuffle = factor(id, levels = sample(unique(id))))
+    dplyr::mutate(value = !!rlang::sym(var)) %>%
+    dplyr::mutate(id_shuffle = factor(id, levels = sample(unique(id))))
 
   if (smooth) {
     df_ts <- df_ts %>%
-      group_by(id) %>%
-      mutate(value_smooth = whittaker_smoothing_filling(value, lambda = lambda)) %>%
-      ungroup()
+      dplyr::group_by(id) %>%
+      dplyr::mutate(value_smooth = whittaker_smoothing_filling(value, lambda = lambda)) %>%
+      dplyr::ungroup()
   }
 
   p <- ggplot(df_ts, aes(
     x = x_var, y = value, color = id_shuffle, group = id_shuffle,
-    text = str_c("ID: ", id_shuffle, "<br>Time: ", x_var, "<br>Value: ", value)
+    text = stringr::str_c("ID: ", id_shuffle, "<br>Time: ", x_var, "<br>Value: ", value)
   )) +
     geom_point() +
     labs(x = "Time", y = ylab, color = "ID")
@@ -71,10 +73,10 @@ visualize_time_series <- function(df_ts,
 
   if (!is.null(df_doy)) {
     df_doy <- df_doy %>%
-      mutate(
-        date_doy = as.Date(str_c(year, "-01-01")) + doy - 1,
-        date_start = as.Date(str_c(year, "-01-01")) + start - 1,
-        date_end = as.Date(str_c(year, "-01-01")) + end - 1
+      dplyr::mutate(
+        date_doy = as.Date(stringr::str_c(year, "-01-01")) + doy - 1,
+        date_start = as.Date(stringr::str_c(year, "-01-01")) + start - 1,
+        date_end = as.Date(stringr::str_c(year, "-01-01")) + end - 1
       )
     y_min <- min(df_ts$value, na.rm = TRUE)
     y_max <- max(df_ts$value, na.rm = TRUE)
@@ -110,6 +112,7 @@ visualize_time_series <- function(df_ts,
   g
 }
 
+#' @import ggplot2
 apply_plot_style <- function(p) {
   p <- p +
     theme_minimal() +

@@ -8,7 +8,7 @@ order_planetscope_imagery_batch(
   dir,
   df_coordinates,
   v_site = NULL,
-  v_year = 2017:(lubridate::year(Sys.Date())),
+  v_year = 2017:(as.integer(format(Sys.Date(), "\%Y"))),
   v_month = 1:12,
   setting
 )

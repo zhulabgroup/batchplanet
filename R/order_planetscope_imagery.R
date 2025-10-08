@@ -24,20 +24,21 @@
 #' )
 #' }
 #'
+#' @importFrom magrittr %>%
 #' @export
 order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
-                                            v_year = 2017:(lubridate::year(Sys.Date())),
+                                            v_year = 2017:(as.integer(format(Sys.Date(), "%Y"))),
                                             v_month = 1:12,
                                             setting) {
   if (!"site" %in% colnames(df_coordinates)) {
     df_coordinates <- df_coordinates %>%
-      mutate(site = "allSite")
+      dplyr::mutate(site = "allSite")
   }
 
   # If site names are not provided, extract unique site names from the location data
   if (is.null(v_site)) {
     v_site <- df_coordinates %>%
-      pull(site) %>%
+      dplyr::pull(site) %>%
       unique() %>%
       sort()
   }
@@ -45,8 +46,8 @@ order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
   # Process orders for each site
   for (siteoi in v_site) {
     df_coordinates_site <- df_coordinates %>%
-      filter(site == siteoi) %>%
-      drop_na(lon, lat)
+      dplyr::filter(site == siteoi) %>%
+      tidyr::drop_na(lon, lat)
 
     if (nrow(df_coordinates_site) == 0) {
       next
@@ -68,6 +69,7 @@ order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
   invisible(NULL)
 }
 
+#' @importFrom magrittr %>%
 order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, setting, v_month = 1:12) {
   # Initialize an empty data frame to accumulate order details
   df_order <- data.frame(year = integer(0), month = integer(0), order_name = character(0), order_id = character(0), num_images = integer(0))
@@ -80,7 +82,7 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
     doy_end <- as.numeric(format(date_end, "%j"))
 
     # Construct a unique order name using site, year, and day-of-year range
-    order_name <- str_c(siteoi, yearoi, doy_start, doy_end, sep = "_")
+    order_name <- stringr::str_c(siteoi, yearoi, doy_start, doy_end, sep = "_")
 
     # Fetch available images from the API based on the date range and bounding box
     out <- tryCatch(
@@ -134,7 +136,7 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
 
         if (!is.null(order_id)) {
           df_order <- df_order %>%
-            bind_rows(data.frame(year = yearoi, month = monthoi, order_name = order_name, order_id = order_id, num_images = length(image_group[[g]])))
+            dplyr::bind_rows(data.frame(year = yearoi, month = monthoi, order_name = order_name, order_id = order_id, num_images = length(image_group[[g]])))
         }
       }
     }
@@ -144,7 +146,7 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
   # Save the accumulated order summary as an RDS file
   if (nrow(df_order) > 0) {
     dir.create(file.path(dir_site, "orders"), showWarnings = FALSE)
-    write_rds(df_order, file.path(dir_site, "orders", str_c("order_", yearoi, ".rds")))
+    readr::write_rds(df_order, file.path(dir_site, "orders", stringr::str_c("order_", yearoi, ".rds")))
   }
   invisible(NULL)
 }
@@ -244,18 +246,13 @@ build_order_tools <- function(bbox, harmonized = FALSE) {
 #' Generate a Bounding Box from Coordinate Data
 #'
 #' Creates a bounding box for a specified location based on a data frame of coordinates.
-#' The function filters the data for the given location, removes any rows with missing longitude
-#' or latitude values, and computes the minimum and maximum coordinate values. A buffer is applied
-#' to expand the bounding box by a specified distance (in degrees).
+#' The function filters the data for the given location, removes any rows with missing longitude or latitude values, and computes the minimum and maximum coordinate values. A buffer is applied to expand the bounding box by a specified distance (in degrees).
 #'
-#' @param df_coords A data frame containing coordinate data. Must include the columns \code{site},
-#'   \code{lon}, and \code{lat}.
-#' @param location Character. The location identifier (i.e., the value in the \code{site} column)
-#'   for which to generate the bounding box.
-#' @param buffer Numeric. A buffer distance (in degrees) to expand the bounding box. Default is 0.0005.
+#' @param df_coordinates A data frame containing coordinate data. Must include the columns \code{site}, \code{lon}, and \code{lat}.
+#' @param siteoi Character. The site identifier (i.e., the value in the \code{site} column) for which to generate the bounding box.
+#' @param buffer Numeric. A buffer distance (in degrees) to expand the bounding box in all four directions. Default is 0.0005.
 #'
-#' @return An object of class \code{bbox} (from the **sf** package) representing the bounding box
-#'   for the specified location, or \code{NULL} if no valid coordinates are found.
+#' @return An object of class \code{bbox} (from the **sf** package) representing the bounding box for the specified location, or \code{NULL} if no valid coordinates are found.
 #'
 #' @examples
 #' \dontrun{
@@ -267,12 +264,13 @@ build_order_tools <- function(bbox, harmonized = FALSE) {
 #' bbox <- set_bbox(df_coords, "SiteA", buffer = 0.001)
 #' }
 #'
+#' @importFrom magrittr %>%
 #' @export
 set_bbox <- function(df_coordinates, siteoi, buffer = 0.0005) {
-  # Filter the coordinate data for the specified location and remove any rows with missing values.
+  # Filter the coordinate data for the specified site and remove any rows with missing values.
   df_coordinates_site <- df_coordinates %>%
-    filter(site == {{ siteoi }}) %>%
-    drop_na(lon, lat)
+    dplyr::filter(site == {{ siteoi }}) %>%
+    tidyr::drop_na(lon, lat)
 
   # Check if any valid coordinates are found
   if (nrow(df_coordinates_site) == 0) {

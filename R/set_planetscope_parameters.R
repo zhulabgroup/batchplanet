@@ -94,14 +94,14 @@ set_api_key <- function(change_key = F) {
 
   if (is.na(key) || key == "") { # If missing, prompt user
     key <- readline("Enter Planet API key: ")
-    write(str_c("planet_api_key", "=", key), file = ".env", append = TRUE) # Save to .env
+    write(stringr::str_c("planet_api_key", "=", key), file = ".env", append = TRUE) # Save to .env
   } else {
     if (change_key) {
       # If the user opts to change the key, ask for a new key
       new_key <- readline("Enter new Planet API key: ")
       # Replace or add the new API key in the .env file
       key_lines <- readLines(".env")
-      key_lines <- gsub("^planet_api_key=.*", str_c("planet_api_key=", new_key), key_lines)
+      key_lines <- gsub("^planet_api_key=.*", stringr::str_c("planet_api_key=", new_key), key_lines)
       writeLines(key_lines, ".env")
       key <- new_key # Update the key variable
     }

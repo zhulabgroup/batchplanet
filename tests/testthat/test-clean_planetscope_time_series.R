@@ -32,7 +32,7 @@ test_that("clean_planetscope_time_series_batch runs with example data", {
   # Check cleaned file
   clean_files <- list.files(file.path(temp_dir, "clean"), full.names = TRUE, pattern = "clean_SJER_Quercus.rds")
   expect_gt(length(clean_files), 0)
-  df_clean <- read_rds(clean_files[1])
+  df_clean <- readr::read_rds(clean_files[1])
   expect_s3_class(df_clean, "data.frame")
   expect_true(all(c("id", "lon", "lat", "date", "year", "doy", "blue", "green", "red", "nir", "evi") %in% names(df_clean)))
   expect_true(all(!is.na(df_clean$evi)))
@@ -41,7 +41,7 @@ test_that("clean_planetscope_time_series_batch runs with example data", {
 test_that("clean_planetscope_time_series cleans example data", {
   data_dir <- "sample-data/NEON/"
   df_ts <- list.files(file.path(data_dir, "ts"), full.names = TRUE, pattern = "ts_SJER_Quercus") %>%
-    read_rds()
+    readr::read_rds()
 
   df_clean <- clean_planetscope_time_series(df_ts, calculate_evi = TRUE)
   expect_s3_class(df_clean, "data.frame")

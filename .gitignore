@@ -1,9 +1,14 @@
 # Secret
 .env
 
+# Vignettes
+inst/doc/
+doc/
+
 # Sample data folder
 sample-data
 tests/testthat/sample-data/
+vignettes/sample-data/
 
 # History files
 .Rhistory
@@ -54,3 +59,5 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+/doc/
+/Meta/

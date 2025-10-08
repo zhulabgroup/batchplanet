@@ -7,23 +7,18 @@
 set_bbox(df_coordinates, siteoi, buffer = 5e-04)
 }
 \arguments{
-\item{buffer}{Numeric. A buffer distance (in degrees) to expand the bounding box. Default is 0.0005.}
+\item{df_coordinates}{A data frame containing coordinate data. Must include the columns \code{site}, \code{lon}, and \code{lat}.}
 
-\item{df_coords}{A data frame containing coordinate data. Must include the columns \code{site},
-\code{lon}, and \code{lat}.}
+\item{siteoi}{Character. The site identifier (i.e., the value in the \code{site} column) for which to generate the bounding box.}
 
-\item{location}{Character. The location identifier (i.e., the value in the \code{site} column)
-for which to generate the bounding box.}
+\item{buffer}{Numeric. A buffer distance (in degrees) to expand the bounding box in all four directions. Default is 0.0005.}
 }
 \value{
-An object of class \code{bbox} (from the \strong{sf} package) representing the bounding box
-for the specified location, or \code{NULL} if no valid coordinates are found.
+An object of class \code{bbox} (from the \strong{sf} package) representing the bounding box for the specified location, or \code{NULL} if no valid coordinates are found.
 }
 \description{
 Creates a bounding box for a specified location based on a data frame of coordinates.
-The function filters the data for the given location, removes any rows with missing longitude
-or latitude values, and computes the minimum and maximum coordinate values. A buffer is applied
-to expand the bounding box by a specified distance (in degrees).
+The function filters the data for the given location, removes any rows with missing longitude or latitude values, and computes the minimum and maximum coordinate values. A buffer is applied to expand the bounding box by a specified distance (in degrees).
 }
 \examples{
 \dontrun{

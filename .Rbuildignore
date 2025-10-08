@@ -1,3 +1,7 @@
 ^BatchPlanet\.Rproj$
-^example_data/
+^sample-data/
+^vignettes/sample-data/
+^tests/testthat/sample-data/
 ^\.Rproj\.user$
+^doc$
+^Meta$

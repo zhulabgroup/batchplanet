@@ -21,7 +21,7 @@ test_that("visualize_true_color_imagery runs with NEON example raster", {
 })
 
 test_that("visualize_coordinates runs with NEON example data", {
-  df_coordinates <- system.file("extdata/NEON/example_neon_coordinates.csv", package = "BatchPlanet") %>% read_csv()
+  df_coordinates <- system.file("extdata/NEON/example_neon_coordinates.csv", package = "BatchPlanet") %>% readr::read_csv()
   plt <- visualize_coordinates(df_coordinates)
   expect_true("plotly" %in% class(plt))
 })

@@ -33,7 +33,7 @@ This package was developed and tested using the [`rocker/geospatial:4.2.0-2023-0
 
 ## Example Workflow
 
-For a complete example of the package in action, see **vignettes/vignette.Rmd**. This document demonstrates steps in downloading PlanetScope data and processing time series using a subset of NEON site data.
+For a complete example of the package in action, see **vignettes/workflow.Rmd**. This document demonstrates steps in downloading PlanetScope data and processing time series using a subset of NEON site data. We have another two vignettes on customized workflows and time series processing tools, respectively.
 
 ***
 

@@ -38,7 +38,7 @@ test_that("calculate_phenological_metrics_batch runs with example data", {
   # Check cleaned file
   doy_files <- list.files(file.path(temp_dir, "doy"), full.names = TRUE, pattern = "doy_SJER_Quercus.rds")
   expect_gt(length(doy_files), 0)
-  df_doy <- read_rds(doy_files[1])
+  df_doy <- readr::read_rds(doy_files[1])
   expect_s3_class(df_doy, "data.frame")
   expect_true(all(c("id", "start", "end", "direction", "thres", "doy") %in% names(df_doy)))
   expect_true(all(!is.na(df_doy$doy)))
@@ -47,9 +47,9 @@ test_that("calculate_phenological_metrics_batch runs with example data", {
 test_that("calculate_phenological_metrics runs with example data", {
   data_dir <- "sample-data/NEON/"
   df_clean <- list.files(file.path(data_dir, "clean"), full.names = TRUE, pattern = "clean_SJER_Quercus") %>%
-    read_rds() %>%
-    filter(year == 2024) %>%
-    filter(id == "NEON.PLA.D17.SJER.06001")
+    readr::read_rds() %>%
+    dplyr::filter(year == 2024) %>%
+    dplyr::filter(id == "NEON.PLA.D17.SJER.06001")
 
   df_doy <- calculate_phenological_metrics(
     df_index = df_clean,
@@ -66,7 +66,7 @@ test_that("calculate_phenological_metrics runs with example data", {
 
 test_that("calculate_phenological_metrics returns NULL for too few valid days", {
   df_index <- data.frame(doy = 1:365) %>%
-    mutate(evi = c(rep(NA, 180), runif(10, 0.2, 0.8), c(rep(NA, 175)))) # Only 10 valid days
+    dplyr::mutate(evi = c(rep(NA, 180), runif(10, 0.2, 0.8), c(rep(NA, 175)))) # Only 10 valid days
   df_thres <- set_thresholds()
   result <- calculate_phenological_metrics(df_index, df_thres, min_days = 20, check_seasonality = TRUE, var_index = "evi")
   expect_null(result)

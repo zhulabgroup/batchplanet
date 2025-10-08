@@ -21,7 +21,11 @@ Starts an interactive Shiny app for browsing and visualizing true-color PlanetSc
 }
 \examples{
 \dontrun{
-visualize_true_color_imagery_batch(dir = "alldata/PSdata/", df_coordinates = df_coordinates, cloud_lim = 0.1)
+visualize_true_color_imagery_batch(
+  dir = "alldata/PSdata/",
+  df_coordinates = df_coordinates,
+  cloud_lim = 0.1
+)
 }
 
 }
