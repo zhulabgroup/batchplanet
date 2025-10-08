@@ -1,8 +1,9 @@
 # Secret
 .env
 
-# Test data folder
-test_data
+# Sample data folder
+sample-data
+tests/testthat/sample-data/
 
 # History files
 .Rhistory

@@ -111,14 +111,16 @@ setting <- set_planetscope_parameters(
   harmonized = TRUE
 )
 
-dir_data <-  system.file("extdata/NEON", package = "BatchPlanet")
+download_sample_data()
+dir_data <- "sample-data"
+dir_data_NEON <- file.path(dir_data, "NEON")
 ```
 
 Order and download imagery.
 
 ```r
 order_planetscope_imagery_batch(
-  dir = dir_data,
+  dir = dir_data_NEON,
   df_coordinates = df_coordinates,
   v_site = c("HARV", "SJER"),
   v_year = 2024,
@@ -126,13 +128,13 @@ order_planetscope_imagery_batch(
 )
 
 download_planetscope_imagery_batch(
-  dir = dir_data,
+  dir = dir_data_NEON,
   setting = setting,
   num_cores = 12
 )
 
 visualize_true_color_imagery_batch(
-  dir = dir_data,
+  dir = dir_data_NEON,
   df_coordinates = df_coordinates
 )
 ```
@@ -141,13 +143,13 @@ Retrieve time series at coordinates of interest.
 
 ```r
 retrieve_planetscope_time_series_batch(
-  dir = dir_data,
+  dir = dir_data_NEON,
   df_coordinates = df_coordinates,
   num_cores = 12
 )
 
 df_ts <- read_data_product(
-  dir = dir_data,
+  dir = dir_data_NEON,
   product_type = "ts"
 )
 
@@ -163,13 +165,13 @@ Clean time series and calculate EVI.
 
 ```r
 clean_planetscope_time_series_batch(
-  dir = dir_data,
+  dir = dir_data_NEON,
   num_cores = 3,
   calculate_evi = T
 )
 
 df_clean <- read_data_product(
-  dir = dir_data,
+  dir = dir_data_NEON,
   product_type = "clean"
 )
 
@@ -191,7 +193,7 @@ df_thres <- set_thresholds(
 )
 
 calculate_phenological_metrics_batch(
-  dir = dir_data,
+  dir = dir_data_NEON,
   v_site = "SJER",
   v_group = "Quercus",
   df_thres = df_thres,
@@ -203,12 +205,12 @@ v_id <- c("NEON.PLA.D17.SJER.06001",
           "NEON.PLA.D17.SJER.06337",
           "NEON.PLA.D17.SJER.06310")
 df_doy_sample <- read_data_product(
-  dir = dir_data,
+  dir = dir_data_NEON,
   product_type = "doy"
   ) %>%
   filter(id %in% v_id)
 df_evi_sample <- read_data_product(
-  dir = dir_data,
+  dir = dir_data_NEON,
   product_type = "clean"
   ) %>%
   filter(id %in% v_id)

@@ -1,4 +1,4 @@
-﻿library(testthat)
-library(batchplanet)
+library(testthat)
+library(BatchPlanet)
 
-test_check("batchplanet")
+test_check("BatchPlanet")

@@ -78,15 +78,16 @@ visualize_true_color_imagery(
 
 For demonstration purpose, we are going to set the data directory to the package's extdata folder, but you should use `set_data_directory()` as above when you carry out your own analysis.
 ```{r}
-dir_data <- system.file("extdata", package = "BatchPlanet")
-# dir_data <- set_data_directory()
+download_sample_data()
+dir_data <- "sample-data"
+dir_data_NEON <- file.path(dir_data, "NEON")
 ```
 
 If you would like to customize your time series retrieval process, you may use the function `retrieve_planetscope_time_series()` for a single folder `dir_site` and a set of coordinates you specify. 
 ```{r, eval = F}
 df_coordinates_example <- df_coordinates_NEON %>% filter(site == "SJER", group == "Quercus")
 df_ts_example <- retrieve_planetscope_time_series(
-  dir_site = file.path(dir_data, "NEON", "raw", "SJER"),
+  dir_site = file.path(dir_data_NEON, "raw", "SJER"),
   sf_coordinates = df_coordinates_example %>% sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(4326)),
   num_cores = 10
 )
@@ -96,7 +97,7 @@ df_ts_example <- retrieve_planetscope_time_series(
 
 To process a single set of time series in a data frame, you can use the `clean_planetscope_time_series()` function.
 ```{r}
-df_ts_example <- read_data_product(dir = file.path(dir_data, "NEON"), v_site = "SJER", v_group = "Quercus", product_type = "ts")
+df_ts_example <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "ts")
 df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = T)
 ```
 
@@ -105,7 +106,7 @@ df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calcula
 You can customize your own phenological metrics calculation, not necessarily PlanetScope data or even EVI data, using the `calculate_phenological_metrics()` function that takes a data frame of time series data and a data frame of thresholds and returns a data frame with the calculated phenological metrics.
 
 ```{r}
-df_clean_example <- read_data_product(dir = file.path(dir_data, "NEON"), v_site = "SJER", v_group = "Quercus", product_type = "clean")
+df_clean_example <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "clean")
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 df_doy_example <- calculate_phenological_metrics(df_index = df_clean_example, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F)
 ```

@@ -6,7 +6,7 @@ library(testthat)
 library(BatchPlanet)
 
 test_that("visualize_true_color_imagery_batch runs with NEON example directory", {
-  dir_path <- system.file("extdata/NEON/", package = "BatchPlanet")
+  dir_path <- "sample-data/NEON/"
   # Just check that the function can be called (do not launch the app in test)
   expect_error(
     visualize_true_color_imagery_batch(dir = dir_path, cloud_lim = 0.1),
@@ -15,10 +15,7 @@ test_that("visualize_true_color_imagery_batch runs with NEON example directory",
 })
 
 test_that("visualize_true_color_imagery runs with NEON example raster", {
-  tif_path <- system.file(
-    "extdata/NEON/raw/SJER/SJER_2025_60_90/20250325_183148_95_24c5_3B_AnalyticMS_SR_harmonized_clip.tif",
-    package = "BatchPlanet"
-  )
+  tif_path <- "sample-data/NEON/raw/SJER/SJER_2025_60_90/20250325_183148_95_24c5_3B_AnalyticMS_SR_harmonized_clip.tif"
   plt <- visualize_true_color_imagery(file = tif_path)
   expect_true("gg" %in% class(plt) || "ggplot" %in% class(plt))
 })

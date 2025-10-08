@@ -9,7 +9,7 @@ test_that("calculate_phenological_metrics_batch runs with example data", {
   temp_dir <- withr::local_tempdir()
 
   # Test with example data
-  data_dir <- system.file("extdata/NEON/", package = "BatchPlanet")
+  data_dir <- "sample-data/NEON/"
   dir.create(file.path(temp_dir, "clean"), recursive = TRUE, showWarnings = FALSE)
 
   file.copy(
@@ -45,7 +45,7 @@ test_that("calculate_phenological_metrics_batch runs with example data", {
 })
 
 test_that("calculate_phenological_metrics runs with example data", {
-  data_dir <- system.file("extdata/NEON/", package = "BatchPlanet")
+  data_dir <- "sample-data/NEON/"
   df_clean <- list.files(file.path(data_dir, "clean"), full.names = TRUE, pattern = "clean_SJER_Quercus") %>%
     read_rds() %>%
     filter(year == 2024) %>%

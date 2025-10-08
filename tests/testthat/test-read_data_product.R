@@ -6,7 +6,7 @@ library(testthat)
 library(BatchPlanet)
 
 test_that("read_data_product works with multiple product types", {
-  data_dir <- system.file("extdata/NEON/", package = "BatchPlanet")
+  data_dir <- "sample-data/NEON/"
 
   df_ts <- read_data_product(data_dir, product_type = "ts")
   expect_s3_class(df_ts, "data.frame")
