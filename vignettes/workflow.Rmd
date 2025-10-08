@@ -62,7 +62,7 @@ PlanetScope API allows filtering imagery by several criteria. Here, we allow use
 
 PlanetScope API allow users to apply a tool named "harmonize" that applies scene-level normalization and harmonization, such that all PlanetScape data were consistent and approximately comparable to data from Sentinel 2. This tool is useful when integrating or comparing images from different times and locations. Refer to [PlanetScope technical documentation](https://assets.planet.com/docs/scene_level_normalization_of_planet_dove_imagery.pdf) for more details. The `harmonized` parameter is set to `TRUE` by default, which means we will download harmonized data. You can set this parameter to `FALSE` to download non-harmonized data.
 
-```{r}
+```{r, eval = F}
 setting <- set_planetscope_parameters(
   api_key = set_api_key(),
   item_name = "PSScene",
