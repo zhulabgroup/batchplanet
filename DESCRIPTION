@@ -43,7 +43,8 @@ Imports:
     shinyWidgets
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder:
     knitr,
     rmarkdown
