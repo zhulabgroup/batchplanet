@@ -31,7 +31,7 @@ head(df_coordinates_urban)
 ```
 You should create your own data frame with coordinates. Make sure your data frame for coordinates have the columns: `id` (unique id for each point of interest), `lon` for longitude, and `lat` for latitude. You may have a character column `site` if you have clustered coordinates at dispersed sites. You may also a character column `group` you can use to group coordinates later on.
 
-What do we mean by "clustered coordinates at dispersed sites?" Use the function `visualize_coordinates()` to visualize the coordinates. Our sample coordinates are dispersed across four cities. Within each city, there are hundres or thousands of coordinates, representing individual trees.
+What do we mean by "clustered coordinates at dispersed sites?" Use the function `visualize_coordinates()` to visualize the coordinates. Our sample coordinates are dispersed across four cities. Within each city, there are hundreds or thousands of coordinates, representing individual trees.
 ```{r}
 visualize_coordinates(df_coordinates_urban %>% sample_n(2000)) # Multiple sites across continental US
 visualize_coordinates(df_coordinates_urban %>% filter(site == "NY") %>% sample_n(2000)) # Zoom in to one site NY
