@@ -40,5 +40,7 @@ Imports:
     plotly,
     shiny,
     shinyWidgets
-Suggests: knitr
+Suggests:
+    rmarkdown,
+    knitr
 VignetteBuilder: knitr
