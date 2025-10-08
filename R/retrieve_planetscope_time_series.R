@@ -55,7 +55,7 @@ retrieve_planetscope_time_series_batch <- function(dir, df_coordinates, v_site =
   invisible(NULL)
 }
 
-#' importFrom magrittr %>%
+#' @importFrom magrittr %>%
 retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, siteoi, groupoi, max_sample, num_cores) {
   dir_site <- file.path(dir, "raw", siteoi)
   # Count raster files (.tif) for the given site. Skip if none exist.
