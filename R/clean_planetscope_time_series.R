@@ -69,7 +69,9 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
 #' @return Data frame of cleaned time series, with EVI if requested.
 #'
 #' @examples
+#' \dontrun{
 #' df_clean <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = TRUE)
+#' }
 #'
 #' @export
 clean_planetscope_time_series <- function(df_ts, calculate_evi) {
