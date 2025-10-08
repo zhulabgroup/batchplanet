@@ -1,0 +1,61 @@
+{
+    "id": "20241202_155526_91_24e0",
+    "type": "Feature",
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+            [
+                [
+                    -72.174,
+                    42.5413
+                ],
+                [
+                    -72.174,
+                    42.5443
+                ],
+                [
+                    -72.1703,
+                    42.5443
+                ],
+                [
+                    -72.1703,
+                    42.5413
+                ],
+                [
+                    -72.174,
+                    42.5413
+                ]
+            ]
+        ]
+    },
+    "properties": {
+        "acquired": "2024-12-02T15:55:26.916622Z",
+        "anomalous_pixels": 0,
+        "clear_confidence_percent": 78,
+        "clear_percent": 100,
+        "cloud_cover": 0.0,
+        "cloud_percent": 0,
+        "ground_control": true,
+        "gsd": 3.8,
+        "heavy_haze_percent": 0,
+        "instrument": "PSB.SD",
+        "item_type": "PSScene",
+        "light_haze_percent": 0,
+        "pixel_resolution": 3,
+        "provider": "planetscope",
+        "published": "2024-12-02T18:12:15Z",
+        "publishing_stage": "finalized",
+        "quality_category": "standard",
+        "satellite_azimuth": 276.7,
+        "satellite_id": "24e0",
+        "shadow_percent": 0,
+        "snow_ice_percent": 0,
+        "strip_id": "7721305",
+        "sun_azimuth": 168.7,
+        "sun_elevation": 24.6,
+        "updated": "2024-12-03T03:57:46Z",
+        "view_angle": 3.1,
+        "visible_confidence_percent": 78,
+        "visible_percent": 100
+    }
+}
