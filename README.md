@@ -1,4 +1,4 @@
-# BatchPlanet 🌿📊
+# BatchPlanet
 
 **BatchPlanet** is an R package designed to automate workflows for downloading, processing, and visualizing remote sensing imagery in batch from the Planet API. Originally developed to study tree phenology [Song et al., (2025)](https://doi.org/10.1016/j.srs.2025.100205), the package has been generalized for broader environmental applications. It provides a suite of tools to:
 
@@ -19,8 +19,13 @@
 
 ## Installation
 
-Install the development version from GitHub:
+Install the stable version from R-Universe:
+```r
+install.packages('BatchPlanet', repos = c('https://yiluansong.r-universe.dev', 'https://cloud.r-project.org'))
+```
 
+Install the development version from GitHub:
+  
 ```r
 # Install devtools if not already installed
 install.packages("devtools")
@@ -44,6 +49,27 @@ We have developed **testthat** unit tests covering all core functions.
 ```r
 # from within R or RStudio, with your working directory set to the package root
 devtools::test()
+```
+***
+## Citation
+
+To cite this package in publications use:
+
+  Song Y, Bevington A, Reid K, Liu Y, Zhu J, Zhu K (2025).
+  _BatchPlanet: Streamlined Processing and Analysis of PlanetScope and
+  Satellite Imagery Data_. R package version 0.1.0,
+  <https://github.com/yiluansong/batchplanet>.
+
+A BibTeX entry for LaTeX users is
+```bibtex
+  @Manual{,
+    title = {BatchPlanet: Streamlined Processing and Analysis of PlanetScope and Satellite
+Imagery Data},
+    author = {Yiluan Song and Alexandre R. Bevington and Ken Reid and Yi Liu and Jiali Zhu and Kai Zhu},
+    year = {2025},
+    note = {R package version 0.1.0},
+    url = {https://github.com/yiluansong/batchplanet},
+  }
 ```
 
 ***

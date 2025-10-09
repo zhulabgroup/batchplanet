@@ -48,9 +48,7 @@ The `BatchPlanet` R package offers a reproducible and scalable workflow for acce
 
 PlanetScope imagery provides global, high-resolution (~3-meter), near-daily data, making it valuable for scientific research and monitoring of phenology [@moon2021phenology], land use change, disaster impacts, and more. While the Planet API facilitates access [@planet2017api], using this data remains challenging due to complex API interactions, limits on large-volume data downloads, and non-trivial processing workflows, which can hinder reproducibility.
 
-Existing options include the official [Planet Python SDK](https://planet-sdk-for-python-v2.readthedocs.io/en/latest/python/sdk-guide/), cloud-based platforms like Sentinel Hub and Google Earth Engine (GEE), and the R package `planetR`. However, the Python and JavaScript used by the first three platforms may be less familiar to R users. Cloud platforms also restrict user control over processing environments and local data storage. Furthermore, existing tools typically require users to write extensive custom scripts for batch downloading and processing across multiple sites, a process often limited by computing and storage resources. `BatchPlanet` addresses these gaps by providing an R-native tool for batch access and processing of PlanetScope imagery (Table 1). Its streamlined, parallelized functions are designed for scalability, transparency, and reproducibility in scientific data pipelines.
-
-
+Existing options include the official [Planet Python SDK](https://planet-sdk-for-python-v2.readthedocs.io/en/latest/python/sdk-guide/), cloud-based platforms like Sentinel Hub and Google Earth Engine (GEE), and the R package `planetR`. However, the Python and JavaScript used by the first three platforms may be less familiar to R users. Cloud platforms also restrict user control over processing environments and local data storage. Furthermore, existing tools typically require users to write extensive custom scripts for batch downloading and processing across multiple sites, a process often limited by computing and storage resources. `BatchPlanet` addresses these gaps by providing an R-native tool for batch access and processing of PlanetScope imagery (Table 1). Its streamlined, parallelized functions are designed for scalability, transparency, and reproducibility in scientific data pipelines. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology].
 
 | Feature / Tool                        | **Planet Python SDK**            | **Sentinel Hub**                 | **Google Earth Engine (GEE)**        | **planetR (Bevington)**           | **BatchPlanet**                   |
 |---------------------------------------|----------------------------------|----------------------------------|--------------------------------------|-----------------------------------|-----------------------------------|
@@ -84,10 +82,12 @@ These batch functions significantly accelerate the process. For example, images 
 
 # Example Usage
 
-Install from GitHub using remotes and load package.
+Install package in R and load package.
 
 ```r
-remotes::install_github("zhulabgroup/BatchPlanet")
+install.packages('BatchPlanet',
+  repos = c('https://yiluansong.r-universe.dev',
+            'https://cloud.r-project.org'))
 library(BatchPlanet)
 ```
 
@@ -206,16 +206,16 @@ calculate_phenological_metrics_batch(
 v_id <- c("NEON.PLA.D17.SJER.06001",
           "NEON.PLA.D17.SJER.06337",
           "NEON.PLA.D17.SJER.06310")
-df_doy_sample <- read_data_product(
+df_doy <- read_data_product(
   dir = dir_data_NEON,
   product_type = "doy"
-  ) %>%
-  filter(id %in% v_id)
-df_evi_sample <- read_data_product(
+)
+df_doy_sample <- df_doy[df_doy$id %in% v_id, ]
+df_evi <- read_data_product(
   dir = dir_data_NEON,
   product_type = "clean"
-  ) %>%
-  filter(id %in% v_id)
+)
+df_evi_sample <- df_evi[df_evi$id %in% v_id, ]
 visualize_time_series(
   df_ts = df_evi_sample,
   df_doy = df_doy_sample,
