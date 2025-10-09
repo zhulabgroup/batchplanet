@@ -280,7 +280,7 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
 #' Creates a scatter plot of coordinate data.
 #' @param df_coordinates Data frame containing longitude and latitude columns.
 #'
-#' @return A ggplot object displaying the coordinate points.
+#' @return An interactive `plotly` object when supported, a static `ggplot` object otherwise.
 #'
 #' @examples
 #' \dontrun{
@@ -304,5 +304,9 @@ visualize_coordinates <- function(df_coordinates) {
 
   p <- apply_plot_style(p)
 
-  plotly::ggplotly(p, tooltip = "text")
+  if (interactive()) {
+    plotly::ggplotly(p, tooltip = "text")
+  } else {
+    p # static ggplot
+  }
 }

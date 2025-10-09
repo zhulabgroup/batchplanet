@@ -30,5 +30,5 @@ test_that("visualize_time_series runs with NEON example data", {
     readr::read_rds() %>%
     dplyr::filter(id %in% id_example)
   plt <- visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", smooth = T)
-  expect_true("plotly" %in% class(plt))
+  expect_true("plotly" %in% class(plt) || "gg" %in% class(plt) || "ggplot" %in% class(plt))
 })

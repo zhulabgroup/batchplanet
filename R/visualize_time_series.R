@@ -11,7 +11,7 @@
 #' @param facet_var Character or `NULL`. Column name in `df_ts` and `df_doy` to facet by (e.g., `"site"` or `"id"`).
 #' @param color_palette Character. Name of a viridis palette for line colors (default: `"viridis"`).
 #'
-#' @return An interactive plotly object.
+#' @return An interactive `plotly` object when supported, a static `ggplot` object otherwise.
 #'
 #' @examples
 #' \dontrun{
@@ -103,13 +103,17 @@ visualize_time_series <- function(df_ts,
 
   p <- apply_plot_style(p)
 
-  g <- plotly::ggplotly(p, tooltip = "text")
-  # Disable hoverinfo for the DOY layers (background layers)
-  for (i in 2:length(g$x$data)) {
-    g$x$data[[i]]$hoverinfo <- "skip" # Skip hover for all layers except the first one
-  }
+  if (interactive()) {
+    g <- plotly::ggplotly(p, tooltip = "text")
+    # Disable hoverinfo for the DOY layers (background layers)
+    for (i in 2:length(g$x$data)) {
+      g$x$data[[i]]$hoverinfo <- "skip" # Skip hover for all layers except the first one
+    }
 
-  g
+    g
+  } else {
+    p # static ggplot
+  }
 }
 
 #' @import ggplot2

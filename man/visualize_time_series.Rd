@@ -33,7 +33,7 @@ visualize_time_series(
 \item{color_palette}{Character. Name of a viridis palette for line colors (default: \code{"viridis"}).}
 }
 \value{
-An interactive plotly object.
+An interactive \code{plotly} object when supported, a static \code{ggplot} object otherwise.
 }
 \description{
 Generates an interactive plotly time series plot from a data frame, optionally overlaying phenological events.
