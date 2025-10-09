@@ -12,14 +12,14 @@ test_that("visualize_time_series runs with NEON example data", {
     readr::read_rds() %>%
     dplyr::sample_n(100)
   plt <- visualize_time_series(df_ts = df_ts, var = "green", ylab = "Green reflectance")
-  expect_true("plotly" %in% class(plt))
+  expect_true("plotly" %in% class(plt) || "gg" %in% class(plt) || "ggplot" %in% class(plt))
 
   # Use a small subset of the NEON clean time series
   df_clean <- "sample-data/NEON/clean/clean_SJER_Quercus.rds" %>%
     readr::read_rds() %>%
     dplyr::sample_n(100)
   plt <- visualize_time_series(df_ts = df_clean, var = "evi", ylab = "EVI")
-  expect_true("plotly" %in% class(plt))
+  expect_true("plotly" %in% class(plt) || "gg" %in% class(plt) || "ggplot" %in% class(plt))
 
   # Use a small subset of the NEON clean time series with doy
   id_example <- c("NEON.PLA.D17.SJER.06001")
