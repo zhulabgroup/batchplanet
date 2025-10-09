@@ -31,7 +31,7 @@ library(magrittr)
 In order to download PlanetScope imagery, you need to provide coordinates of points of interest. For this example, we will use several street tree inventories retrieved from the [OpenTrees.org](https://opentrees.org/).
 ```{r}
 # Read the data file with coordinates
-df_coordinates_urban <- readr::read_csv(system.file("extdata", "urban/example_urban_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
+df_coordinates_urban <- readr::read_csv(system.file("extdata", "urban", "example_urban_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 head(df_coordinates_urban)
 ```
 You should create your own data frame with coordinates. Make sure your data frame for coordinates have the columns: `id` (unique id for each point of interest), `lon` for longitude, and `lat` for latitude. You may have a character column `site` if you have clustered coordinates at dispersed sites. You may also a character column `group` you can use to group coordinates later on.
@@ -41,6 +41,7 @@ What do we mean by "clustered coordinates at dispersed sites?" Use the function 
 visualize_coordinates(df_coordinates_urban %>% dplyr::sample_n(2000)) # Multiple sites across continental US
 visualize_coordinates(df_coordinates_urban %>% dplyr::filter(site == "NY") %>% dplyr::sample_n(2000)) # Zoom in to one site NY
 ```
+
 Why is it important to label the coordinates with sites? If we treat all coordinates as a single set and try to download PlanetScope imagery that cover them, we will end up with a tremendous amount of imagery that cover most of continental US. Instead, we will use the site labels to group the coordinates and create bounding boxes that cover each site. This way, we can download imagery that only cover the sites of interest. If your coordinates are already clustered in a small area, you don't have to supply the site labels. The package will process all coordinates as a single site.
 
 ## 2 Download PS data
@@ -73,14 +74,15 @@ setting <- set_planetscope_parameters(
 )
 ```
 
-Use the `set_data_directory()` function to specify a directory to store the downloaded data and later store processed data. It is recommended to use symbolic link to a directory on your HPC system. This way, you can easily access the data from your local machine without being limited by the storage space on your local machine. Please still closely monitor the storage space on your local machine or HPC system as the data can be large. For example, all images for New York City since 2017 can be over 1TB.
+Use the `download_sample_data()` function to download the sample data we will use in this vignette. For demonstration purpose, we are going to set the data directory to a subfolder of the `sample-data` folder.
+
+You should specify your own directory to store the downloaded data and later store processed data. It is recommended to use symbolic link to a directory on your HPC system. This way, you can easily access the data from your local machine without being limited by the storage space on your local machine. Please still closely monitor the storage space on your local machine or HPC system as the data can be large. For example, all images for New York City since 2017 can be over 1TB.
+
 ```{r}
 download_sample_data()
 dir_data <- "sample-data"
 dir_data_urban <- file.path(dir_data, "urban")
 ```
-
-For demonstration purpose, we are going to set the data directory to the package's extdata folder, but you should use `set_data_directory()` as above when you carry out your own analysis.
 
 ### 2.2 Order
 
@@ -114,7 +116,7 @@ At this point, you might have downloaded a large amount of images. Consider arch
 
 ### 2.4 Visualize true color imagery
 
-The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness. This app might take a while to start.
+The `visualize_true_color_imagery_batch()` function starts a shiny app to visualize multiple images in the data directory. In the app, you can then choose the site and time you want to visualize and toggle brightness.
 
 ```{r, eval = F}
 visualize_true_color_imagery_batch(
@@ -124,12 +126,20 @@ visualize_true_color_imagery_batch(
 )
 ```
 
+This app might take a while to start. Here we show a screenshot of the app.
+```{r, echo=FALSE, fig.width=4, fig.height=6}
+knitr::include_graphics(
+  system.file("extdata", "figures", "Fig1.png", package = "BatchPlanet"),
+  rel_path = F
+)
+```
+
 ## 3 Retrieve and process time series
 
 To demonstrate the capacity in processing long time series, we will use a sample data file retrieved from the [National Ecological Observatory Network (NEON)](https://www.neonscience.org/) [plant phenology observations data product](https://data.neonscience.org/data-products/DP1.10055.001).
 ```{r}
 # Read the data file with coordinates
-df_coordinates_NEON <- readr::read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
+df_coordinates_NEON <- readr::read_csv(system.file("extdata", "NEON", "example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 head(df_coordinates_NEON)
 
 # Set data directory
@@ -207,7 +217,7 @@ df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
 calculate_phenological_metrics_batch(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", v_year = 2024, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 3)
 ```
-This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `inst/extdata/clean/` folder of the package. 
+This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `sample-data/NEON/clean/` folder. 
 
 Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}

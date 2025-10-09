@@ -24,7 +24,7 @@ We understand that you may want to have more control over your workflow. Here ar
 
 If you would like to customize your batch downloading process, you may use the functions `search_planetscope_imagery()` and `order_planetscope_imagery()` to search and order images for a single site and time period. Be careful not to order too many images at once, as the Planet API has an internal limit. The `order_planetscope_imagery_batch()` function is designed to handle multiple sites and years in a more streamlined manner.
 ```{r, eval = F}
-df_coordinates_NEON <- readr::read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
+df_coordinates_NEON <- readr::read_csv(system.file("extdata", "NEON", "example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 
 # Set the bounding box for the site of interest
 bbox <- set_bbox(df_coordinates_NEON, "SJER")
@@ -65,7 +65,7 @@ download_planetscope_imagery(
 
 You can visualize the true color imagery of single images using the `visualize_true_color_imagery()` function. You can overlay the coordinates from the relevant site on the imagery (optional). You can specify the brightness of the image using the `brightness` parameter.
 ```{r}
-df_coordinates_urban <- readr::read_csv(system.file("extdata", "urban/example_urban_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
+df_coordinates_urban <- readr::read_csv(system.file("extdata", "urban", "example_urban_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 
 set.seed(42)
 df_coordinates_AT <- df_coordinates_urban %>%
@@ -73,7 +73,7 @@ df_coordinates_AT <- df_coordinates_urban %>%
   dplyr::sample_n(100)
 
 visualize_true_color_imagery(
-  file = system.file("extdata", "urban/raw/AT/AT_2025_121_151/20250521_174012_92_252e_3B_AnalyticMS_SR_harmonized_clip.tif", package = "BatchPlanet"),
+  file = system.file("extdata", "urban", "raw", "AT", "AT_2025_121_151", "20250521_174012_92_252e_3B_AnalyticMS_SR_harmonized_clip.tif", package = "BatchPlanet"),
   df_coordinates = df_coordinates_AT,
   brightness = 4
 )
@@ -81,7 +81,7 @@ visualize_true_color_imagery(
 
 ## Direct retrieval of time series for a set of coordinates
 
-For demonstration purpose, we are going to set the data directory to the package's extdata folder, but you should use `set_data_directory()` as above when you carry out your own analysis.
+For demonstration purpose, we are going to set the data directory to a subfolder of the `sample-data` folder. You should set your own directory when you carry out your analysis.
 ```{r}
 download_sample_data()
 dir_data <- "sample-data"

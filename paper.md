@@ -76,9 +76,9 @@ In addition to ordering and downloading, `BatchPlanet` facilitates the entire R-
 
 These batch functions significantly accelerate the process. For example, images for an approximately 9 km^2 area over one month were downloaded in 6.7 seconds. The total downloading time for a year's worth of images is comparable due to parallelization across months. Time series retrieval (reflectances, quality masks, and metadata) for 100 coordinates from one month of downloaded images took only 20.9 seconds, which can be parallelized across sites and coordinate groups.
 
-![**Figure 1.** A true color image from PlanetScope imagery in part of Austin, USA, captured on May 21, 2025, visualized using the `BatchPlanet` package.](Fig1.png)
+![**Figure 1.** A screenshot of the interactive PlanetScope imagery viewer in the `BatchPlanet` package, showing a true color image in part of Austin, USA, captured on May 21, 2025.](inst/extdata/figures/Fig1.png)
 
-![**Figure 2.** Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with phenological metrics annotated, with indices and metrics calculated and visualized using the `BatchPlanet` package.](Fig2.png)
+![**Figure 2.** Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with phenological metrics annotated, with indices and metrics calculated and visualized using the `BatchPlanet` package.](inst/extdata/figures/Fig2.png)
 
 # Example Usage
 
