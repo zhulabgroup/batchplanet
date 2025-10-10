@@ -2,7 +2,7 @@ citHeader("To cite BatchPlanet in publications, please use:")
 
 citEntry(
   entry = "Manual",
-  title = "BatchPlanet: Streamlined Processing and Analysis of PlanetScope and Satellite Imagery Data",
+  title = "BatchPlanet: Batch access and processing of PlanetScope imagery for spatiotemporal analysis in R",
   author = c(
     person("Yiluan", "Song"),
     person("Alexandre R.", "Bevington"),
