@@ -1,5 +1,5 @@
 Package: BatchPlanet
-Title: Streamlined Processing and Analysis of PlanetScope and Satellite Imagery Data
+Title: Batch access and processing of PlanetScope imagery for spatiotemporal analysis in R
 Version: 0.1.0
 Date: 2025-10-08
 Authors@R: c(
