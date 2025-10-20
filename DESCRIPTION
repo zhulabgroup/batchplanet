@@ -9,10 +9,10 @@ Authors@R: c(
            comment = c(ORCID = "0000-0003-1587-3317", affiliation = "Department of Geography, Earth and Environmental Sciences, University of Northern British Columbia, Prince George, BC, Canada; Ministry of Forests, Province of British Columbia, Prince George, BC, Canada")),
     person("Ken", "Reid", role = "aut",
            comment = c(ORCID = "0000-0001-8654-2430", affiliation = "Michigan Institute for Data and AI in Society, University of Michigan, Ann Arbor, MI, USA")),
-    person("Yi", "Liu", role = "aut",
-           comment = c(ORCID = "0000-0002-5515-8804", affiliation = "School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA")),
     person("Jiali", "Zhu", role = "aut",
            comment = c(ORCID = "0009-0009-7339-557X", affiliation = "School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA")),
+    person("Yi", "Liu", role = "aut",
+           comment = c(ORCID = "0000-0002-5515-8804", affiliation = "School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA")),
     person("Kai", "Zhu", role = "aut",
            comment = c(ORCID = "0000-0003-1587-3317", affiliation = "School for Environment and Sustainability and Institute for Global Change Biology, University of Michigan, Ann Arbor, MI, USA")))
 Description: 
