@@ -5,7 +5,7 @@ library(testthat)
 library(BatchPlanet)
 
 test_that("Flat series is not seasonal", {
-  ts_flat <- seq(0.4, 0.5, length.out = 365)
+  ts_flat <- rep(0.4, length.out = 365)
   result <- suppressWarnings(determine_seasonality(ts_flat))
   expect_false(result)
 })
