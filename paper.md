@@ -17,11 +17,11 @@ authors:
   - name: Ken Reid
     orcid: 0000-0001-8654-2430
     affiliation: 1
-  - name: Yi Liu
-    orcid: 0000-0002-5515-8804
-    affiliation: 2
   - name: Jiali Zhu
     orcid: 0009-0009-7339-557X
+    affiliation: 2
+  - name: Yi Liu
+    orcid: 0000-0002-5515-8804
     affiliation: 2
   - name: Kai Zhu
     orcid: 0000-0003-1587-3317

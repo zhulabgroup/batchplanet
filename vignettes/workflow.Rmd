@@ -127,6 +127,7 @@ visualize_true_color_imagery_batch(
 ```
 
 This app might take a while to start. Here we show a screenshot of the app.
+
 ```{r, echo=FALSE, fig.width=4, fig.height=6}
 knitr::include_graphics(
   system.file("extdata", "figures", "Fig1.png", package = "BatchPlanet"),
