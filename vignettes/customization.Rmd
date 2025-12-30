@@ -22,6 +22,18 @@ We understand that you may want to have more control over your workflow. Here ar
 
 ## Direct search and order for a single site
 
+Similar to the batch downloading process, you first need to set the parameters for your PlanetScope imagery search and order using the `set_planetscope_parameters()` function.
+```{r, eval = F}
+setting <- set_planetscope_parameters(
+  api_key = set_api_key(),
+  item_name = "PSScene",
+  asset = "ortho_analytic_4b_sr",
+  product_bundle = "analytic_sr_udm2",
+  cloud_lim = 1,
+  harmonized = T
+)
+```
+
 If you would like to customize your batch downloading process, you may use the functions `search_planetscope_imagery()` and `order_planetscope_imagery()` to search and order images for a single site and time period. Be careful not to order too many images at once, as the Planet API has an internal limit. The `order_planetscope_imagery_batch()` function is designed to handle multiple sites and years in a more streamlined manner.
 ```{r, eval = F}
 df_coordinates_NEON <- readr::read_csv(system.file("extdata", "NEON", "example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
