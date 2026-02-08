@@ -159,13 +159,14 @@ visualize_time_series(
   smooth = F)
 ```
 
-Clean time series and calculate EVI.
+Clean time series and calculate NDVI and EVI.
 
 ``` r
 clean_planetscope_time_series_batch(
   dir = dir_data_NEON,
   num_cores = 3,
-  calculate_evi = T
+  calculate_index = c("ndvi", "evi"),
+  filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
 )
 
 df_clean <- read_data_product(
@@ -182,7 +183,7 @@ visualize_time_series(
 )
 ```
 
-Calculate phenological metrics.
+Calculate start and end of season metrics.
 
 ``` r
 df_thres <- set_thresholds(
@@ -190,7 +191,7 @@ df_thres <- set_thresholds(
   thres_down = NULL
 )
 
-calculate_phenological_metrics_batch(
+calculate_season_metrics_batch(
   dir = dir_data_NEON,
   v_site = "SJER",
   v_group = "Quercus",

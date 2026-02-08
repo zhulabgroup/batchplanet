@@ -1,7 +1,7 @@
-#' Calculate phenological metrics for time series from multiple sites and groups
+#' Calculate start/end of season metrics for time series from multiple sites and groups
 #'
 #' Reads remote sensing index time series files from the `clean/` subdirectory within the specified `dir`.
-#' For each site, group, and year combination, the function extends the time series to include the end of the previous year and the beginning of the next year (to capture early- and late-year phenological events), then calls `calculate_phenological_metrics()` to calculate phenological metrics for each time series.
+#' For each site, group, and year combination, the function extends the time series to include the end of the previous year and the beginning of the next year (to capture early- and late-year events), then calls `calculate_season_metrics()` to calculate start/end of season metrics for each time series, which are measured by the day-of-year (DOY) when the index first goes above or goes below specified threshold(s).
 #' Results are saved as `.rds` files under the `doy/` subdirectory within `dir`, prefixed `doy_`.
 #'
 #' @param dir Character. Base directory containing remote sensing index files (expects `clean/` subdirectory).
@@ -11,18 +11,18 @@
 #' @param df_thres Data frame of thresholds as from [set_thresholds()]; if `NULL`, uses default thresholds.
 #' @param var_index Character. Name of the remote sensing index column in the input data frame `df_index` to analyze (default: "evi").
 #' @param min_days Numeric. Minimum required number of non-NA data points in one year (default: 80).
-#' @param check_seasonality Logical. If `TRUE`, tests for significant seasonal changes before calculating phenological metrics (default: `TRUE`).
+#' @param check_seasonality Logical. If `TRUE`, tests for significant seasonal changes before calculating start/end of season metrics (default: `TRUE`).
 #' @param extend_to_previous_year Integer. Day of year to extend backward to, to capture early-year events (default: 275).
 #' @param extend_to_next_year Integer. Day of year to extend forward to, to capture late-year events (default: 90).
 #' @param num_cores Integer. Number of parallel workers for processing (default: 3).
 #'
-#' @return Invisibly returns `NULL` and saves calculated phenological metrics as `.rds` files in the `doy/` subdirectory of `dir`.
+#' @return Invisibly returns `NULL` and saves calculated start/end of season metrics as `.rds` files in the `doy/` subdirectory of `dir`.
 #'
 #' @examples
 #' \dontrun{
-#' # Example: Calculate phenological metrics for two sites and two groups
+#' # Example: Calculate start of season metrics for two sites and two groups
 #' df_thres <- set_thresholds(thres_up = c(0.3, 0.5))
-#' calculate_phenological_metrics_batch(
+#' calculate_season_metrics_batch(
 #'   dir = "alldata/PSdata/",
 #'   v_site = c("Site1", "Site2"),
 #'   v_group = c("Group1", "Group2"),
@@ -41,7 +41,7 @@
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach foreach %dopar%
 #' @export
-calculate_phenological_metrics_batch <- function(dir,
+calculate_season_metrics_batch <- function(dir,
                                                  v_site = NULL,
                                                  v_group = NULL,
                                                  v_year = NULL,
@@ -73,7 +73,7 @@ calculate_phenological_metrics_batch <- function(dir,
     f_index <- file.path(dir, "clean", file)
     df_index <- readr::read_rds(f_index)
 
-    df_doy <- calculate_phenological_metrics_sitegroup(df_index, df_thres, v_year, min_days, check_seasonality, var_index, extend_to_previous_year, extend_to_next_year)
+    df_doy <- calculate_season_metrics_sitegroup(df_index, df_thres, v_year, min_days, check_seasonality, var_index, extend_to_previous_year, extend_to_next_year)
 
     f_doy <- file.path(dir, "doy", file |> stringr::str_replace("clean_", "doy_"))
     readr::write_rds(df_doy, f_doy, compress = "gz")
@@ -83,7 +83,7 @@ calculate_phenological_metrics_batch <- function(dir,
   invisible(NULL)
 }
 
-calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, v_year = NULL, min_days, check_seasonality, var_index = "evi", extend_to_previous_year = 275, extend_to_next_year = 90) {
+calculate_season_metrics_sitegroup <- function(df_index, df_thres, v_year = NULL, min_days, check_seasonality, var_index = "evi", extend_to_previous_year = 275, extend_to_next_year = 90) {
   if (is.null(v_year)) {
     v_year <- df_index |>
       dplyr::pull(year) |>
@@ -116,7 +116,7 @@ calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, v_year 
         message(stringr::str_c("No data found for ", idoi, " in year ", yearoi))
         next
       }
-      res <- calculate_phenological_metrics(df_index = df_index_id, df_thres, min_days, check_seasonality, var_index)
+      res <- calculate_season_metrics(df_index = df_index_id, df_thres, min_days, check_seasonality, var_index)
       if (!is.null(res)) {
         ls_df_doy_id[[idoi]] <- res |>
           dplyr::mutate(year = yearoi, id = idoi) |>
@@ -130,24 +130,24 @@ calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, v_year 
   return(df_doy)
 }
 
-#' Calculate phenological metrics for a single time series
+#' Calculate start/end of season metrics for a single time series
 #'
-#' Processes a remote sensing index time series for a single location in one year by gap-filling and smoothing (using Whittaker smoothing), testing for seasonality, and calculating day-of-year (DOY) when the index crosses green-up or green-down threshold(s) specified in `df_thres`.
+#' Processes a remote sensing index time series for a single location in one year by gap-filling and smoothing (using Whittaker smoothing), testing for seasonality, and calculating day-of-year (DOY) when the index first goes above or goes below threshold(s) specified in `df_thres`.
 #' The input time series should ideally be extended to include the end of the previous year and the beginning of the next year to capture early- and late-year events.
 #'
 #' @param df_index Data frame of remote sensing index time series at one location in one year. Must contain columns `doy` and the index of interest.
 #' @param df_thres Data frame containing candidate threshold values, with columns `direction` ("up"/"down") and `threshold` (numeric 0–1).
 #' @param min_days Numeric. Minimum required number of non-NA data points in one year (default: 80).
-#' @param check_seasonality Logical. If `TRUE`, tests for significant seasonal changes before calculating phenological metrics (default: `TRUE`).
+#' @param check_seasonality Logical. If `TRUE`, tests for significant seasonal changes before calculating start/end of season metrics (default: `TRUE`).
 #' @param var_index Character. Name of the index column in `df_index` to analyze (default: "evi").
 #'
-#' @return A data frame of phenological metrics (DOY) per threshold and direction, or `NULL` if there are fewer than `min_days` valid data points or if the index does not show a seasonal pattern.
+#' @return A data frame of the timing (DOY) of threshold-crossing events, or `NULL` if there are fewer than `min_days` valid data points or if the index does not show a seasonal pattern.
 #'
 #' @examples
 #' \dontrun{
-#' # Example: Calculate DOY metrics for a single cleaned time series
+#' # Example: Calculate start of season metrics for a single cleaned time series
 #' df_thres <- set_thresholds(thres_up = c(0.3, 0.5), thres_down = NULL)
-#' df_metrics <- calculate_phenological_metrics(
+#' df_metrics <- calculate_season_metrics(
 #'   df_index = df_clean,
 #'   df_thres = df_thres,
 #'   min_days = 80,
@@ -157,7 +157,7 @@ calculate_phenological_metrics_sitegroup <- function(df_index, df_thres, v_year 
 #' }
 #'
 #' @export
-calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_seasonality = T, var_index = "evi") {
+calculate_season_metrics <- function(df_index, df_thres, min_days, check_seasonality = T, var_index = "evi") {
   # Complete missing days over the extended period (-90 to 455) and apply smoothing
   df_index <- df_index |>
     dplyr::arrange(doy) |>
@@ -180,7 +180,7 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
     seasonal <- T
   }
 
-  ### green down
+  ### detect when the index first goes below the threshold
   thres_list_down <- df_thres |>
     dplyr::filter(direction == "down") |>
     dplyr::pull(threshold)
@@ -204,46 +204,46 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
     param_ok2 <- (end_doy > start_doy) & seasonal
 
     if (!param_ok2) {
-      greendown_doy <- rep(NA, length(thres_list_down))
+      indexdown_doy <- rep(NA, length(thres_list_down))
       start_doy <- NA
       end_doy <- NA
       print("not typical growth curve")
     } else {
-      greendown_thres <- rep(NA, length(thres_list_down))
+      indexdown_thres <- rep(NA, length(thres_list_down))
       if (is.na(max_index) | is.na(min_index)) {
-        greendown_doy <- rep(NA, length(thres_list_down))
+        indexdown_doy <- rep(NA, length(thres_list_down))
         start_doy <- NA
         end_doy <- NA
       } else {
         for (t in 1:length(thres_list_down)) {
           if (thres_list_down[t] == 1) {
-            greendown_thres[t] <- max_index
+            indexdown_thres[t] <- max_index
           } else if (thres_list_down[t] == 0) {
-            greendown_thres[t] <- min_index
+            indexdown_thres[t] <- min_index
           } else {
-            greendown_thres[t] <- (max_index - min_index) * thres_list_down[t] + min_index
+            indexdown_thres[t] <- (max_index - min_index) * thres_list_down[t] + min_index
           }
         }
-        greendown_thres <- (max_index - min_index) * thres_list_down + min_index
+        indexdown_thres <- (max_index - min_index) * thres_list_down + min_index
 
-        greendown_doy <- rep(NA, length(greendown_thres))
-        for (t in 1:length(greendown_thres)) {
+        indexdown_doy <- rep(NA, length(indexdown_thres))
+        for (t in 1:length(indexdown_thres)) {
           df_index_doy <- df_index |>
             dplyr::filter(
               doy >= start_doy,
               doy <= end_doy
             ) |>
-            dplyr::filter(index_sm <= greendown_thres[t]) |>
+            dplyr::filter(index_sm <= indexdown_thres[t]) |>
             dplyr::arrange(doy) |>
             dplyr::slice(1)
-          greendown_doy[t] <- df_index_doy$doy
+          indexdown_doy[t] <- df_index_doy$doy
         }
       }
     }
-    df_down <- data.frame(start = start_doy, end = end_doy, direction = "down", thres = thres_list_down, doy = greendown_doy)
+    df_down <- data.frame(start = start_doy, end = end_doy, direction = "down", thres = thres_list_down, doy = indexdown_doy)
   }
 
-  ### green up
+  ### detect when the index first goes above the threshold
   thres_list_up <- df_thres |>
     dplyr::filter(direction == "up") |>
     dplyr::pull(threshold)
@@ -267,42 +267,42 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
     param_ok2 <- (end_doy > start_doy) & seasonal
 
     if (!param_ok2) {
-      greenup_doy <- rep(NA, length(thres_list_up))
+      indexup_doy <- rep(NA, length(thres_list_up))
       start_doy <- NA
       end_doy <- NA
       print("not typical growth curve")
     } else {
-      greenup_thres <- rep(NA, length(thres_list_up))
+      indexup_thres <- rep(NA, length(thres_list_up))
       if (is.na(max_index) | is.na(min_index)) {
-        greenup_doy <- rep(NA, length(thres_list_down))
+        indexup_doy <- rep(NA, length(thres_list_down))
         start_doy <- NA
         end_doy <- NA
       } else {
         for (t in 1:length(thres_list_up)) {
           if (thres_list_up[t] == 1) {
-            greenup_thres[t] <- max_index
+            indexup_thres[t] <- max_index
           } else if (thres_list_up[t] == 0) {
-            greenup_thres[t] <- min_index
+            indexup_thres[t] <- min_index
           } else {
-            greenup_thres[t] <- (max_index - min_index) * thres_list_up[t] + min_index
+            indexup_thres[t] <- (max_index - min_index) * thres_list_up[t] + min_index
           }
         }
 
-        greenup_doy <- rep(NA, length(greenup_thres))
-        for (t in 1:length(greenup_thres)) {
+        indexup_doy <- rep(NA, length(indexup_thres))
+        for (t in 1:length(indexup_thres)) {
           df_index_doy <- df_index |>
             dplyr::filter(
               doy >= start_doy,
               doy <= end_doy
             ) |>
-            dplyr::filter(index_sm >= greenup_thres[t]) |>
+            dplyr::filter(index_sm >= indexup_thres[t]) |>
             dplyr::arrange(doy) |>
             dplyr::slice(1)
-          greenup_doy[t] <- df_index_doy$doy
+          indexup_doy[t] <- df_index_doy$doy
         }
       }
     }
-    df_up <- data.frame(start = start_doy, end = end_doy, direction = "up", thres = thres_list_up, doy = greenup_doy)
+    df_up <- data.frame(start = start_doy, end = end_doy, direction = "up", thres = thres_list_up, doy = indexup_doy)
   }
 
   df_doy <- dplyr::bind_rows(df_up, df_down)
@@ -310,9 +310,9 @@ calculate_phenological_metrics <- function(df_index, df_thres, min_days, check_s
   return(df_doy)
 }
 
-#' Specify thresholds for detecting phenological events
+#' Specify thresholds for detecting start/end of season
 #'
-#' Creates a data frame with threshold values for both increasing ("up") and decreasing ("down") trends. These thresholds are used to detect phenological events in the time series.
+#' Creates a data frame with threshold values for both increasing ("up") and decreasing ("down") trends. These values are used to detect threshold-crossing events in the time series that indicate the start/end of season.
 #'
 #' @param thres_up Numeric vector. Threshold values for increasing trends (default: seq(from = 0, to = 1, by = 0.1) |> round(1)).
 #' @param thres_down Numeric vector. Threshold values for decreasing trends (default: seq(from = 1, to = 0, by = -0.1) |> round(1)).

@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Overview
 
-This workflow demonstrates the features of the _BatchPlanet_ package. It provides a step-by-step guide to downloading PlanetScope imagery, processing time series data, and calculating phenological metrics. The package is designed to work with the PlanetScope API and is particularly useful for researchers and practitioners in environmental studies and remote sensing. This package has been used for our peer-reviewed publication ([Song et al., 2025](https://doi.org/10.1016/j.srs.2025.100205)), to predict reproductive phenology of wind-pollinated trees via PlanetScope time series.
+This workflow demonstrates the features of the _BatchPlanet_ package. It provides a step-by-step guide to downloading PlanetScope imagery, processing time series data, and calculating start/end of season metrics. The package is designed to work with the PlanetScope API and is particularly useful for researchers and practitioners in environmental studies and remote sensing. This package has been used for our peer-reviewed publication ([Song et al., 2025](https://doi.org/10.1016/j.srs.2025.100205)), to predict reproductive phenology of wind-pollinated trees via PlanetScope time series.
 
 Who should use this package?
 - If you prefer using R over Python for batch downloading PlanetScope data across multiple locations and extended time periods, as well as for processing tasks such as time series retrieval and metric calculation.
@@ -201,19 +201,19 @@ df_clean <- read_data_product(dir = dir_data_NEON, v_site = c("HARV", "SJER"), v
 visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
 ```
 
-### 3.3 Calculate and phenological metrics
+### 3.3 Calculate start/end of season metrics
 
-When analyzing time series with seasonality, we often need to calculate the day of year when critical transitions occur. In the field of phenology, we are often interested in the time of 50% green-up and 50% green-down, which reflect the start and end of the growing season. We use the `calculate_phenological_metrics_batch()` function to calculate the day of year (DOY) for the increase and decrease of the specified index at specified thresholds.
+When analyzing time series with seasonality, we often need to calculate the day of year when critical transitions at the start/end of season. In the field of phenology, we are often interested in the time of 50% green-up and 50% green-down, which reflect the start and end of the growing season. However, we have made this method generalizable to other fields. We use the `calculate_season_metrics_batch()` function to calculate the day of year (DOY) for the increase and decrease of the specified index at specified thresholds.
 
 > For individual trees at NEON sites monitored for phenology, we used the EVI time series to identify the green-up phases empirically. The end of a green-up phase (usually in the summer) was determined as the day of year when EVI reaches the maximum in the growing season. The start of a green-up phase (usually in the winter) was then determined as the day of year when EVI is at the minimum, prior to the end of the green-up phase. We then determined the timing of green-up at the 50% threshold (usually in the spring). This empirical method of defining green-up/down time has been widely applied to remote-sensing data in order to be compatible with different plant functional types with various seasonality that exhibit intra-annual changes in greenness. [Song et al., 2025](https://doi.org/10.1016/j.srs.2025.100205)
 
-`df_thres` is a data frame that specifies the thresholds for calculating phenological metrics. You can generate this data frame using the `set_thresholds()` function. The `thres_up` and `thres_down` columns can be set to `NULL` if you do not want to calculate phenological metrics for the increase or decrease of the specified index.
+`df_thres` is a data frame that specifies the thresholds for calculating start/end of season metrics. You can generate this data frame using the `set_thresholds()` function. The `thres_up` and `thres_down` columns can be set to `NULL` if you do not want to calculate any metrics for the increase or decrease of the specified index.
 
-The `var_index` parameter specifies the variable you want to use for calculating phenological metrics (e.g., EVI).
+The `var_index` parameter specifies the variable you want to use for calculating start/end of season metrics (e.g., EVI).
 
-The `min_days` parameter specifies the minimum number of days with valid data at a pixel in a life cycle, for phenological metrics to be estimated for the pixel in the life cycle. This is useful when you want to reduce the impacts of missing data points on the estimation of phenological metrics. Here, we set it to 20 days for demonstration as we demonstrate with data in the first three months of 2025, but when you have data covering a full life cycle, you can set it to a larger number (e.g., 80 days) to ensure that the phenological metrics are estimated for pixels with sufficient data.
+The `min_days` parameter specifies the minimum number of days with valid data at a pixel in a life cycle, for the metrics to be estimated for the pixel in the life cycle. This is useful when you want to reduce the impacts of missing data points on the estimation of metrics. Here, we set it to 20 days for demonstration as we demonstrate with data in the first three months of 2025, but when you have data covering a full life cycle, you can set it to a larger number (e.g., 80 days) to ensure that the metrics are estimated for pixels with sufficient data.
 
-The `check_seasonality` parameter allows you to choose if you only extract phenological metrics for pixel and life cycles with significant seasonal variations (see Section 4.2). Here, we set it to `F` again as we do not demonstrate with a full year of data, but we recommend setting it to `T` when you would like to exclude pixels with no significant seasonal variations, such as some evergreen trees that show little seasonal variations in greenness, and get more reliable phenological metrics.
+The `check_seasonality` parameter allows you to choose if you only extract metrics for pixel and life cycles with significant seasonal variations (see Section 4.2). Here, we set it to `F` again as we do not demonstrate with a full year of data, but we recommend setting it to `T` when you would like to exclude pixels with no significant seasonal variations, such as some evergreen trees that show little seasonal variations in greenness, and get more reliable metrics.
 
 The `extend_to_previous_year` and `extend_to_next_year` parameters specify the number of days to extend the time series to include data from previous and next years, respectively.
 > We extended the time series in each year from day 275 (Oct 2) in the previous calendar year to day 90 (Mar 30) in the following year (spanning 546 days) in order to include at least one full growing season with green-up and green-down. This step was necessary for the detection of green-up day when EVI increases from the minimum before the New Year, and the detection of green-down day when EVI decreases to the minimum after the New Year. [Song et al., 2025](https://doi.org/10.1016/j.srs.2025.100205)
@@ -223,11 +223,11 @@ The function will create a folder `doy/` in the data directory you specified and
 ```{r, eval = F}
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 
-calculate_phenological_metrics_batch(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", v_year = 2024, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 3)
+calculate_season_metrics_batch(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", v_year = 2024, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F, extend_to_previous_year = 275, extend_to_next_year = 90, num_cores = 3)
 ```
-This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate phenological metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `sample-data/NEON/clean/` folder. 
+This step is not specific to PlanetScope data. Neither it's specific to the EVI index. You can use this function to calculate start/end of season metrics for any time series data with seasonality. Make sure you format your data frame similar to the ones we use in the demonstration. You can find examples in the `sample-data/NEON/clean/` folder. 
 
-Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
+Similarly, we can read in start/end of season metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}
 v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJER.06310")
 df_doy_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "doy") |> dplyr::filter(id %in% v_id)
