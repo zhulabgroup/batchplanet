@@ -3,7 +3,7 @@
 **BatchPlanet** is an R package designed to automate workflows for downloading, processing, and visualizing remote sensing imagery in batch from the Planet API. Originally developed to study tree phenology [Song et al., (2025)](https://doi.org/10.1016/j.srs.2025.100205), the package has been generalized for broader environmental applications. It provides a suite of tools to:
 
 * **Download Data:** Retrieve PlanetScope images across multiple sites over time.
-* **Process Data:** Extract reflectance time series, calculate remote sensing indices (e.g., Enhanced Vegetation Index), and estimate transition time (e.g., green-up date).
+* **Process Data:** Extract reflectance time series, calculate vegetation indices (e.g., Enhanced Vegetation Index), and estimate start/end of season.
 * **Visualize Data:** Generate interactive true color maps and time series plots.
 
 ***
@@ -13,7 +13,7 @@
 * **Batch Data Retrieval:** Download data over a large area (e.g., several cities) and a long time window (e.g., 2017 to current).
 * **High-Performance Capabilities:** Optimized for HPC environments with parallel processing support.
 * **Interactive Visualizations:** Create interactive true-color imagery gallery and time series plots.
-* **Robust Processing Tools:** Provide generalizable nonparameteric time series analysis tools (e.g., weighted Whittaker smoothing, threshold-based phenological metrics estimation).
+* **Robust Processing Tools:** Provide generalizable nonparameteric time series analysis tools (e.g., weighted Whittaker smoothing, threshold-based start/end of season metrics estimation).
 
 ***
 
@@ -50,7 +50,11 @@ We have developed **testthat** unit tests covering all core functions.
 # from within R or RStudio, with your working directory set to the package root
 devtools::test()
 ```
+
+[![codecov](https://codecov.io/gh/zhulabgroup/BatchPlanet/graph/badge.svg?token=YOUR_TOKEN)](https://codecov.io/gh/zhulabgroup/BatchPlanet)
+
 ***
+
 ## Citation
 
 To cite this package in publications use:
@@ -69,6 +73,22 @@ A BibTeX entry for LaTeX users is
     url = {https://github.com/zhulabgroup/BatchPlanet},
   }
 ```
+
+***
+
+## Community Guidelines
+
+We welcome contributions from the community to help improve `BatchPlanet`. 
+
+If you would like to contribute code, fix a bug, or suggest a new feature, please:
+
+1. **Fork** the repository.
+2. Create a new **branch** for your changes. We recommend following the [Tidyverse Style Guide](https://style.tidyverse.org/) for R code.
+3. Submit a **Pull Request** (PR) detailing your changes.
+
+If you encounter a bug or have a suggestion for improvement, please open an issue in the [GitHub Issue Tracker](https://github.com/zhulabgroup/BatchPlanet/issues). Please provide a minimal reproducible example (reprex) if reporting a bug.
+
+If you have questions regarding the usage of the package or need help with a specific workflow, please contact the maintainer, Yiluan Song, at songyl@umich.edu.
 
 ***
 
