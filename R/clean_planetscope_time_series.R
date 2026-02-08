@@ -1,6 +1,6 @@
 #' Clean PlanetScope time series for multiple sites and groups
 #'
-#' Cleans raw time series data for all sites and groups, removing low-quality data and optionally calculating EVI.
+#' Cleans raw time series data for all sites and groups, removing low-quality data and optionally calculating NDVI and/or EVI.
 #' Low-quality data are defined as:
 #' - The sun elevation angle is less than 0 degrees (i.e., night time images).
 #' - The reflectance values for any band are less than 0.
@@ -12,7 +12,8 @@
 #' @param v_site Character vector, optional. Site identifiers to process; if `NULL`, all sites in `ts/` are included.
 #' @param v_group Character vector, optional. Group identifiers to process; if `NULL`, all groups in filenames are included.
 #' @param num_cores Integer. Number of parallel workers to use (default: 3).
-#' @param calculate_evi Logical. If `TRUE`, computes Enhanced Vegetation Index (`evi`) after cleaning (default: `TRUE`).
+#' @param calculate_index Character vector. Specifies which vegetation indices to calculate. Supported options are NDVI and EVI. Inputs are case-insensitive. If `NULL`, no indices are calculated. (default: `c("ndvi", "evi")`).
+#' @param filter_range List. A named list specifying the valid range for indices. To disable filtering for an index, set it to `NULL` or omit it. (default: `list(ndvi = c(-1, 1), evi = c(0, 1))`).
 #'
 #' @return Invisibly returns `NULL` and saves cleaned time series as `.rds` files in the `clean/` subdirectory of `dir`.
 #'
@@ -23,7 +24,8 @@
 #'   v_site = c("HARV", "SJER"),
 #'   v_group = c("Acer", "Quercus"),
 #'   num_cores = 3,
-#'   calculate_evi = TRUE
+#'   calculate_index = c("ndvi", "evi"),
+#'   filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
 #' )
 #' }
 #'
@@ -31,7 +33,7 @@
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach foreach %dopar%
 #' @export
-clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NULL, num_cores = 3, calculate_evi = T) {
+clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NULL, num_cores = 3, calculate_index = c("ndvi", "evi"), filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))) {
   dir.create(file.path(dir, "clean"), showWarnings = F)
 
   v_file <- list.files(file.path(dir, "ts"), recursive = FALSE, full.names = FALSE) |>
@@ -47,7 +49,7 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
     f_ts <- file.path(dir, "ts", file)
     df_ts <- readr::read_rds(f_ts)
 
-    df_clean <- clean_planetscope_time_series(df_ts, calculate_evi)
+    df_clean <- clean_planetscope_time_series(df_ts, calculate_index, filter_range)
 
     f_clean <- file.path(dir, "clean", file |> stringr::str_replace("ts_", "clean_"))
     readr::write_rds(df_clean, f_clean, compress = "gz")
@@ -59,7 +61,7 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
 
 #' Clean a single PlanetScope time series
 #'
-#' Cleans a single time series data frame by removing low-quality data and optionally calculating EVI.
+#' Cleans a single time series data frame by removing low-quality data and optionally calculating NDVI and/or EVI.
 #' Low-quality data are defined as:
 #' - The sun elevation angle is less than 0 degrees (i.e., night time images).
 #' - The reflectance values for any band are less than 0.
@@ -67,17 +69,42 @@ clean_planetscope_time_series_batch <- function(dir, v_site = NULL, v_group = NU
 #' - The usable data mask had algorithmic confidence in classification less than 80% for the pixel.
 #'
 #' @param df_ts Data frame. Raw time series data for a single site/group.
-#' @param calculate_evi Logical. If `TRUE`, computes Enhanced Vegetation Index (`evi`) after cleaning (default: `TRUE`).
-#'
-#' @return Data frame of cleaned time series, with EVI if requested.
+#' @param calculate_index Character vector. Specifies which vegetation indices to calculate. Supported options are NDVI and EVI. Inputs are case-insensitive. If `NULL`, no indices are calculated. (default: `c("ndvi", "evi")`).
+#' @param filter_range List. A named list specifying the valid range for indices. To disable filtering for an index, set it to `NULL` or omit it. (default: `list(ndvi = c(-1, 1), evi = c(0, 1))`).
+#' @return Data frame of cleaned time series, with NDVI and/or EVI if requested.
 #'
 #' @examples
 #' \dontrun{
-#' df_clean <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = TRUE)
+#' df_clean <- clean_planetscope_time_series(
+#'   df_ts = df_ts_example,
+#'   calculate_index = c("ndvi", "evi"),
+#'   filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
+#' )
 #' }
 #'
 #' @export
-clean_planetscope_time_series <- function(df_ts, calculate_evi) {
+clean_planetscope_time_series <- function(df_ts, calculate_index = c("ndvi", "evi"), filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))) {
+  if (is.null(calculate_index)) {
+    calculate_index <- character(0)
+  } else {
+    calculate_index <- calculate_index |> tolower()
+  }
+
+  supported_indices <- c("ndvi", "evi")
+  # Identify which user inputs are valid
+  valid_index <- calculate_index[calculate_index %in% supported_indices] |> unique()
+
+  # Identify which user inputs are invalid to send a message
+  invalid_index <- setdiff(calculate_index, supported_indices) |> unique()
+
+  if (length(invalid_index) > 0) {
+    message(paste(
+      "Note: The following indices are not available and will be skipped:",
+      paste(invalid_index |> toupper(), collapse = ", ")
+    ))
+    message(paste("Available indices are:", paste(supported_indices |> toupper(), collapse = ", ")))
+  }
+
   df_clean <- df_ts |>
     tidyr::drop_na() |>
     dplyr::mutate(date = as.Date(time)) |>
@@ -98,10 +125,26 @@ clean_planetscope_time_series <- function(df_ts, calculate_evi) {
     ) |>
     dplyr::ungroup()
 
-  if (calculate_evi) {
+  if ("ndvi" %in% valid_index) {
     df_clean <- df_clean |>
-      dplyr::mutate(evi = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)) |>
-      dplyr::filter(evi > 0, evi <= 1)
+      dplyr::mutate(ndvi = (nir - red) / (nir + red))
+
+    # Apply NDVI filter if specified in filter_range
+    if (!is.null(filter_range$ndvi)) {
+      df_clean <- df_clean |>
+        dplyr::filter(ndvi > filter_range$ndvi[1], ndvi <= filter_range$ndvi[2])
+    }
+  }
+
+  if ("evi" %in% valid_index) {
+    df_clean <- df_clean |>
+      dplyr::mutate(evi = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1))
+
+    # Apply EVI filter if specified in filter_range
+    if (!is.null(filter_range$evi)) {
+      df_clean <- df_clean |>
+        dplyr::filter(evi > filter_range$evi[1], evi <= filter_range$evi[2])
+    }
   }
 
   return(df_clean)

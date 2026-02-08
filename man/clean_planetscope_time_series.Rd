@@ -4,18 +4,24 @@
 \alias{clean_planetscope_time_series}
 \title{Clean a single PlanetScope time series}
 \usage{
-clean_planetscope_time_series(df_ts, calculate_evi)
+clean_planetscope_time_series(
+  df_ts,
+  calculate_index = c("ndvi", "evi"),
+  filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
+)
 }
 \arguments{
 \item{df_ts}{Data frame. Raw time series data for a single site/group.}
 
-\item{calculate_evi}{Logical. If \code{TRUE}, computes Enhanced Vegetation Index (\code{evi}) after cleaning (default: \code{TRUE}).}
+\item{calculate_index}{Character vector. Specifies which vegetation indices to calculate. Supported options are NDVI and EVI. Inputs are case-insensitive. If \code{NULL}, no indices are calculated. (default: \code{c("ndvi", "evi")}).}
+
+\item{filter_range}{List. A named list specifying the valid range for indices. To disable filtering for an index, set it to \code{NULL} or omit it. (default: \code{list(ndvi = c(-1, 1), evi = c(0, 1))}).}
 }
 \value{
-Data frame of cleaned time series, with EVI if requested.
+Data frame of cleaned time series, with NDVI and/or EVI if requested.
 }
 \description{
-Cleans a single time series data frame by removing low-quality data and optionally calculating EVI.
+Cleans a single time series data frame by removing low-quality data and optionally calculating NDVI and/or EVI.
 Low-quality data are defined as:
 \itemize{
 \item The sun elevation angle is less than 0 degrees (i.e., night time images).
@@ -26,7 +32,11 @@ Low-quality data are defined as:
 }
 \examples{
 \dontrun{
-df_clean <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = TRUE)
+df_clean <- clean_planetscope_time_series(
+  df_ts = df_ts_example,
+  calculate_index = c("ndvi", "evi"),
+  filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
+)
 }
 
 }

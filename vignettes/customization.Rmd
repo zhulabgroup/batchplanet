@@ -114,7 +114,7 @@ df_ts_example <- retrieve_planetscope_time_series(
 To process a single set of time series in a data frame, you can use the `clean_planetscope_time_series()` function.
 ```{r}
 df_ts_example <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "ts")
-df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_evi = T)
+df_clean_example <- clean_planetscope_time_series(df_ts = df_ts_example, calculate_index = "evi", filter_range = list(evi = c(0, 1)))
 ```
 
 ## Calculate phenological metrics from a single data frame

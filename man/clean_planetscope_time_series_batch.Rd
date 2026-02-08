@@ -9,7 +9,8 @@ clean_planetscope_time_series_batch(
   v_site = NULL,
   v_group = NULL,
   num_cores = 3,
-  calculate_evi = T
+  calculate_index = c("ndvi", "evi"),
+  filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
 )
 }
 \arguments{
@@ -21,13 +22,15 @@ clean_planetscope_time_series_batch(
 
 \item{num_cores}{Integer. Number of parallel workers to use (default: 3).}
 
-\item{calculate_evi}{Logical. If \code{TRUE}, computes Enhanced Vegetation Index (\code{evi}) after cleaning (default: \code{TRUE}).}
+\item{calculate_index}{Character vector. Specifies which vegetation indices to calculate. Supported options are NDVI and EVI. Inputs are case-insensitive. If \code{NULL}, no indices are calculated. (default: \code{c("ndvi", "evi")}).}
+
+\item{filter_range}{List. A named list specifying the valid range for indices. To disable filtering for an index, set it to \code{NULL} or omit it. (default: \code{list(ndvi = c(-1, 1), evi = c(0, 1))}).}
 }
 \value{
 Invisibly returns \code{NULL} and saves cleaned time series as \code{.rds} files in the \verb{clean/} subdirectory of \code{dir}.
 }
 \description{
-Cleans raw time series data for all sites and groups, removing low-quality data and optionally calculating EVI.
+Cleans raw time series data for all sites and groups, removing low-quality data and optionally calculating NDVI and/or EVI.
 Low-quality data are defined as:
 \itemize{
 \item The sun elevation angle is less than 0 degrees (i.e., night time images).
@@ -44,7 +47,8 @@ clean_planetscope_time_series_batch(
   v_site = c("HARV", "SJER"),
   v_group = c("Acer", "Quercus"),
   num_cores = 3,
-  calculate_evi = TRUE
+  calculate_index = c("ndvi", "evi"),
+  filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
 )
 }
 
