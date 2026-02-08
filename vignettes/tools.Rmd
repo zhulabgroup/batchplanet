@@ -15,7 +15,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(BatchPlanet)
-library(magrittr)
 library(ggplot2)
 ```
 
@@ -60,7 +59,7 @@ smoothed_ts <- whittaker_smoothing_filling(
 df_compare <- data.frame(
   original = simulate_ts,
   smoothed = smoothed_ts
-) %>%
+) |>
   dplyr::mutate(timestep = dplyr::row_number())
 
 ggplot(df_compare) +

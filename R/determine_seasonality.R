@@ -24,7 +24,6 @@
 #' determine_seasonality(ts = flat_ts)
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @export
 determine_seasonality <- function(ts, doy = 1:length(ts), k = 50) {
   ls_fit <- list()
@@ -70,11 +69,11 @@ determine_seasonality <- function(ts, doy = 1:length(ts), k = 50) {
   )
 
   # Combine the AIC results and select the model with the lowest AIC
-  df_aic <- dplyr::bind_rows(ls_fit) %>% dplyr::arrange(AIC, model)
+  df_aic <- dplyr::bind_rows(ls_fit) |> dplyr::arrange(AIC, model)
 
   # Determine if the best model is the straight-line model ("fit0")
-  flat_better <- df_aic %>%
-    dplyr::slice(1) %>%
+  flat_better <- df_aic |>
+    dplyr::slice(1) |>
     dplyr::pull(model) == "fit0"
 
   seasonal <- !flat_better

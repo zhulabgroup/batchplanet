@@ -25,7 +25,6 @@
 #' )
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @export
 retrieve_planetscope_time_series_batch <- function(dir, df_coordinates, v_site = NULL, v_group = NULL, max_sample = 2000, num_cores = 12) {
   # If no specific site is provided, list directories under "raw" for available sites.
@@ -34,14 +33,14 @@ retrieve_planetscope_time_series_batch <- function(dir, df_coordinates, v_site =
   }
 
   if (!"group" %in% colnames(df_coordinates)) {
-    df_coordinates <- df_coordinates %>%
+    df_coordinates <- df_coordinates |>
       dplyr::mutate(group = "allGroup")
   }
 
   if (is.null(v_group)) {
-    v_group <- df_coordinates %>%
-      dplyr::pull(group) %>%
-      unique() %>%
+    v_group <- df_coordinates |>
+      dplyr::pull(group) |>
+      unique() |>
       sort()
   }
 
@@ -55,7 +54,6 @@ retrieve_planetscope_time_series_batch <- function(dir, df_coordinates, v_site =
   invisible(NULL)
 }
 
-#' @importFrom magrittr %>%
 retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, siteoi, groupoi, max_sample, num_cores) {
   dir_site <- file.path(dir, "raw", siteoi)
   # Count raster files (.tif) for the given site. Skip if none exist.
@@ -70,11 +68,11 @@ retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, site
   message("Processing: ", siteoi, " - ", groupoi)
 
   # Filter point data for the current site and group and drop rows missing coordinates
-  df_site_group <- df_coordinates %>%
-    dplyr::filter(site == siteoi) %>%
-    dplyr::filter(group == groupoi) %>%
-    tidyr::drop_na(lon, lat) %>%
-    dplyr::sample_n(min(nrow(.), max_sample)) %>%
+  df_site_group <- df_coordinates |>
+    dplyr::filter(site == siteoi) |>
+    dplyr::filter(group == groupoi) |>
+    tidyr::drop_na(lon, lat) |>
+    dplyr::sample_n(min(nrow(.), max_sample)) |>
     dplyr::arrange(id)
 
   if (nrow(df_site_group) == 0) {
@@ -108,7 +106,7 @@ retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, site
 #'
 #' @examples
 #' \dontrun{
-#' df_coordinates_example <- df_coordinates %>% dplyr::filter(site == "SJER", group == "Quercus")
+#' df_coordinates_example <- df_coordinates |> dplyr::filter(site == "SJER", group == "Quercus")
 #' df_ts_example <- retrieve_planetscope_time_series(
 #'   dir_site = file.path("alldata/PSdata/raw", "SJER"),
 #'   sf_coordinates = sf::st_as_sf(df_coordinates_example, coords = c("lon", "lat"), crs = 4326),
@@ -116,7 +114,6 @@ retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, site
 #' )
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @export
 retrieve_planetscope_time_series <- function(dir_site, sf_coordinates, num_cores = 12) {
   # Process reflectance data and QA data using specified patterns
@@ -125,24 +122,23 @@ retrieve_planetscope_time_series <- function(dir_site, sf_coordinates, num_cores
   df_ps_meta <- retrieve_metadata(dir_site, num_cores)
 
   # Extract coordinate information from the spatial points
-  df_coordinates <- sf::st_coordinates(sf_coordinates) %>%
-    tibble::as_tibble() %>%
-    dplyr::mutate(id = sf_coordinates$id) %>%
+  df_coordinates <- sf::st_coordinates(sf_coordinates) |>
+    tibble::as_tibble() |>
+    dplyr::mutate(id = sf_coordinates$id) |>
     dplyr::rename(lon = X, lat = Y)
 
   # Combine reflectance, QA, metadata, and coordinate data. Apply scaling to spectral bands.
-  df_ps_full <- df_ps %>%
-    dplyr::left_join(df_ps_qa, by = c("id", "f")) %>%
-    dplyr::left_join(df_ps_meta, by = "f") %>%
-    dplyr::left_join(df_coordinates, by = "id") %>%
-    dplyr::mutate(dplyr::across(c(red, green, blue, nir), ~ .x * 0.0001)) %>%
-    dplyr::select(-f) %>%
+  df_ps_full <- df_ps |>
+    dplyr::left_join(df_ps_qa, by = c("id", "f")) |>
+    dplyr::left_join(df_ps_meta, by = "f") |>
+    dplyr::left_join(df_coordinates, by = "id") |>
+    dplyr::mutate(dplyr::across(c(red, green, blue, nir), ~ .x * 0.0001)) |>
+    dplyr::select(-f) |>
     dplyr::select(id, dplyr::everything())
 
   return(df_ps_full)
 }
 
-#' @importFrom magrittr %>%
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach foreach %dopar%
@@ -158,7 +154,7 @@ retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
   files <- list.files(
     path = dir_site, pattern = pattern,
     recursive = TRUE, full.names = TRUE
-  ) %>% sort()
+  ) |> sort()
   if (length(files) == 0) {
     return(NULL)
   }
@@ -171,7 +167,7 @@ retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
   # Parallel processing of each file using foreach; each iteration is wrapped in tryCatch
   df_ps <- foreach(
     f = 1:length(files),
-    .packages = c("terra", "sf", "dplyr", "tidyr", "magrittr"),
+    .packages = c("terra", "sf", "dplyr", "tidyr"),
     .combine = "rbind"
   ) %dopar% {
     tryCatch(
@@ -184,8 +180,8 @@ retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
         sf_points_reproj <- sf::st_transform(sf_coordinates, crs = sf::st_crs(ras_ps))
 
         # Extract raster values at point locations; remove ID column and add file index and point IDs
-        df_ps_f <- cbind(terra::extract(ras_ps, sf_points_reproj) %>% dplyr::select(-ID), f, id = v_id)
-        df_ps_f %>% tidyr::drop_na()
+        df_ps_f <- cbind(terra::extract(ras_ps, sf_points_reproj) |> dplyr::select(-ID), f, id = v_id)
+        df_ps_f |> tidyr::drop_na()
       },
       error = function(e) {
         message("Error processing file ", files[f], ": ", e$message)
@@ -198,7 +194,6 @@ retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
   return(df_ps)
 }
 
-#' @importFrom magrittr %>%
 #' @importFrom parallel makeCluster stopCluster
 #' @importFrom doSNOW registerDoSNOW
 #' @importFrom foreach foreach %dopar%
@@ -206,7 +201,7 @@ retrieve_metadata <- function(dir_site, num_cores) {
   files <- list.files(
     path = dir_site, pattern = "_metadata.json$",
     recursive = TRUE, full.names = TRUE
-  ) %>% sort()
+  ) |> sort()
   if (length(files) == 0) {
     return(NULL)
   }
@@ -217,7 +212,7 @@ retrieve_metadata <- function(dir_site, num_cores) {
   # Parallel processing of metadata files using foreach with error handling
   df_ps_meta <- foreach(
     f = 1:length(files),
-    .packages = c("jsonlite", "lubridate", "magrittr", "tidyr"),
+    .packages = c("jsonlite", "lubridate", "tidyr"),
     .combine = "rbind"
   ) %dopar% {
     tryCatch(
@@ -226,10 +221,10 @@ retrieve_metadata <- function(dir_site, num_cores) {
         message("Processing file: ", meta_file)
         metadata <- fromJSON(meta_file)
         data.frame(
-          time = metadata$properties$acquired %>% lubridate::as_datetime(),
+          time = metadata$properties$acquired |> lubridate::as_datetime(),
           sun_elevation = metadata$properties$sun_elevation,
           f
-        ) %>% tidyr::drop_na()
+        ) |> tidyr::drop_na()
       },
       error = function(e) {
         message("Error processing metadata file ", files[f], ": ", e$message)

@@ -28,7 +28,6 @@
 #' )
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @import ggplot2
 #' @export
 visualize_time_series <- function(df_ts,
@@ -40,22 +39,22 @@ visualize_time_series <- function(df_ts,
                                   facet_var = NULL,
                                   color_palette = "viridis") {
   if ("time" %in% colnames(df_ts)) {
-    df_ts <- df_ts %>% dplyr::mutate(x_var = time)
+    df_ts <- df_ts |> dplyr::mutate(x_var = time)
   } else if ("date" %in% colnames(df_ts)) {
-    df_ts <- df_ts %>% dplyr::mutate(x_var = date)
+    df_ts <- df_ts |> dplyr::mutate(x_var = date)
   } else {
     stop("Data frame must contain a 'time' or 'date' column for time series visualization.")
   }
 
   set.seed(1)
-  df_ts <- df_ts %>%
-    dplyr::mutate(value = !!rlang::sym(var)) %>%
+  df_ts <- df_ts |>
+    dplyr::mutate(value = !!rlang::sym(var)) |>
     dplyr::mutate(id_shuffle = factor(id, levels = sample(unique(id))))
 
   if (smooth) {
-    df_ts <- df_ts %>%
-      dplyr::group_by(id) %>%
-      dplyr::mutate(value_smooth = whittaker_smoothing_filling(value, lambda = lambda)) %>%
+    df_ts <- df_ts |>
+      dplyr::group_by(id) |>
+      dplyr::mutate(value_smooth = whittaker_smoothing_filling(value, lambda = lambda)) |>
       dplyr::ungroup()
   }
 
@@ -72,7 +71,7 @@ visualize_time_series <- function(df_ts,
   }
 
   if (!is.null(df_doy)) {
-    df_doy <- df_doy %>%
+    df_doy <- df_doy |>
       dplyr::mutate(
         date_doy = as.Date(stringr::str_c(year, "-01-01")) + doy - 1,
         date_start = as.Date(stringr::str_c(year, "-01-01")) + start - 1,

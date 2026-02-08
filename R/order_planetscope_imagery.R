@@ -24,29 +24,28 @@
 #' )
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @export
 order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
                                             v_year = 2017:(as.integer(format(Sys.Date(), "%Y"))),
                                             v_month = 1:12,
                                             setting) {
   if (!"site" %in% colnames(df_coordinates)) {
-    df_coordinates <- df_coordinates %>%
+    df_coordinates <- df_coordinates |>
       dplyr::mutate(site = "allSite")
   }
 
   # If site names are not provided, extract unique site names from the location data
   if (is.null(v_site)) {
-    v_site <- df_coordinates %>%
-      dplyr::pull(site) %>%
-      unique() %>%
+    v_site <- df_coordinates |>
+      dplyr::pull(site) |>
+      unique() |>
       sort()
   }
 
   # Process orders for each site
   for (siteoi in v_site) {
-    df_coordinates_site <- df_coordinates %>%
-      dplyr::filter(site == siteoi) %>%
+    df_coordinates_site <- df_coordinates |>
+      dplyr::filter(site == siteoi) |>
       tidyr::drop_na(lon, lat)
 
     if (nrow(df_coordinates_site) == 0) {
@@ -69,7 +68,6 @@ order_planetscope_imagery_batch <- function(dir, df_coordinates, v_site = NULL,
   invisible(NULL)
 }
 
-#' @importFrom magrittr %>%
 order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, setting, v_month = 1:12) {
   # Initialize an empty data frame to accumulate order details
   df_order <- data.frame(year = integer(0), month = integer(0), order_name = character(0), order_id = character(0), num_images = integer(0))
@@ -135,7 +133,7 @@ order_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, bbox, s
         }
 
         if (!is.null(order_id)) {
-          df_order <- df_order %>%
+          df_order <- df_order |>
             dplyr::bind_rows(data.frame(year = yearoi, month = monthoi, order_name = order_name, order_id = order_id, num_images = length(image_group[[g]])))
         }
       }
@@ -264,12 +262,11 @@ build_order_tools <- function(bbox, harmonized = FALSE) {
 #' bbox <- set_bbox(df_coords, "SiteA", buffer = 0.001)
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @export
 set_bbox <- function(df_coordinates, siteoi, buffer = 0.0005) {
   # Filter the coordinate data for the specified site and remove any rows with missing values.
-  df_coordinates_site <- df_coordinates %>%
-    dplyr::filter(site == {{ siteoi }}) %>%
+  df_coordinates_site <- df_coordinates |>
+    dplyr::filter(site == {{ siteoi }}) |>
     tidyr::drop_na(lon, lat)
 
   # Check if any valid coordinates are found

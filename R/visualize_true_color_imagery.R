@@ -17,7 +17,6 @@
 #' )
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @import ggplot2
 #' @import shiny
 #' @import shinyWidgets
@@ -29,13 +28,13 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
   raster_metadata <- get_raster_metadata(dir, v_site)
 
   # Filter by cloud cover
-  raster_metadata <- raster_metadata %>% dplyr::filter(cloud_cover <= cloud_lim)
+  raster_metadata <- raster_metadata |> dplyr::filter(cloud_cover <= cloud_lim)
 
   global_brightness_lookup <- lapply(unique(raster_metadata$site), function(s) {
-    data <- raster_metadata %>% dplyr::filter(site == s)
+    data <- raster_metadata |> dplyr::filter(site == s)
     brightness <- estimate_global_brightness(data)
     tibble::tibble(site = s, brightness = brightness)
-  }) %>% dplyr::bind_rows()
+  }) |> dplyr::bind_rows()
 
   ui <- fluidPage(
     # titlePanel("PlanetScope true color imagery viewer"),
@@ -74,11 +73,11 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
     output$date_ui <- renderUI({
       req(input$site)
 
-      raster_metadata_site <- raster_metadata %>%
+      raster_metadata_site <- raster_metadata |>
         dplyr::filter(site == input$site)
 
-      v_datetime <- raster_metadata_site %>%
-        dplyr::arrange(datetime) %>%
+      v_datetime <- raster_metadata_site |>
+        dplyr::arrange(datetime) |>
         dplyr::pull(datetime)
 
       shinyWidgets::sliderTextInput("datetime", "Select Date and Time:",
@@ -98,22 +97,22 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
       {
         req(input$site, input$datetime, input$brightness)
 
-        raster_metadata_site <- raster_metadata %>%
+        raster_metadata_site <- raster_metadata |>
           dplyr::filter(site == input$site)
 
-        global_brightness <- global_brightness_lookup %>%
-          dplyr::filter(site == input$site) %>%
+        global_brightness <- global_brightness_lookup |>
+          dplyr::filter(site == input$site) |>
           dplyr::pull(brightness)
 
         df_coordinates_site <- if (!is.null(df_coordinates)) {
-          df_coordinates %>% dplyr::filter(site == input$site)
+          df_coordinates |> dplyr::filter(site == input$site)
         } else {
           NULL
         }
 
-        selected_file <- raster_metadata_site %>%
-          dplyr::filter(datetime == input$datetime) %>%
-          dplyr::pull(file) %>%
+        selected_file <- raster_metadata_site |>
+          dplyr::filter(datetime == input$datetime) |>
+          dplyr::pull(file) |>
           dplyr::first()
 
         visualize_true_color_imagery(
@@ -128,9 +127,9 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
         if (is.null(input$datetime)) {
           return(500)
         }
-        selected_file <- raster_metadata %>%
-          dplyr::filter(site == input$site, datetime == input$datetime) %>%
-          dplyr::pull(file) %>%
+        selected_file <- raster_metadata |>
+          dplyr::filter(site == input$site, datetime == input$datetime) |>
+          dplyr::pull(file) |>
           dplyr::first()
 
         ras <- terra::rast(selected_file)
@@ -172,10 +171,10 @@ get_raster_metadata <- function(dir, v_site) {
       date = stringr::str_extract(basename(file), "\\d{8}"), # Extract 8-digit date
       time = stringr::str_extract(basename(file), "(?<=_)\\d{6}"), # Extract 6-digit time
       cloud_cover = cloud_covers
-    ) %>%
-      dplyr::mutate(datetime = as.POSIXct(paste(date, time), format = "%Y%m%d %H%M%S", tz = "UTC")) %>%
-      dplyr::mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S")) %>%
-      dplyr::select(-date, -time) %>%
+    ) |>
+      dplyr::mutate(datetime = as.POSIXct(paste(date, time), format = "%Y%m%d %H%M%S", tz = "UTC")) |>
+      dplyr::mutate(datetime = format(datetime, "%Y-%m-%d %H:%M:%S")) |>
+      dplyr::select(-date, -time) |>
       dplyr::mutate(site = siteoi)
   }
   df_metadata <- dplyr::bind_rows(ls_df_metadata)
@@ -183,12 +182,11 @@ get_raster_metadata <- function(dir, v_site) {
 }
 
 # Helper function to estimate global average brightness from sampled images
-#' @importFrom magrittr %>%
 estimate_global_brightness <- function(raster_metadata) {
   # Sample up to 100 images to estimate average brightness (after cloud filter)
   if (nrow(raster_metadata) > 0) {
     set.seed(42)
-    sample_files <- raster_metadata %>% dplyr::sample_n(min(100, nrow(raster_metadata)))
+    sample_files <- raster_metadata |> dplyr::sample_n(min(100, nrow(raster_metadata)))
     brightness_vals <- c()
     for (i in seq_len(nrow(sample_files))) {
       file <- sample_files$file[i]
@@ -235,16 +233,15 @@ estimate_global_brightness <- function(raster_metadata) {
 #' )
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @import ggplot2
 #' @export
 visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness = 5, global_brightness = 0.05) {
-  ras <- terra::rast(file) %>%
+  ras <- terra::rast(file) |>
     terra::project("EPSG:4326")
 
-  df_ras <- ras %>%
-    as.data.frame(xy = T) %>%
-    tibble::as_tibble() %>%
+  df_ras <- ras |>
+    as.data.frame(xy = T) |>
+    tibble::as_tibble() |>
     dplyr::select(
       b = blue,
       g = green,
@@ -253,11 +250,11 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
       y
     )
 
-  df_ras <- df_ras %>%
-    dplyr::mutate(across(c(r, g, b), ~ . * 0.0001)) %>%
-    dplyr::mutate(across(c(r, g, b), ~ . * brightness * 0.05 / global_brightness)) %>%
-    dplyr::mutate(across(c(r, g, b), ~ pmax(., 0))) %>%
-    dplyr::mutate(across(c(r, g, b), ~ pmin(., 1))) %>%
+  df_ras <- df_ras |>
+    dplyr::mutate(across(c(r, g, b), ~ . * 0.0001)) |>
+    dplyr::mutate(across(c(r, g, b), ~ . * brightness * 0.05 / global_brightness)) |>
+    dplyr::mutate(across(c(r, g, b), ~ pmax(., 0))) |>
+    dplyr::mutate(across(c(r, g, b), ~ pmin(., 1))) |>
     dplyr::mutate(rgb = rgb(r, g, b, maxColorValue = 1))
 
   p <- ggplot(df_ras) +

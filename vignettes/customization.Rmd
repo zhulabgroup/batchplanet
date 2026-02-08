@@ -15,7 +15,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(BatchPlanet)
-library(magrittr)
 ```
 
 We understand that you may want to have more control over your workflow. Here are some examples of how you can use the functions in the package to customize your workflow.
@@ -80,8 +79,8 @@ You can visualize the true color imagery of single images using the `visualize_t
 df_coordinates_urban <- readr::read_csv(system.file("extdata", "urban", "example_urban_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
 
 set.seed(42)
-df_coordinates_AT <- df_coordinates_urban %>%
-  dplyr::filter(site == "AT") %>%
+df_coordinates_AT <- df_coordinates_urban |>
+  dplyr::filter(site == "AT") |>
   dplyr::sample_n(100)
 
 visualize_true_color_imagery(
@@ -102,10 +101,10 @@ dir_data_NEON <- file.path(dir_data, "NEON")
 
 If you would like to customize your time series retrieval process, you may use the function `retrieve_planetscope_time_series()` for a single folder `dir_site` and a set of coordinates you specify. 
 ```{r, eval = F}
-df_coordinates_example <- df_coordinates_NEON %>% dplyr::filter(site == "SJER", group == "Quercus")
+df_coordinates_example <- df_coordinates_NEON |> dplyr::filter(site == "SJER", group == "Quercus")
 df_ts_example <- retrieve_planetscope_time_series(
   dir_site = file.path(dir_data_NEON, "raw", "SJER"),
-  sf_coordinates = df_coordinates_example %>% sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(4326)),
+  sf_coordinates = df_coordinates_example |> sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(4326)),
   num_cores = 10
 )
 ```

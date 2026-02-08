@@ -32,27 +32,26 @@
 #' )
 #' }
 #'
-#' @importFrom magrittr %>%
 #' @export
 read_data_product <- function(dir, v_site = NULL, v_group = NULL, product_type = "clean") {
   dir_product <- list.files(dir, pattern = product_type, recursive = F, full.names = T)
 
-  v_file <- list.files(dir_product, recursive = FALSE, full.names = FALSE) %>%
+  v_file <- list.files(dir_product, recursive = FALSE, full.names = FALSE) |>
     filter_file_names(v_site, v_group)
 
   ls_df <- list()
   for (file in v_file) {
     # Extract site and group from filenames
-    file_parts <- file %>%
-      stringr::str_remove(".rds") %>%
+    file_parts <- file |>
+      stringr::str_remove(".rds") |>
       stringr::str_split("_", simplify = TRUE)
     siteoi <- file_parts[, 2]
     groupoi <- file_parts[, 3]
 
     f <- file.path(dir_product, file)
 
-    ls_df[[file]] <- readr::read_rds(f) %>%
-      dplyr::mutate(site = siteoi) %>%
+    ls_df[[file]] <- readr::read_rds(f) |>
+      dplyr::mutate(site = siteoi) |>
       dplyr::mutate(group = groupoi)
   }
   df <- dplyr::bind_rows(ls_df)
@@ -60,11 +59,10 @@ read_data_product <- function(dir, v_site = NULL, v_group = NULL, product_type =
   return(df)
 }
 
-#' @importFrom magrittr %>%
 filter_file_names <- function(v_file, v_site = NULL, v_group = NULL) {
   # Extract site and group from filenames
-  file_parts <- v_file %>%
-    stringr::str_remove(".rds") %>%
+  file_parts <- v_file |>
+    stringr::str_remove(".rds") |>
     stringr::str_split("_", simplify = TRUE)
   sites <- file_parts[, 2]
   groups <- file_parts[, 3]

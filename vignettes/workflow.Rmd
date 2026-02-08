@@ -24,7 +24,6 @@ Who should use this package?
 
 ```{r}
 library(BatchPlanet)
-library(magrittr)
 ```
 
 ## 1 Read coordinate data
@@ -38,8 +37,8 @@ You should create your own data frame with coordinates. Make sure your data fram
 
 What do we mean by "clustered coordinates at dispersed sites?" Use the function `visualize_coordinates()` to visualize the coordinates. Our sample coordinates are dispersed across four cities. Within each city, there are hundreds or thousands of coordinates, representing individual trees.
 ```{r}
-visualize_coordinates(df_coordinates_urban %>% dplyr::sample_n(2000)) # Multiple sites across continental US
-visualize_coordinates(df_coordinates_urban %>% dplyr::filter(site == "NY") %>% dplyr::sample_n(2000)) # Zoom in to one site NY
+visualize_coordinates(df_coordinates_urban |> dplyr::sample_n(2000)) # Multiple sites across continental US
+visualize_coordinates(df_coordinates_urban |> dplyr::filter(site == "NY") |> dplyr::sample_n(2000)) # Zoom in to one site NY
 ```
 
 Why is it important to label the coordinates with sites? If we treat all coordinates as a single set and try to download PlanetScope imagery that cover them, we will end up with a tremendous amount of imagery that cover most of continental US. Instead, we will use the site labels to group the coordinates and create bounding boxes that cover each site. This way, we can download imagery that only cover the sites of interest. If your coordinates are already clustered in a small area, you don't have to supply the site labels. The package will process all coordinates as a single site.
@@ -223,8 +222,8 @@ This step is not specific to PlanetScope data. Neither it's specific to the EVI 
 Similarly, we can read in phenological metrics data using the `read_data_product()` function, with `product_type = "doy"`. We can visualize the phenological metrics overlaid on the EVI time series data using the `visualize_time_series()` function.
 ```{r}
 v_id <- c("NEON.PLA.D17.SJER.06001", "NEON.PLA.D17.SJER.06337", "NEON.PLA.D17.SJER.06310")
-df_doy_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "doy") %>% dplyr::filter(id %in% v_id)
-df_evi_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "clean") %>% dplyr::filter(id %in% v_id)
+df_doy_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "doy") |> dplyr::filter(id %in% v_id)
+df_evi_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group = "Quercus", product_type = "clean") |> dplyr::filter(id %in% v_id)
 
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
 ```
