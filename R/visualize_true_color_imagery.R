@@ -292,6 +292,8 @@ visualize_coordinates <- function(df_coordinates) {
     stop("Data frame must contain 'lon' and 'lat' columns.")
   }
 
+  df_coordinates <- df_coordinates |> tidyr::drop_na(lat, lon)
+  
   if (interactive()) {
     p <- leaflet::leaflet(df_coordinates) |>
       # leaflet::addTiles() |>   # Adds standard map background

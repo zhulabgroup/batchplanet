@@ -1,11 +1,11 @@
-# test-calculate_phenological_metrics.R
+# test-calculate_season_metrics.R
 #
-# Unit tests for calculate_phenological_metrics_batch, calculate_phenological_metrics, set_thresholds
+# Unit tests for calculate_season_metrics_batch, calculate_season_metrics, set_thresholds
 
 library(testthat)
 library(BatchPlanet)
 
-test_that("calculate_phenological_metrics_batch runs with example data", {
+test_that("calculate_season_metrics_batch runs with example data", {
   temp_dir <- withr::local_tempdir()
 
   # Test with example data
@@ -18,7 +18,7 @@ test_that("calculate_phenological_metrics_batch runs with example data", {
   )
 
   # Run the function
-  result <- calculate_phenological_metrics_batch(
+  result <- calculate_season_metrics_batch(
     dir = temp_dir,
     v_site = c("SJER"),
     v_group = c("Quercus"),
@@ -44,14 +44,14 @@ test_that("calculate_phenological_metrics_batch runs with example data", {
   expect_true(all(!is.na(df_doy$doy)))
 })
 
-test_that("calculate_phenological_metrics runs with example data", {
+test_that("calculate_season_metrics runs with example data", {
   data_dir <- "sample-data/NEON/"
   df_clean <- list.files(file.path(data_dir, "clean"), full.names = TRUE, pattern = "clean_SJER_Quercus") %>%
     readr::read_rds() %>%
     dplyr::filter(year == 2024) %>%
     dplyr::filter(id == "NEON.PLA.D17.SJER.06001")
 
-  df_doy <- calculate_phenological_metrics(
+  df_doy <- calculate_season_metrics(
     df_index = df_clean,
     df_thres = set_thresholds(thres_up = 0.5, thres_down = NULL),
     min_days = 20,
@@ -64,11 +64,11 @@ test_that("calculate_phenological_metrics runs with example data", {
   expect_true(!is.na(df_doy$doy))
 })
 
-test_that("calculate_phenological_metrics returns NULL for too few valid days", {
+test_that("calculate_season_metrics returns NULL for too few valid days", {
   df_index <- data.frame(doy = 1:365) %>%
     dplyr::mutate(evi = c(rep(NA, 180), runif(10, 0.2, 0.8), c(rep(NA, 175)))) # Only 10 valid days
   df_thres <- set_thresholds()
-  result <- calculate_phenological_metrics(df_index, df_thres, min_days = 20, check_seasonality = TRUE, var_index = "evi")
+  result <- calculate_season_metrics(df_index, df_thres, min_days = 20, check_seasonality = TRUE, var_index = "evi")
   expect_null(result)
 })
 

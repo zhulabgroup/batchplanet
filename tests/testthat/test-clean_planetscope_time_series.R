@@ -23,7 +23,8 @@ test_that("clean_planetscope_time_series_batch runs with example data", {
     v_site = c("SJER"),
     v_group = c("Quercus"),
     num_cores = 1,
-    calculate_evi = TRUE
+    calculate_index = c("ndvi", "evi"),
+    filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
   )
 
   # Expect no return
@@ -34,17 +35,23 @@ test_that("clean_planetscope_time_series_batch runs with example data", {
   expect_gt(length(clean_files), 0)
   df_clean <- readr::read_rds(clean_files[1])
   expect_s3_class(df_clean, "data.frame")
-  expect_true(all(c("id", "lon", "lat", "date", "year", "doy", "blue", "green", "red", "nir", "evi") %in% names(df_clean)))
+  expect_true(all(c("id", "lon", "lat", "date", "year", "doy", "blue", "green", "red", "nir", "ndvi", "evi") %in% names(df_clean)))
+  expect_true(all(!is.na(df_clean$ndvi)))
   expect_true(all(!is.na(df_clean$evi)))
 })
 
 test_that("clean_planetscope_time_series cleans example data", {
   data_dir <- "sample-data/NEON/"
-  df_ts <- list.files(file.path(data_dir, "ts"), full.names = TRUE, pattern = "ts_SJER_Quercus") %>%
+  df_ts <- list.files(file.path(data_dir, "ts"), full.names = TRUE, pattern = "ts_SJER_Quercus") |>
     readr::read_rds()
 
-  df_clean <- clean_planetscope_time_series(df_ts, calculate_evi = TRUE)
+  df_clean <- clean_planetscope_time_series(
+    df_ts,
+    calculate_index = c("ndvi", "evi"),
+    filter_range = list(ndvi = c(-1, 1), evi = c(0, 1))
+  )
   expect_s3_class(df_clean, "data.frame")
-  expect_true(all(c("id", "lon", "lat", "date", "year", "doy", "blue", "green", "red", "nir", "evi") %in% names(df_clean)))
+  expect_true(all(c("id", "lon", "lat", "date", "year", "doy", "blue", "green", "red", "nir", "ndvi", "evi") %in% names(df_clean)))
+  expect_true(all(!is.na(df_clean$ndvi)))
   expect_true(all(!is.na(df_clean$evi)))
 })

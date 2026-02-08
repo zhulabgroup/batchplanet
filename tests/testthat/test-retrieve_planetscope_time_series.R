@@ -47,7 +47,7 @@ test_that("retrieve_planetscope_time_series works with example data", {
   data_dir <- "sample-data/NEON"
 
   df_coordinates <- readr::read_csv(system.file("extdata", "NEON/example_neon_coordinates.csv", package = "BatchPlanet"), show_col_types = FALSE)
-  df_coordinates_example <- df_coordinates %>% dplyr::filter(site == "SJER", group == "Quercus")
+  df_coordinates_example <- df_coordinates |> dplyr::filter(site == "SJER", group == "Quercus")
 
   # Run the function
   df_ts_example <- retrieve_planetscope_time_series(

@@ -72,7 +72,7 @@ retrieve_planetscope_time_series_sitegroup <- function(dir, df_coordinates, site
     dplyr::filter(site == siteoi) |>
     dplyr::filter(group == groupoi) |>
     tidyr::drop_na(lon, lat) |>
-    dplyr::sample_n(min(nrow(.), max_sample)) |>
+    dplyr::slice_sample(n = max_sample) |>
     dplyr::arrange(id)
 
   if (nrow(df_site_group) == 0) {
