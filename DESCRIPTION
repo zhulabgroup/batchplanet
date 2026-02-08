@@ -52,5 +52,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat,
-    withr
+    withr,
+    covr
 VignetteBuilder: knitr
