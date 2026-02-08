@@ -46,6 +46,7 @@ Imports:
     lubridate,
     httr,
     plotly,
+    leaflet,
     shiny,
     shinyWidgets
 Suggests:
