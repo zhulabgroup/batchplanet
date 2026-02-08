@@ -42,16 +42,16 @@
 #' @importFrom foreach foreach %dopar%
 #' @export
 calculate_season_metrics_batch <- function(dir,
-                                                 v_site = NULL,
-                                                 v_group = NULL,
-                                                 v_year = NULL,
-                                                 df_thres = NULL,
-                                                 var_index = "evi",
-                                                 min_days = 80,
-                                                 check_seasonality = T,
-                                                 extend_to_previous_year = 275,
-                                                 extend_to_next_year = 90,
-                                                 num_cores = 3) {
+                                           v_site = NULL,
+                                           v_group = NULL,
+                                           v_year = NULL,
+                                           df_thres = NULL,
+                                           var_index = "evi",
+                                           min_days = 80,
+                                           check_seasonality = T,
+                                           extend_to_previous_year = 275,
+                                           extend_to_next_year = 90,
+                                           num_cores = 3) {
   # Use default thresholds if not provided
   if (is.null(df_thres)) {
     df_thres <- set_thresholds()

@@ -22,9 +22,9 @@ set_planetscope_parameters(
 
 \item{product_bundle}{Character. Product bundle selection (default: \code{"analytic_sr_udm2"}).}
 
-\item{cloud_lim}{Numeric. Cloud coverage limit (between 0 and 1, default: 1).}
+\item{cloud_lim}{Numeric. Cloud coverage limit (between 0 and 1). Images with a cloud coverage above this fraction will be ignored. (default: 1).}
 
-\item{harmonized}{Logical. Indicates whether to use the Planset API tool to harmonize data (default: \code{TRUE}).}
+\item{harmonized}{Logical. Indicates whether to use the Planset API tool to harmonize data with Sentinel-2 (default: \code{TRUE}).}
 }
 \value{
 A named list containing the PlanetScope API parameters.
@@ -32,8 +32,18 @@ A named list containing the PlanetScope API parameters.
 \description{
 Constructs a named list of parameters required for interacting with the PlanetScope API.
 }
-\note{
+\details{
 You will need an active Planet account and an API key to access the PlanetScope API. You can sign up for an account on the \href{https://www.planet.com/get-started/}{Planet website}. Once you have an account, you can copy your API key from your account settings.
+
+An \strong{item_type} represents an imagery product. The default item type is "PSScene", which is PlanetScope 3, 4, and 8 band scenes captured by the Dove satellite constellation. Other item types include "TanagerScene", "TanagerMethane", "REOrthoTile", "REScene", "SkySatScene", "SkySatCollect", and "SkySatVideo". Please refer to \href{https://docs.planet.com/data/imagery/}{the Planet catalog} for the most updated available item types.
+
+An \strong{asset} is a product derived from the item's source data, and can be used for various analytic, visual or other purposes. For example, a full list of available assets for "PSScene" can be found \href{https://docs.planet.com/data/imagery/planetscope/psscene/}{here}. Please visit \href{https://docs.planet.com/data/imagery/}{the Planet catalog} for a full list of available assets for each item type.
+
+A \strong{product bundle} comprises of a group of assets for an item. This is often useful when you want to download associated metadata and data quality masks. A full list of bundles by item type can be found \href{https://docs.planet.com/develop/apis/orders/product_bundles/}{here}.
+
+The \code{cloud_lim} parameter is set to 1 by default, which means we will download all images regardless of cloud coverage. You can set this parameter to a lower value (e.g., 0.5) to filter out images with more than 50\% cloud coverage.
+
+PlanetScope API allow users to apply a tool named "harmonize" that applies scene-level normalization and harmonization, such that all PlanetScope data were consistent and approximately comparable to data from Sentinel-2. This tool is useful when integrating or comparing images from different times and locations. Refer to \href{https://assets.planet.com/docs/scene_level_normalization_of_planet_dove_imagery.pdf}{PlanetScope technical documentation} for more details.
 }
 \examples{
 \dontrun{
