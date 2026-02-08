@@ -2,12 +2,14 @@
 #'
 #' Constructs a named list of parameters required for interacting with the PlanetScope API.
 #'
-#' @param api_key Character. API key for authentication.
+#' @param api_key Character. API key for authentication. We recommend using \code{\link{set_api_key}()} to save your API key in a hidden .env file.
 #' @param item_name Character. Name of the satellite data product (default: `"PSScene"`).
 #' @param asset Character. Type of asset to retrieve (default: `"ortho_analytic_4b_sr"`).
 #' @param product_bundle Character. Product bundle selection (default: `"analytic_sr_udm2"`).
 #' @param cloud_lim Numeric. Cloud coverage limit (between 0 and 1, default: 1).
 #' @param harmonized Logical. Indicates whether to use the Planset API tool to harmonize data (default: `TRUE`).
+#'
+#' @note You will need an active Planet account and an API key to access the PlanetScope API. You can sign up for an account on the \href{https://www.planet.com/get-started/}{Planet website}. Once you have an account, you can copy your API key from your account settings.
 #'
 #' @return A named list containing the PlanetScope API parameters.
 #'
@@ -32,7 +34,7 @@ set_planetscope_parameters <- function(api_key,
                                        harmonized = TRUE) {
   # Validate API Key: must be a non-empty character string.
   if (missing(api_key) || !is.character(api_key) || nchar(api_key) == 0) {
-    stop("Invalid API key. Please provide a valid API key.")
+    stop("Invalid API key. Please provide a valid API key. You may sign up for an account and get an API key at {.url https://www.planet.com/get-started/}.")
   }
 
   # Validate Cloud Limit: must be numeric and between 0 and 1.
@@ -72,6 +74,8 @@ set_planetscope_parameters <- function(api_key,
 #' Set or change the Planet API key
 #'
 #' Prompts the user to enter a Planet API key and saves it in a hidden `.env` file in the working directory.
+#'
+#' @note You will need an active Planet account and an API key to access the PlanetScope API. You can sign up for an account on the \href{https://www.planet.com/get-started/}{Planet website}. Once you have an account, you can copy your API key from your account settings.
 #'
 #' @param change_key Logical. If `TRUE`, prompts for a new API key even if one already exists (default: `FALSE`).
 #'

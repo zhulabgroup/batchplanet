@@ -5,14 +5,14 @@
 \title{Specify thresholds for detecting phenological events}
 \usage{
 set_thresholds(
-  thres_up = seq(from = 0, to = 1, by = 0.1) \%>\% round(1),
-  thres_down = seq(from = 1, to = 0, by = -0.1) \%>\% round(1)
+  thres_up = round(seq(from = 0, to = 1, by = 0.1), 1),
+  thres_down = round(seq(from = 1, to = 0, by = -0.1), 1)
 )
 }
 \arguments{
-\item{thres_up}{Numeric vector. Threshold values for increasing trends (default: seq(from = 0, to = 1, by = 0.1) \%>\% round(1)).}
+\item{thres_up}{Numeric vector. Threshold values for increasing trends (default: seq(from = 0, to = 1, by = 0.1) |> round(1)).}
 
-\item{thres_down}{Numeric vector. Threshold values for decreasing trends (default: seq(from = 1, to = 0, by = -0.1) \%>\% round(1)).}
+\item{thres_down}{Numeric vector. Threshold values for decreasing trends (default: seq(from = 1, to = 0, by = -0.1) |> round(1)).}
 }
 \value{
 A data frame with two columns:

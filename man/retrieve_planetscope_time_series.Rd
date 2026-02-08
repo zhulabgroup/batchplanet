@@ -21,7 +21,7 @@ Extracts and combines reflectance, QA, and metadata for a set of spatial points.
 }
 \examples{
 \dontrun{
-df_coordinates_example <- df_coordinates \%>\% dplyr::filter(site == "SJER", group == "Quercus")
+df_coordinates_example <- df_coordinates |> dplyr::filter(site == "SJER", group == "Quercus")
 df_ts_example <- retrieve_planetscope_time_series(
   dir_site = file.path("alldata/PSdata/raw", "SJER"),
   sf_coordinates = sf::st_as_sf(df_coordinates_example, coords = c("lon", "lat"), crs = 4326),

@@ -15,6 +15,9 @@ Invisibly returns the API key.
 \description{
 Prompts the user to enter a Planet API key and saves it in a hidden \code{.env} file in the working directory.
 }
+\note{
+You will need an active Planet account and an API key to access the PlanetScope API. You can sign up for an account on the \href{https://www.planet.com/get-started/}{Planet website}. Once you have an account, you can copy your API key from your account settings.
+}
 \examples{
 \dontrun{
 set_api_key() # Set the API key for the first time

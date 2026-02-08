@@ -14,7 +14,7 @@ set_planetscope_parameters(
 )
 }
 \arguments{
-\item{api_key}{Character. API key for authentication.}
+\item{api_key}{Character. API key for authentication. We recommend using \code{\link{set_api_key}()} to save your API key in a hidden .env file.}
 
 \item{item_name}{Character. Name of the satellite data product (default: \code{"PSScene"}).}
 
@@ -31,6 +31,9 @@ A named list containing the PlanetScope API parameters.
 }
 \description{
 Constructs a named list of parameters required for interacting with the PlanetScope API.
+}
+\note{
+You will need an active Planet account and an API key to access the PlanetScope API. You can sign up for an account on the \href{https://www.planet.com/get-started/}{Planet website}. Once you have an account, you can copy your API key from your account settings.
 }
 \examples{
 \dontrun{
