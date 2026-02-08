@@ -24,7 +24,7 @@ download_planetscope_imagery(
 Invisibly returns \code{NULL} and writes all imagery files to the specified \code{exportfolder}.
 }
 \description{
-Downloads all files for a given PlanetScope order ID, saving them to the specified folder. The function will wait until the order is successfully processed by Planet API.
+Downloads all files for a given PlanetScope order ID, saving them to the specified folder. The function will wait until the order is successfully processed by Planet API, partially processed, fail to be processed, or is cancelled.
 }
 \examples{
 \dontrun{

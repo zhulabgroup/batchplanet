@@ -46,35 +46,30 @@ The `BatchPlanet` R package offers a reproducible and scalable workflow for acce
 
 # Statement of Need
 
-PlanetScope imagery provides global, high-resolution (~3-meter), near-daily data, making it valuable for scientific research and monitoring of phenology [@moon2021phenology], land use change, disaster impacts, and more. While the Planet API facilitates access [@planet2017api], using this data remains challenging due to complex API interactions, limits on large-volume data downloads, and non-trivial processing workflows, which can hinder reproducibility.
+PlanetScope imagery provides global, high-resolution (\~3-meter), near-daily data, making it valuable for scientific research and monitoring of phenology [@moon2021phenology], land use change, disaster impacts, and more. While the Planet API facilitates access [@planet2017api], using this data remains challenging due to complex API interactions, limits on large-volume data downloads, and non-trivial processing workflows, which can hinder reproducibility.
 
 Existing options include the official [Planet Python SDK](https://planet-sdk-for-python-v2.readthedocs.io/en/latest/python/sdk-guide/), cloud-based platforms like Sentinel Hub and Google Earth Engine (GEE), and the R package `planetR`. However, the Python and JavaScript used by the first three platforms may be less familiar to R users. Cloud platforms also restrict user control over processing environments and local data storage. Furthermore, existing tools typically require users to write extensive custom scripts for batch downloading and processing across multiple sites, a process often limited by computing and storage resources. `BatchPlanet` addresses these gaps by providing an R-native tool for batch access and processing of PlanetScope imagery (Table 1). Its streamlined, parallelized functions are designed for scalability, transparency, and reproducibility in scientific data pipelines. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology].
 
-| Feature / Tool                        | **Planet Python SDK**            | **Sentinel Hub**                 | **Google Earth Engine (GEE)**        | **planetR (Bevington)**           | **BatchPlanet**                   |
-|---------------------------------------|----------------------------------|----------------------------------|--------------------------------------|-----------------------------------|-----------------------------------|
-| **Primary Language**                  | Python                           | Python                           | JavaScript / Python                  | R                                 | R                                 |
-| **Processing Environment**            | Local/Cloud                      | Cloud                            | Cloud                                | Local                             | Local                             |
-| **Data Control & Reproducibility**    | High                             | Moderate                         | Low                                  | High                              | High                              |
-| **Batch Processing**                  | Via scripting/CLI                | Supported for enterprise users   | Via scripting                        | Via scripting                     | Streamlined                       |
-| **Time Series Analysis Tools**        | Not supported                    | Limited                          | Supported                            | Not supported                     | Supported                         |
-| **Interactive Visualization**         | Not supported                    | Limited                          | Supported                            | Not supported                     | Supported                         |
+| Feature / Tool | **Planet Python SDK** | **Sentinel Hub** | **Google Earth Engine (GEE)** | **planetR (Bevington)** | **BatchPlanet** |
+|------------|------------|------------|------------|------------|------------|
+| **Primary Language** | Python | Python | JavaScript / Python | R | R |
+| **Processing Environment** | Local/Cloud | Cloud | Cloud | Local | Local |
+| **Data Control & Reproducibility** | High | Moderate | Low | High | High |
+| **Batch Processing** | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
+| **Time Series Analysis Tools** | Not supported | Limited | Supported | Not supported | Supported |
+| **Interactive Visualization** | Not supported | Limited | Supported | Not supported | Supported |
 
 : **Table 1.** Comparison of `BatchPlanet` with existing tools for PlanetScope data access and processing.
 
 # Key Features
 
-The package is tailored for researchers and practitioners who:
-- Conduct time series analyses across spatially dispersed monitoring sites.
-- Work primarily in R and seek alternatives to Python-based tools.
-- Prioritize reproducibility in remote sensing workflows.
-- Use high-performance computing (HPC) infrastructure.
-- Need interactive visualization of PlanetScope imagery and processed data products.
+The package is tailored for researchers and practitioners who: - Conduct time series analyses across spatially dispersed monitoring sites. - Work primarily in R and seek alternatives to Python-based tools. - Prioritize reproducibility in remote sensing workflows. - Use high-performance computing (HPC) infrastructure. - Need interactive visualization of PlanetScope imagery and processed data products.
 
 A major hurdle in using PlanetScope data is the volume of data and the risk of hitting Planet API rate limits during mass downloads. This could happen, for example, when a phenological study requires years of time series over multiple locations. `BatchPlanet` provides solutions for streamlined batch ordering and downloading. It searches for images by month and automatically splits large requests into smaller orders, ensuring complete data retrieval without hitting API rate limits. It enables users to specify multiple, spatially distant sites, allowing for efficient, parallelized downloading of only the relevant imagery, minimizing unnecessary data volume.
 
 In addition to ordering and downloading, `BatchPlanet` facilitates the entire R-native workflow for PlanetScope imagery processing, with a focus on temporal analysis. These include functions to retrieve pixel-level time series data, clean reflectance time series, calculate the Enhanced Vegetation Index (EVI), and compute phenological metrics such as green-up and green-down dates. Apart from the streamlined batch processing functions, `BatchPlanet` provides individual functions for key steps of the workflow, allowing users to customize their data processing pipelines. `BatchPlanet` also enables interactive visualization of true color images and EVI time series (Fig. 1, 2).
 
-These batch functions significantly accelerate the process. For example, images for an approximately 9 km^2 area over one month were downloaded in 6.7 seconds. The total downloading time for a year's worth of images is comparable due to parallelization across months. Time series retrieval (reflectances, quality masks, and metadata) for 100 coordinates from one month of downloaded images took only 20.9 seconds, which can be parallelized across sites and coordinate groups.
+These batch functions significantly accelerate the process. For example, images for an approximately 9 km\^2 area over one month were downloaded in 6.7 seconds. The total downloading time for a year's worth of images is comparable due to parallelization across months. Time series retrieval (reflectances, quality masks, and metadata) for 100 coordinates from one month of downloaded images took only 20.9 seconds, which can be parallelized across sites and coordinate groups.
 
 ![**Figure 1.** A screenshot of the interactive PlanetScope imagery viewer in the `BatchPlanet` package, showing a true color image in part of Austin, USA, captured on May 21, 2025.](inst/extdata/figures/Fig1.png)
 
@@ -84,7 +79,7 @@ These batch functions significantly accelerate the process. For example, images 
 
 Install package in R and load package.
 
-```r
+``` r
 install.packages('BatchPlanet',
   repos = c('https://yiluansong.r-universe.dev',
             'https://cloud.r-project.org'))
@@ -93,7 +88,7 @@ library(BatchPlanet)
 
 Read example coordinates.
 
-```r
+``` r
 df_coordinates <- read.csv(
   system.file("extdata/NEON/example_neon_coordinates.csv",
               package = "BatchPlanet")
@@ -103,7 +98,7 @@ visualize_coordinates(df_coordinates)
 
 Set download parameters and data directory.
 
-```r
+``` r
 setting <- set_planetscope_parameters(
   api_key = set_api_key(),
   item_name = "PSScene",
@@ -119,8 +114,9 @@ dir_data_NEON <- file.path(dir_data, "NEON")
 ```
 
 Order and download imagery.
+Note: Before proceeding to downloading, users should inspect their [Planet account](https://www.planet.com/account/) to confirm that all orders reached a "success" status. Failed orders will result in errors during downloading. Refer to the [package vignette](https://yiluansong.r-universe.dev/articles/BatchPlanet/workflow.html) for troubleshooting tips when orders fail.
 
-```r
+``` r
 order_planetscope_imagery_batch(
   dir = dir_data_NEON,
   df_coordinates = df_coordinates,
@@ -143,7 +139,7 @@ visualize_true_color_imagery_batch(
 
 Retrieve time series at coordinates of interest.
 
-```r
+``` r
 retrieve_planetscope_time_series_batch(
   dir = dir_data_NEON,
   df_coordinates = df_coordinates,
@@ -165,7 +161,7 @@ visualize_time_series(
 
 Clean time series and calculate EVI.
 
-```r
+``` r
 clean_planetscope_time_series_batch(
   dir = dir_data_NEON,
   num_cores = 3,
@@ -188,7 +184,7 @@ visualize_time_series(
 
 Calculate phenological metrics.
 
-```r
+``` r
 df_thres <- set_thresholds(
   thres_up = c(0.3, 0.4, 0.5),
   thres_down = NULL
@@ -227,6 +223,7 @@ visualize_time_series(
 ```
 
 # Acknowledgements
+
 Yiluan Song was supported by the Eric and Wendy Schmidt AI in Science Postdoctoral Fellowship, a Schmidt Sciences program. Kai Zhu and Yiluan Song were supported by the National Science Foundation [grant numbers 2306198 (CAREER)]. We thank the Planet team for providing access to their API.
 
 # References

@@ -78,25 +78,13 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, v_mo
 
       # Delay slightly to avoid API rate limits
       Sys.sleep(i * 0.5)
-      orderdone <- FALSE
 
-      # Retry downloading the order until successful
-      while (!orderdone) {
-        orderdone <- tryCatch(
-          {
-            download_planetscope_imagery(order_id, exportfolder, api_key = setting$api_key, overwrite)
-            TRUE
-          },
-          error = function(e) {
-            message("Error downloading order ", order_id, ": ", e$message, "\nRetrying in 10s...")
-            Sys.sleep(10)
-            FALSE
-          }
-        )
-      }
-
-      # Log progress for this order
-      message(str_c(order_name, " download complete"))
+      try(
+        {
+          download_planetscope_imagery(order_id, exportfolder, api_key = setting$api_key, overwrite)
+        },
+        silent = F
+      )
     }
     stopCluster(cl)
   }
@@ -104,7 +92,7 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, v_mo
 
 #' Download a PlanetScope order
 #'
-#' Downloads all files for a given PlanetScope order ID, saving them to the specified folder. The function will wait until the order is successfully processed by Planet API.
+#' Downloads all files for a given PlanetScope order ID, saving them to the specified folder. The function will wait until the order is successfully processed by Planet API, partially processed, fail to be processed, or is cancelled.
 #'
 #' @param order_id Character. The PlanetScope order ID.
 #' @param exportfolder Character. Directory in which to save downloaded files (created if needed).
@@ -125,7 +113,19 @@ download_planetscope_imagery_siteyear <- function(dir_site, siteoi, yearoi, v_mo
 #'
 #' @export
 download_planetscope_imagery <- function(order_id, exportfolder, api_key, overwrite = FALSE) {
-  get_content <- wait_for_order_success(order_id, api_key)
+  get_content <- wait_for_order(order_id, api_key)
+
+  if (get_content$state == "failed") {
+    stop(paste("Order ", order_id, " FAILED."))
+  }
+
+  if (get_content$state == "cancelled") {
+    stop(paste("Order ", order_id, " was CANCELLED."))
+  }
+
+  if (get_content$state == "partial") {
+    warning(paste("Order ", order_id, " completed with PARTIAL success. Some assets may be missing."))
+  }
 
   message("Starting download")
   dir.create(exportfolder, showWarnings = FALSE, recursive = TRUE)
@@ -143,19 +143,22 @@ download_planetscope_imagery <- function(order_id, exportfolder, api_key, overwr
       httr::RETRY("GET",
         url = download_url,
         username = api_key,
-        httr::write_disk(path = file.path(exportfolder, filename), overwrite)
+        httr::write_disk(path = file.path(exportfolder, filename), overwrite),
+        times = 10
       )
       message(paste("Downloaded file ", filename))
     })
   }
 }
 
-wait_for_order_success <- function(order_id, api_key) {
+wait_for_order <- function(order_id, api_key) {
   url2 <- stringr::str_c("https://api.planet.com/compute/ops/orders/v2/", order_id)
   get_order <- httr::GET(url = url2, username = api_key)
   get_content <- httr::content(get_order)
 
-  while (!get_content$state %in% c("success", "partial")) {
+  terminal_states <- c("success", "partial", "failed", "cancelled")
+
+  while (!get_content$state %in% terminal_states) {
     message("Order still being processed, trying again in 60 seconds...")
     message(get_content$state)
     Sys.sleep(60)
