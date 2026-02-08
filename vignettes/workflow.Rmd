@@ -37,8 +37,13 @@ You should create your own data frame with coordinates. Make sure your data fram
 
 What do we mean by "clustered coordinates at dispersed sites?" Use the function `visualize_coordinates()` to visualize the coordinates. Our sample coordinates are dispersed across four cities. Within each city, there are hundreds or thousands of coordinates, representing individual trees.
 ```{r}
-visualize_coordinates(df_coordinates_urban |> dplyr::sample_n(2000)) # Multiple sites across continental US
-visualize_coordinates(df_coordinates_urban |> dplyr::filter(site == "NY") |> dplyr::sample_n(2000)) # Zoom in to one site NY
+visualize_coordinates(
+  df_coordinates_urban |>
+    dplyr::group_by(site) |>
+    dplyr::slice(sample(1:dplyr::n(), size = min(dplyr::n(), 2000))) |>
+    dplyr::ungroup()
+) # Multiple sites across continental US
+visualize_coordinates(df_coordinates_urban |> dplyr::filter(site == "AT")) # Zoom in to one site Austin
 ```
 
 Why is it important to label the coordinates with sites? If we treat all coordinates as a single set and try to download PlanetScope imagery that cover them, we will end up with a tremendous amount of imagery that cover most of continental US. Instead, we will use the site labels to group the coordinates and create bounding boxes that cover each site. This way, we can download imagery that only cover the sites of interest. If your coordinates are already clustered in a small area, you don't have to supply the site labels. The package will process all coordinates as a single site.
@@ -95,7 +100,7 @@ The function will create a folder `raw/` in the data directory you specified, an
 order_planetscope_imagery_batch(dir = dir_data_urban, df_coordinates = df_coordinates_urban, v_site = c("AT"), v_year = 2025, v_month = 5, setting = setting)
 ```
 
-After successful ordering, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders are "success" without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
+After successful ordering, check your [Planet account](https://www.planet.com/account/) to make sure orders are completed. Make sure all orders reached a "success" status without any order "failed." Once all orders are completed, you might proceed to the next step of downloading. Please do not order the same images repeatedly.
 
 > Why would you see failed orders?
 > - You have exceeded your Planet account limit. If you have exceeded your limit, you can either wait for the limit to reset or contact Planet support to increase your limit.

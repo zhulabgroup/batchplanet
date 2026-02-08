@@ -277,7 +277,7 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
 #' Creates a scatter plot of coordinate data.
 #' @param df_coordinates Data frame containing longitude and latitude columns.
 #'
-#' @return An interactive `plotly` object when supported, a static `ggplot` object otherwise.
+#' @return An interactive `leaflet` map object when supported, a static `ggplot` object otherwise.
 #'
 #' @examples
 #' \dontrun{
@@ -292,18 +292,29 @@ visualize_coordinates <- function(df_coordinates) {
     stop("Data frame must contain 'lon' and 'lat' columns.")
   }
 
-  p <- ggplot(df_coordinates, aes(
-    x = lon, y = lat,
-    text = stringr::str_c("ID: ", id, "<br>Longitude: ", lon, "<br>Latitude: ", lat)
-  )) +
-    geom_point(size = 0.5) +
-    labs(x = "Longitude", y = "Latitude")
-
-  p <- apply_plot_style(p)
-
   if (interactive()) {
-    plotly::ggplotly(p, tooltip = "text")
-  } else {
-    p # static ggplot
+    p <- leaflet::leaflet(df_coordinates) |>
+      # leaflet::addTiles() |>   # Adds standard map background
+      leaflet::addProviderTiles(leaflet::providers$Esri.WorldImagery) |>
+      leaflet::addCircleMarkers(
+        lng = ~lon,
+        lat = ~lat,
+        radius = 3,
+        color = "blue",
+        stroke = FALSE,
+        fillOpacity = 0.7,
+        label = ~ paste0("ID: ", id, " (", lon, ", ", lat, ")")
+      )
+  } else { # static ggplot
+    p <- ggplot(df_coordinates, aes(
+      x = lon, y = lat,
+      text = stringr::str_c("ID: ", id, "<br>Longitude: ", lon, "<br>Latitude: ", lat)
+    )) +
+      geom_point(size = 0.5, color = "blue", alpha = 0.7) +
+      labs(x = "Longitude", y = "Latitude")
+
+    p <- apply_plot_style(p)
   }
+
+  p
 }

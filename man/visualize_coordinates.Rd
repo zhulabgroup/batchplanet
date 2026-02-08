@@ -10,7 +10,7 @@ visualize_coordinates(df_coordinates)
 \item{df_coordinates}{Data frame containing longitude and latitude columns.}
 }
 \value{
-An interactive \code{plotly} object when supported, a static \code{ggplot} object otherwise.
+An interactive \code{leaflet} map object when supported, a static \code{ggplot} object otherwise.
 }
 \description{
 Creates a scatter plot of coordinate data.
