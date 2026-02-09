@@ -1,3 +1,15 @@
 url: https://zhulabgroup.github.io/BatchPlanet/
 template:
   bootstrap: 5
+  
+navbar:
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: "Getting started workflow"
+          href: articles/workflow.html
+        - text: "Customization and advanced usage"
+          href: articles/customization.html
+        - text: "Miscellaneous time series processing tools"
+          href: articles/tools.html
