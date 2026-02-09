@@ -59,15 +59,15 @@ For complete guides on using all features of `BatchPlanet`, please
 explore our package vignettes:
 
 - [**Getting started
-  workflow**](https://zhulabgroup.github.io/BatchPlanet/articles/1_workflow.html):
+  workflow**](https://zhulabgroup.github.io/BatchPlanet/articles/workflow.html):
   A complete, step-by-step example demonstrating how to download
   PlanetScope data and process time series.
 - [**Customization and advanced
-  usage**](https://zhulabgroup.github.io/BatchPlanet/articles/2_customization.html):
+  usage**](https://zhulabgroup.github.io/BatchPlanet/articles/customization.html):
   Advanced configurations for tailoring the processing pipeline to
   specific research needs.
 - [**Miscellaneous time series processing
-  tools**](https://zhulabgroup.github.io/BatchPlanet/articles/3_tools.html):
+  tools**](https://zhulabgroup.github.io/BatchPlanet/articles/tools.html):
   Two generalizable tools for time series analysis.
 
 Full documentation of functions can be found on the [Reference

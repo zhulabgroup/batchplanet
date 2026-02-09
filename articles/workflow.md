@@ -70,13 +70,13 @@ visualize_coordinates(
 ) # Multiple sites across continental US
 ```
 
-![](1_workflow_files/figure-html/unnamed-chunk-3-1.png)
+![](workflow_files/figure-html/unnamed-chunk-3-1.png)
 
 ``` r
 visualize_coordinates(df_coordinates_urban |> dplyr::filter(site == "AT")) # Zoom in to one site Austin
 ```
 
-![](1_workflow_files/figure-html/unnamed-chunk-3-2.png)
+![](workflow_files/figure-html/unnamed-chunk-3-2.png)
 
 Why is it important to label the coordinates with sites? If we treat all
 coordinates as a single set and try to download PlanetScope imagery that
@@ -178,7 +178,7 @@ all images for New York City since 2017 can be over 1TB.
 download_sample_data()
 ```
 
-    ## Sample data successfully downloaded to /home/runner/work/BatchPlanet/BatchPlanet/vignettes/sample-data
+    ## Directory 'sample-data' already exists. Skipping download.
 
 ``` r
 dir_data <- "sample-data"
@@ -360,7 +360,7 @@ df_ts <- read_data_product(dir = dir_data_NEON, v_site = c("HARV", "SJER"), v_gr
 visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "group", smooth = F)
 ```
 
-![](1_workflow_files/figure-html/unnamed-chunk-12-1.png)
+![](workflow_files/figure-html/unnamed-chunk-12-1.png)
 
 ### 3.2 Clean time series
 
@@ -408,7 +408,7 @@ visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", s
     ##   method            from
     ##   as.zoo.data.frame zoo
 
-![](1_workflow_files/figure-html/unnamed-chunk-14-1.png)
+![](workflow_files/figure-html/unnamed-chunk-14-1.png)
 
 ### 3.3 Calculate start/end of season metrics
 
@@ -504,4 +504,4 @@ df_evi_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
 ```
 
-![](1_workflow_files/figure-html/unnamed-chunk-16-1.png)
+![](workflow_files/figure-html/unnamed-chunk-16-1.png)

@@ -107,7 +107,7 @@ visualize_true_color_imagery(
 )
 ```
 
-![](2_customization_files/figure-html/unnamed-chunk-5-1.png)
+![](customization_files/figure-html/unnamed-chunk-5-1.png)
 
 ## Direct retrieval of time series for a set of coordinates
 
@@ -119,7 +119,7 @@ when you carry out your analysis.
 download_sample_data()
 ```
 
-    ## Directory 'sample-data' already exists. Skipping download.
+    ## Sample data successfully downloaded to /home/runner/work/BatchPlanet/BatchPlanet/vignettes/sample-data
 
 ``` r
 dir_data <- "sample-data"

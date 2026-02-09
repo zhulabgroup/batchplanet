@@ -92,7 +92,7 @@ ggplot(df_compare) +
     ## Warning: Removed 73 rows containing missing values or values outside the scale range
     ## (`geom_point()`).
 
-![](3_tools_files/figure-html/unnamed-chunk-3-1.png)
+![](tools_files/figure-html/unnamed-chunk-3-1.png)
 
 ## Determine seasonality
 

@@ -34,17 +34,17 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/zhulabgroup/BatchPlanet/blob/release/DESCRIPTION)
+[`inst/CITATION`](https://github.com/zhulabgroup/BatchPlanet/blob/release/inst/CITATION)
 
-Song Y, Bevington A, Reid K, Zhu J, Liu Y, Zhu K (2026). *BatchPlanet:
+Song Y, Bevington A, Reid K, Liu Y, Zhu J, Zhu K (2025). *BatchPlanet:
 Batch access and processing of PlanetScope imagery for spatiotemporal
-analysis in R*. R package version 0.2.0,
-<https://yiluansong.r-universe.dev/BatchPlanet>.
+analysis in R*. R package version 0.1.0,
+<https://github.com/zhulabgroup/BatchPlanet>.
 
     @Manual{,
       title = {BatchPlanet: Batch access and processing of PlanetScope imagery for spatiotemporal analysis in R},
-      author = {Yiluan Song and Alexandre R. Bevington and Ken Reid and Jiali Zhu and Yi Liu and Kai Zhu},
-      year = {2026},
-      note = {R package version 0.2.0},
-      url = {https://yiluansong.r-universe.dev/BatchPlanet},
+      author = {Yiluan Song and Alexandre R. Bevington and Ken Reid and Yi Liu and Jiali Zhu and Kai Zhu},
+      year = {2025},
+      note = {R package version 0.1.0},
+      url = {https://github.com/zhulabgroup/BatchPlanet},
     }
