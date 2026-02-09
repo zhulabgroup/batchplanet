@@ -138,6 +138,16 @@ install.packages('BatchPlanet',
 library(BatchPlanet)
 ```
 
+To facilitate adoption and ensure reproducibility, `BatchPlanet`
+provides three vignettes that demonstrate its full feature set:
+[**Getting started
+workflow**](https://zhulabgroup.github.io/BatchPlanet/articles/1_workflow.html),
+[**Customization and advanced
+usage**](https://zhulabgroup.github.io/BatchPlanet/articles/2_customization.html),
+and [**Miscellaneous time series processing
+tools**](https://zhulabgroup.github.io/BatchPlanet/articles/3_tools.html).
+We highlight some key functions below.
+
 Read example coordinates.
 
 ``` r
@@ -165,12 +175,13 @@ dir_data <- "sample-data"
 dir_data_NEON <- file.path(dir_data, "NEON")
 ```
 
-Order and download imagery. Note: Before proceeding to downloading,
-users should inspect their [Planet
-account](https://www.planet.com/account/) to confirm that all orders
-reached a “success” status. Failed orders will result in errors during
-downloading. Refer to the [package
-vignette](https://yiluansong.r-universe.dev/articles/BatchPlanet/workflow.html)
+Order and download imagery.
+
+Note: Before proceeding to downloading, users should inspect their
+[Planet account](https://www.planet.com/account/) to confirm that all
+orders reached a “success” status. Failed orders will result in errors
+during downloading. Refer to the [package
+vignette](https://zhulabgroup.github.io/BatchPlanet/articles/1_workflow.html)
 for troubleshooting tips when orders fail.
 
 ``` r

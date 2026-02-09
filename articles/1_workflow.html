@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>1 Workflow • BatchPlanet</title>
+<title>1 Getting Started Workflow • BatchPlanet</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="1 Workflow">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="1 Getting Started Workflow">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,9 +33,9 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/customization.html">2 Customization and advanced usage</a></li>
-    <li><a class="dropdown-item" href="../articles/tools.html">3 Miscellaneous time series processing tools</a></li>
-    <li><a class="dropdown-item" href="../articles/workflow.html">1 Workflow</a></li>
+<li><a class="dropdown-item" href="../articles/1_workflow.html">1 Getting Started Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/2_customization.html">2 Customization and advanced usage</a></li>
+    <li><a class="dropdown-item" href="../articles/3_tools.html">3 Miscellaneous time series processing tools</a></li>
   </ul>
 </li>
       </ul>
@@ -57,14 +57,14 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>1 Workflow</h1>
+      <h1>1 Getting Started Workflow</h1>
                         <h4 data-toc-skip class="author">Yiluan
 Song</h4>
             
             <h4 data-toc-skip class="date">2026-02-09</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/zhulabgroup/BatchPlanet/blob/release/vignettes/workflow.Rmd" class="external-link"><code>vignettes/workflow.Rmd</code></a></small>
-      <div class="d-none name"><code>workflow.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/zhulabgroup/BatchPlanet/blob/release/vignettes/1_workflow.Rmd" class="external-link"><code>vignettes/1_workflow.Rmd</code></a></small>
+      <div class="d-none name"><code>1_workflow.Rmd</code></div>
     </div>
 
     
@@ -128,10 +128,10 @@ representing individual trees.</p>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">2000</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="co"># Multiple sites across continental US</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="1_workflow_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/visualize_coordinates.html">visualize_coordinates</a></span><span class="op">(</span><span class="va">df_coordinates_urban</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">site</span> <span class="op">==</span> <span class="st">"AT"</span><span class="op">)</span><span class="op">)</span> <span class="co"># Zoom in to one site Austin</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-3-2.png" class="r-plt" alt="" width="700"></p>
+<p><img src="1_workflow_files/figure-html/unnamed-chunk-3-2.png" class="r-plt" alt="" width="700"></p>
 <p>Why is it important to label the coordinates with sites? If we treat
 all coordinates as a single set and try to download PlanetScope imagery
 that cover them, we will end up with a tremendous amount of imagery that
@@ -220,7 +220,7 @@ your local machine or HPC system as the data can be large. For example,
 all images for New York City since 2017 can be over 1TB.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/download_sample_data.html">download_sample_data</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## Directory 'sample-data' already exists. Skipping download.</span></span></code></pre>
+<pre><code><span><span class="co">## Sample data successfully downloaded to /home/runner/work/BatchPlanet/BatchPlanet/vignettes/sample-data</span></span></code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dir_data</span> <span class="op">&lt;-</span> <span class="st">"sample-data"</span></span>
 <span><span class="va">dir_data_urban</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir_data</span>, <span class="st">"urban"</span><span class="op">)</span></span></code></pre></div>
@@ -377,7 +377,7 @@ represents a pixel.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_data_product.html">read_data_product</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="va">dir_data_NEON</span>, v_site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HARV"</span>, <span class="st">"SJER"</span><span class="op">)</span>, v_group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Acer"</span>, <span class="st">"Quercus"</span><span class="op">)</span>, product_type <span class="op">=</span> <span class="st">"ts"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/visualize_time_series.html">visualize_time_series</a></span><span class="op">(</span><span class="va">df_ts</span>, var <span class="op">=</span> <span class="st">"green"</span>, ylab <span class="op">=</span> <span class="st">"Green reflectance"</span>, facet_var <span class="op">=</span> <span class="st">"group"</span>, smooth <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="1_workflow_files/figure-html/unnamed-chunk-12-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="clean-time-series">3.2 Clean time series<a class="anchor" aria-label="anchor" href="#clean-time-series"></a>
@@ -419,7 +419,7 @@ function. The cleaned time series data will have a new column
 <pre><code><span><span class="co">## Registered S3 method overwritten by 'quantmod':</span></span>
 <span><span class="co">##   method            from</span></span>
 <span><span class="co">##   as.zoo.data.frame zoo</span></span></code></pre>
-<p><img src="workflow_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="1_workflow_files/figure-html/unnamed-chunk-14-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="calculate-startend-of-season-metrics">3.3 Calculate start/end of season metrics<a class="anchor" aria-label="anchor" href="#calculate-startend-of-season-metrics"></a>
@@ -506,7 +506,7 @@ on the EVI time series data using the
 <span><span class="va">df_evi_sample</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/read_data_product.html">read_data_product</a></span><span class="op">(</span>dir <span class="op">=</span> <span class="va">dir_data_NEON</span>, v_site <span class="op">=</span> <span class="st">"SJER"</span>, v_group <span class="op">=</span> <span class="st">"Quercus"</span>, product_type <span class="op">=</span> <span class="st">"clean"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">v_id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/visualize_time_series.html">visualize_time_series</a></span><span class="op">(</span>df_ts <span class="op">=</span> <span class="va">df_evi_sample</span>, df_doy <span class="op">=</span> <span class="va">df_doy_sample</span>, var <span class="op">=</span> <span class="st">"evi"</span>, ylab <span class="op">=</span> <span class="st">"EVI"</span>, facet_var <span class="op">=</span> <span class="st">"id"</span>, smooth <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="1_workflow_files/figure-html/unnamed-chunk-16-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
