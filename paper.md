@@ -49,8 +49,8 @@ wind-pollinated trees \[@song2025phenology\].
 | **Time Series Analysis Tools**     | Not supported         | Limited                        | Supported                     | Not supported           | Supported       |
 | **Interactive Visualization**      | Not supported         | Limited                        | Supported                     | Not supported           | Supported       |
 
-**Table 1.** Comparison of `BatchPlanet` with existing tools for
-PlanetScope data access and processing.
+Comparison of `BatchPlanet` with existing tools for PlanetScope data
+access and processing.
 
 # Key Features
 
