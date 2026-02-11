@@ -82,47 +82,46 @@ pixel-level time series data, clean reflectance time series, calculate
 the Normalized Difference Vegetation Index (NDVI) and Enhanced
 Vegetation Index (EVI) \[@huete2002overview\], and compute start/end of
 season metrics (the day-of-year when the specified index first crosses
-specified thresholds) \[@moon2021multiscale\]. Apart from the
-streamlined batch processing functions, `BatchPlanet` provides
-individual functions for key steps of the workflow, allowing users to
-customize their data processing pipelines. `BatchPlanet` also enables
-interactive visualization of true color images and EVI time series (Fig.
-1, 2).
+specified thresholds) \[@moon2021phenology\]. Apart from the streamlined
+batch processing functions, `BatchPlanet` provides individual functions
+for key steps of the workflow, allowing users to customize their data
+processing pipelines. `BatchPlanet` also enables interactive
+visualization of true color images and EVI time series (Fig. 1, 2).
 
 These batch functions significantly accelerate the process. For example,
-images for an approximately 9 km^2 area over one month were downloaded
-in 6.7 seconds. The total downloading time for a year’s worth of images
-is comparable due to parallelization across months. Time series
-retrieval (reflectances, quality masks, and metadata) for 100
-coordinates from one month of downloaded images took only 20.9 seconds,
-which can be parallelized across sites and coordinate groups.
+images for an approximately 9 km² area over one month were downloaded in
+6.7 seconds. The total downloading time for a year’s worth of images is
+comparable due to parallelization across months. Time series retrieval
+(reflectances, quality masks, and metadata) for 100 coordinates from one
+month of downloaded images took only 20.9 seconds, which can be
+parallelized across sites and coordinate groups.
 
-![Figure 1. A screenshot of the interactive PlanetScope imagery viewer
-in the BatchPlanet package, showing a true color image in part of
-Austin, USA, captured on May 21, 2025.](inst/extdata/figures/Fig1.png)
+![A screenshot of the interactive PlanetScope imagery viewer in the
+BatchPlanet package, showing a true color image in part of Austin, USA,
+captured on May 21, 2025.](inst/extdata/figures/Fig1.png)
 
-**Figure 1.** A screenshot of the interactive PlanetScope imagery viewer
-in the `BatchPlanet` package, showing a true color image in part of
-Austin, USA, captured on May 21, 2025.
+A screenshot of the interactive PlanetScope imagery viewer in the
+`BatchPlanet` package, showing a true color image in part of Austin,
+USA, captured on May 21, 2025.
 
-![Figure 2. Enhanced Vegetation Index (EVI) for three trees in San
-Joaquin Experimental range (SJER) NEON site with start/end of season
-metrics annotated, calculated and visualized using the BatchPlanet
-package. Points are EVI values calculated from PlanetScope reflectances
-at the coordinates of the trees of interest, summarized with smoothed
-lines. Green shades indicate the periods from minimum EVI in the winter
-to maximum EVI in the summer. Sets of three vertical green lines are the
+![Enhanced Vegetation Index (EVI) for three trees in San Joaquin
+Experimental range (SJER) NEON site with start/end of season metrics
+annotated, calculated and visualized using the BatchPlanet package.
+Points are EVI values calculated from PlanetScope reflectances at the
+coordinates of the trees of interest, summarized with smoothed lines.
+Green shades indicate the periods from minimum EVI in the winter to
+maximum EVI in the summer. Sets of three vertical green lines are the
 time points when smoothed EVI crosses 30%, 40%, and 50 % of the range
 between minimum and maximum EVI, which can serve as possible start of
 season metrics.](inst/extdata/figures/Fig2.png)
 
-**Figure 2.** Enhanced Vegetation Index (EVI) for three trees in San
-Joaquin Experimental range (SJER) NEON site with start/end of season
-metrics annotated, calculated and visualized using the `BatchPlanet`
-package. Points are EVI values calculated from PlanetScope reflectances
-at the coordinates of the trees of interest, summarized with smoothed
-lines. Green shades indicate the periods from minimum EVI in the winter
-to maximum EVI in the summer. Sets of three vertical green lines are the
+Enhanced Vegetation Index (EVI) for three trees in San Joaquin
+Experimental range (SJER) NEON site with start/end of season metrics
+annotated, calculated and visualized using the `BatchPlanet` package.
+Points are EVI values calculated from PlanetScope reflectances at the
+coordinates of the trees of interest, summarized with smoothed lines.
+Green shades indicate the periods from minimum EVI in the winter to
+maximum EVI in the summer. Sets of three vertical green lines are the
 time points when smoothed EVI crosses 30%, 40%, and 50 % of the range
 between minimum and maximum EVI, which can serve as possible start of
 season metrics.
