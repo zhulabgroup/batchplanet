@@ -38,6 +38,9 @@ affiliations:
 date: 2025-07-25
 repository: https://github.com/zhulabgroup/BatchPlanet
 bibliography: paper.bib
+header-includes:
+   - \usepackage{array}
+   - \renewcommand{\arraystretch}{1.75}
 ---
 
 # Summary
@@ -54,11 +57,11 @@ Existing options include the official [Planet Python SDK](https://planet-sdk-for
 
 | Feature / Tool | **Planet Python SDK** | **Sentinel Hub** | **Google Earth Engine (GEE)** | **planetR (Bevington)** | **BatchPlanet** |
 |------------|------------|------------|------------|------------|------------|
-| **Primary Language** \newline | Python | Python | JavaScript / Python | R | R |
-| **Processing Environment** \newline | Local/Cloud | Cloud | Cloud | Local | Local |
-| **Data Control & Reproducibility** \newline | High | Moderate | Low | High | High |
-| **Batch Processing** \newline \newline | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
-| **Time Series Analysis Tools** \newline | Not supported | Limited | Supported | Not supported | Supported |
+| **Primary Language** | Python | Python | JavaScript / Python | R | R |
+| **Processing Environment** | Local/Cloud | Cloud | Cloud | Local | Local |
+| **Data Control & Reproducibility** | High | Moderate | Low | High | High |
+| **Batch Processing** | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
+| **Time Series Analysis Tools** | Not supported | Limited | Supported | Not supported | Supported |
 | **Interactive Visualization** | Not supported | Limited | Supported | Not supported | Supported |
 
 # Key Features
@@ -75,7 +78,7 @@ A major hurdle in using PlanetScope data is the volume of data and the risk of h
 
 In addition to ordering and downloading, `BatchPlanet` facilitates the entire R-native workflow for PlanetScope imagery processing, with a focus on temporal analysis. These include functions to retrieve pixel-level time series data, clean reflectance time series, calculate the Normalized Difference Vegetation Index (NDVI) and Enhanced Vegetation Index (EVI) [@huete2002overview], and compute start/end of season metrics (the day-of-year when the specified index first crosses specified thresholds) [@moon2021phenology]. Apart from the streamlined batch processing functions, `BatchPlanet` provides individual functions for key steps of the workflow, allowing users to customize their data processing pipelines. `BatchPlanet` also enables interactive visualization of true color images and EVI time series (Fig. 1, 2).
 
-These batch functions significantly accelerate the process. For example, images for an approximately 9 km^2^ area over one month were downloaded in 6.7 seconds. The total downloading time for a year's worth of images is comparable due to parallelization across months. Time series retrieval (reflectances, quality masks, and metadata) for 100 coordinates from one month of downloaded images took only 20.9 seconds, which can be parallelized across sites and coordinate groups.
+These batch functions significantly accelerate the process. For example, images for an approximately 9 km^2^ area over one month were downloaded in 6.7 seconds. The total downloading time for a year's worth of images is comparable, due to parallelization across months. Time series retrieval (reflectances, quality masks, and metadata) for 100 coordinates from one month of downloaded images took only 20.9 seconds, which can be parallelized across sites and coordinate groups.
 
 ![A screenshot of the interactive PlanetScope imagery viewer in the `BatchPlanet` package, showing a true color image in part of Austin, USA, captured on May 11, 2025.](inst/extdata/figures/Fig1.png)
 
