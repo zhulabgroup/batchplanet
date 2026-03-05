@@ -50,27 +50,16 @@ PlanetScope imagery provides global, high-resolution (\~3-meter), near-daily dat
 
 Existing options include the official [Planet Python SDK](https://planet-sdk-for-python-v2.readthedocs.io/en/latest/python/sdk-guide/), cloud-based platforms like [Sentinel Hub](https://www.sentinel-hub.com/develop/api/) and [Google Earth Engine (GEE)](https://docs.planet.com/platform/integrations/google-earth-engine/), and the R package `planetR` [@bevington2024planetr]. However, the Python and JavaScript used by the first three platforms may be less familiar to R users. Cloud platforms also restrict user control over processing environments and local data storage. Furthermore, existing tools typically require users to write extensive custom scripts for batch downloading and processing across multiple sites, a process often limited by computing and storage resources. `BatchPlanet` addresses these gaps by providing an R-native tool for batch access and processing of PlanetScope imagery (Table 1). Its streamlined, parallelized functions are designed for scalability, transparency, and reproducibility in scientific data pipelines. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology].
 
-+---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
-| Feature / Tool                  | **Planet Python** | **Sentinel Hub** | **Google Earth** | **planetR** | **BatchPlanet** |
-|                                 | **SDK** |                   | **Engine (GEE)** | **(Bevington)** |                   |
-+=================================+===================+===================+===================+===================+===================+
-| **Primary Language** | Python            | Python            | JavaScript /      | R                 | R                 |
-|                                 |                   |                   | Python            |                   |                   |
-+---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
-| **Processing Environment** | Local/Cloud       | Cloud             | Cloud             | Local             | Local             |
-+---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
-| **Data Control &** | High              | Moderate          | Low               | High              | High              |
-| **Reproducibility** |                   |                   |                   |                   |                   |
-+---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
-| **Batch Processing** | Via scripting/CLI | Supported for     | Via scripting     | Via scripting     | Streamlined       |
-|                                 |                   | enterprise users  |                   |                   |                   |
-+---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
-| **Time Series Analysis Tools** | Not supported     | Limited           | Supported         | Not supported     | Supported         |
-+---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
-| **Interactive Visualization** | Not supported     | Limited           | Supported         | Not supported     | Supported         |
-+---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
-
 : Comparison of `BatchPlanet` with existing tools for PlanetScope data access and processing.
+
+| Feature / Tool | **Planet Python SDK** | **Sentinel Hub** | **Google Earth Engine (GEE)** | **planetR (Bevington)** | **BatchPlanet** |
+|------------|------------|------------|------------|------------|------------|
+| **Primary Language** \newline | Python | Python | JavaScript / Python | R | R |
+| **Processing Environment** \newline | Local/Cloud | Cloud | Cloud | Local | Local |
+| **Data Control & Reproducibility** \newline | High | Moderate | Low | High | High |
+| **Batch Processing** \newline | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
+| **Time Series Analysis Tools** \newline | Not supported | Limited | Supported | Not supported | Supported |
+| **Interactive Visualization** | Not supported | Limited | Supported | Not supported | Supported |
 
 # Key Features
 
