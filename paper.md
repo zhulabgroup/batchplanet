@@ -91,7 +91,7 @@ visualization of true color images and EVI time series (Fig. 1, 2).
 These batch functions significantly accelerate the process. For example,
 images for an approximately 9 km² area over one month were downloaded in
 6.7 seconds. The total downloading time for a year’s worth of images is
-comparable due to parallelization across months. Time series retrieval
+comparable, due to parallelization across months. Time series retrieval
 (reflectances, quality masks, and metadata) for 100 coordinates from one
 month of downloaded images took only 20.9 seconds, which can be
 parallelized across sites and coordinate groups.
