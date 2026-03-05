@@ -46,22 +46,54 @@
 <h1 id="statement-of-need">Statement of Need<a class="anchor" aria-label="anchor" href="#statement-of-need"></a></h1>
 <p>PlanetScope imagery provides global, high-resolution (~3-meter), near-daily data, making it valuable for scientific research and monitoring of phenology [@moon2021phenology], land use change, disaster impacts, and more. While the Planet API facilitates access [@planet2017api], using this data remains challenging due to complex API interactions, limits on large-volume data downloads, and non-trivial processing workflows, which can hinder reproducibility.</p>
 <p>Existing options include the official <a href="https://planet-sdk-for-python-v2.readthedocs.io/en/latest/python/sdk-guide/" class="external-link">Planet Python SDK</a>, cloud-based platforms like <a href="https://www.sentinel-hub.com/develop/api/" class="external-link">Sentinel Hub</a> and <a href="https://docs.planet.com/platform/integrations/google-earth-engine/" class="external-link">Google Earth Engine (GEE)</a>, and the R package <code>planetR</code> [@bevington2024planetr]. However, the Python and JavaScript used by the first three platforms may be less familiar to R users. Cloud platforms also restrict user control over processing environments and local data storage. Furthermore, existing tools typically require users to write extensive custom scripts for batch downloading and processing across multiple sites, a process often limited by computing and storage resources. <code>BatchPlanet</code> addresses these gaps by providing an R-native tool for batch access and processing of PlanetScope imagery (Table 1). Its streamlined, parallelized functions are designed for scalability, transparency, and reproducibility in scientific data pipelines. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology].</p>
-<table style="width:97%;" class="table"><caption>Comparison of <code>BatchPlanet</code> with existing tools for PlanetScope data access and processing.</caption>
-<colgroup><col width="24%"><col width="14%"><col width="14%"><col width="14%"><col width="14%"><col width="14%"></colgroup><thead><tr class="header"><th>Feature / Tool</th>
-<th colspan="5">
-<strong>Planet Python</strong> | <strong>Sentinel Hub</strong> | <strong>Google Earth</strong> | <strong>planetR</strong> | <strong>BatchPlanet</strong> | <strong>SDK</strong> | | <strong>Engine (GEE)</strong> | <strong>(Bevington)</strong> | |</th>
-</tr></thead><tbody><tr class="odd"><td colspan="6">
-<strong>Primary Language</strong> | Python | Python | JavaScript / | R | R | | | | Python | |</td>
-</tr><tr class="even"><td colspan="6">
-<strong>Processing Environment</strong> | Local/Cloud | Cloud | Cloud | Local | Local |</td>
-</tr><tr class="odd"><td colspan="6">
-<strong>Data Control &amp;</strong> | High | Moderate | Low | High | High | <strong>Reproducibility</strong> | | | | | |</td>
-</tr><tr class="even"><td colspan="6">
-<strong>Batch Processing</strong> | Via scripting/CLI | Supported for | Via scripting | Via scripting | Streamlined | | | enterprise users | | |</td>
-</tr><tr class="odd"><td colspan="6">
-<strong>Time Series Analysis Tools</strong> | Not supported | Limited | Supported | Not supported | Supported |</td>
-</tr><tr class="even"><td colspan="6">
-<strong>Interactive Visualization</strong> | Not supported | Limited | Supported | Not supported | Supported |</td>
+<table style="width:100%;" class="table"><caption>Comparison of <code>BatchPlanet</code> with existing tools for PlanetScope data access and processing.</caption>
+<colgroup><col width="16%"><col width="16%"><col width="16%"><col width="16%"><col width="16%"><col width="16%"></colgroup><thead><tr class="header"><th>Feature / Tool</th>
+<th><strong>Planet Python SDK</strong></th>
+<th><strong>Sentinel Hub</strong></th>
+<th><strong>Google Earth Engine (GEE)</strong></th>
+<th><strong>planetR (Bevington)</strong></th>
+<th><strong>BatchPlanet</strong></th>
+</tr></thead><tbody><tr class="odd"><td>
+<strong>Primary Language</strong> </td>
+<td>Python</td>
+<td>Python</td>
+<td>JavaScript / Python</td>
+<td>R</td>
+<td>R</td>
+</tr><tr class="even"><td>
+<strong>Processing Environment</strong> </td>
+<td>Local/Cloud</td>
+<td>Cloud</td>
+<td>Cloud</td>
+<td>Local</td>
+<td>Local</td>
+</tr><tr class="odd"><td>
+<strong>Data Control &amp; Reproducibility</strong> </td>
+<td>High</td>
+<td>Moderate</td>
+<td>Low</td>
+<td>High</td>
+<td>High</td>
+</tr><tr class="even"><td>
+<strong>Batch Processing</strong> </td>
+<td>Via scripting/CLI</td>
+<td>Supported for enterprise users</td>
+<td>Via scripting</td>
+<td>Via scripting</td>
+<td>Streamlined</td>
+</tr><tr class="odd"><td>
+<strong>Time Series Analysis Tools</strong> </td>
+<td>Not supported</td>
+<td>Limited</td>
+<td>Supported</td>
+<td>Not supported</td>
+<td>Supported</td>
+</tr><tr class="even"><td><strong>Interactive Visualization</strong></td>
+<td>Not supported</td>
+<td>Limited</td>
+<td>Supported</td>
+<td>Not supported</td>
+<td>Supported</td>
 </tr></tbody></table></div>
 <div class="section level1">
 <h1 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a></h1>
