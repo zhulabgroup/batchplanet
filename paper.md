@@ -40,7 +40,7 @@ repository: https://github.com/zhulabgroup/BatchPlanet
 bibliography: paper.bib
 header-includes:
    - \usepackage{array}
-   - \renewcommand{\arraystretch}{1.4}
+   - \renewcommand{\arraystretch}{1.75}
 ---
 
 # Summary
@@ -61,7 +61,7 @@ Existing options include the official [Planet Python SDK](https://planet-sdk-for
 | **Processing Environment** | Local/Cloud | Cloud | Cloud | Local | Local |
 | **Data Control & Reproducibility** | High | Moderate | Low | High | High |
 | **Batch Processing** | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
-| **Time Series Analysis Tools** | Not supported | Limited | Supported | Not supported | Supported |
+| **Time Series Analysis** | Not supported | Limited | Supported | Not supported | Supported |
 | **Interactive Visualization** | Not supported | Limited | Supported | Not supported | Supported |
 
 # Key Features
