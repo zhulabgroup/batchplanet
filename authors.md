@@ -15,9 +15,9 @@
   of Northern British Columbia, Prince George, BC, Canada; Ministry of
   Forests, Province of British Columbia, Prince George, BC, Canada
 
-- **Ken Reid**. Author. [](https://orcid.org/0000-0001-8654-2430)  
-  Michigan Institute for Data and AI in Society, University of Michigan,
-  Ann Arbor, MI, USA
+- **Kenneth N. Reid**. Author.
+  [](https://orcid.org/0000-0001-8654-2430)  
+  Honorary Fellow - University of Stirling, Scotland, UK
 
 - **Jiali Zhu**. Author. [](https://orcid.org/0009-0009-7339-557X)  
   School for Environment and Sustainability and Institute for Global
