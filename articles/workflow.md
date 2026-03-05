@@ -404,10 +404,6 @@ df_clean <- read_data_product(dir = dir_data_NEON, v_site = c("HARV", "SJER"), v
 visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
 ```
 
-    ## Registered S3 method overwritten by 'quantmod':
-    ##   method            from
-    ##   as.zoo.data.frame zoo
-
 ![](workflow_files/figure-html/unnamed-chunk-14-1.png)
 
 ### 3.3 Calculate start/end of season metrics

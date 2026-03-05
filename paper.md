@@ -40,14 +40,7 @@ reproducibility in scientific data pipelines. This package has supported
 peer-reviewed research in predicting reproductive phenology in
 wind-pollinated trees \[@song2025phenology\].
 
-| Feature / Tool                     | **Planet Python SDK** | **Sentinel Hub**               | **Google Earth Engine (GEE)** | **planetR (Bevington)** | **BatchPlanet** |
-|------------------------------------|-----------------------|--------------------------------|-------------------------------|-------------------------|-----------------|
-| **Primary Language**               | Python                | Python                         | JavaScript / Python           | R                       | R               |
-| **Processing Environment**         | Local/Cloud           | Cloud                          | Cloud                         | Local                   | Local           |
-| **Data Control & Reproducibility** | High                  | Moderate                       | Low                           | High                    | High            |
-| **Batch Processing**               | Via scripting/CLI     | Supported for enterprise users | Via scripting                 | Via scripting           | Streamlined     |
-| **Time Series Analysis Tools**     | Not supported         | Limited                        | Supported                     | Not supported           | Supported       |
-| **Interactive Visualization**      | Not supported         | Limited                        | Supported                     | Not supported           | Supported       |
+[TABLE]
 
 Comparison of `BatchPlanet` with existing tools for PlanetScope data
 access and processing.

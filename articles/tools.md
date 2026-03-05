@@ -62,13 +62,7 @@ smoothed_ts <- whittaker_smoothing_filling(
   maxgap = 30,
   minseg = 2
 )
-```
 
-    ## Registered S3 method overwritten by 'quantmod':
-    ##   method            from
-    ##   as.zoo.data.frame zoo
-
-``` r
 # Compare original and smoothed time series
 df_compare <- data.frame(
   original = simulate_ts,

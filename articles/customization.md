@@ -165,7 +165,3 @@ df_clean_example <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_gr
 df_thres <- set_thresholds(thres_up = c(0.3, 0.4, 0.5), thres_down = NULL)
 df_doy_example <- calculate_season_metrics(df_index = df_clean_example, df_thres = df_thres, var_index = "evi", min_days = 20, check_seasonality = F)
 ```
-
-    ## Registered S3 method overwritten by 'quantmod':
-    ##   method            from
-    ##   as.zoo.data.frame zoo
