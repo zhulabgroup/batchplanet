@@ -50,14 +50,25 @@ PlanetScope imagery provides global, high-resolution (\~3-meter), near-daily dat
 
 Existing options include the official [Planet Python SDK](https://planet-sdk-for-python-v2.readthedocs.io/en/latest/python/sdk-guide/), cloud-based platforms like [Sentinel Hub](https://www.sentinel-hub.com/develop/api/) and [Google Earth Engine (GEE)](https://docs.planet.com/platform/integrations/google-earth-engine/), and the R package `planetR` [@bevington2024planetr]. However, the Python and JavaScript used by the first three platforms may be less familiar to R users. Cloud platforms also restrict user control over processing environments and local data storage. Furthermore, existing tools typically require users to write extensive custom scripts for batch downloading and processing across multiple sites, a process often limited by computing and storage resources. `BatchPlanet` addresses these gaps by providing an R-native tool for batch access and processing of PlanetScope imagery (Table 1). Its streamlined, parallelized functions are designed for scalability, transparency, and reproducibility in scientific data pipelines. This package has supported peer-reviewed research in predicting reproductive phenology in wind-pollinated trees [@song2025phenology].
 
-| Feature / Tool | **Planet Python SDK** | **Sentinel Hub** | **Google Earth Engine (GEE)** | **planetR (Bevington)** | **BatchPlanet** |
-|------------|------------|------------|------------|------------|------------|
-| **Primary Language**<br> | Python | Python | JavaScript / Python | R | R |
-| **Processing Environment**<br> | Local/Cloud | Cloud | Cloud | Local | Local |
-| **Data Control & Reproducibility**<br> | High | Moderate | Low | High | High |
-| **Batch Processing**<br> | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
-| **Time Series Analysis Tools**<br> | Not supported | Limited | Supported | Not supported | Supported |
-| **Interactive Visualization** | Not supported | Limited | Supported | Not supported | Supported |
++---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
+| Feature / Tool                  | **Planet Python** | **Sentinel Hub** | **Google Earth** | **planetR** | **BatchPlanet** |
+|                                 | **SDK** |                   | **Engine (GEE)** | **(Bevington)** |                   |
++=================================+===================+===================+===================+===================+===================+
+| **Primary Language** | Python            | Python            | JavaScript /      | R                 | R                 |
+|                                 |                   |                   | Python            |                   |                   |
++---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
+| **Processing Environment** | Local/Cloud       | Cloud             | Cloud             | Local             | Local             |
++---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
+| **Data Control &** | High              | Moderate          | Low               | High              | High              |
+| **Reproducibility** |                   |                   |                   |                   |                   |
++---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
+| **Batch Processing** | Via scripting/CLI | Supported for     | Via scripting     | Via scripting     | Streamlined       |
+|                                 |                   | enterprise users  |                   |                   |                   |
++---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
+| **Time Series Analysis Tools** | Not supported     | Limited           | Supported         | Not supported     | Supported         |
++---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
+| **Interactive Visualization** | Not supported     | Limited           | Supported         | Not supported     | Supported         |
++---------------------------------+-------------------+-------------------+-------------------+-------------------+-------------------+
 
 : Comparison of `BatchPlanet` with existing tools for PlanetScope data access and processing.
 
@@ -77,9 +88,9 @@ In addition to ordering and downloading, `BatchPlanet` facilitates the entire R-
 
 These batch functions significantly accelerate the process. For example, images for an approximately 9 km^2^ area over one month were downloaded in 6.7 seconds. The total downloading time for a year's worth of images is comparable due to parallelization across months. Time series retrieval (reflectances, quality masks, and metadata) for 100 coordinates from one month of downloaded images took only 20.9 seconds, which can be parallelized across sites and coordinate groups.
 
-![A screenshot of the interactive PlanetScope imagery viewer in the `BatchPlanet` package, showing a true color image in part of Austin, USA, captured on May 21, 2025.](inst/extdata/figures/Fig1.png)
+![A screenshot of the interactive PlanetScope imagery viewer in the `BatchPlanet` package, showing a true color image in part of Austin, USA, captured on May 11, 2025.](inst/extdata/figures/Fig1.png)
 
-![Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with start/end of season metrics annotated, calculated and visualized using the `BatchPlanet` package. Points are EVI values calculated from PlanetScope reflectances at the coordinates of the trees of interest, summarized with smoothed lines. Green shades indicate the periods from minimum EVI in the winter to maximum EVI in the summer. Sets of three vertical green lines are the time points when smoothed EVI crosses 30%, 40%, and 50 % of the range between minimum and maximum EVI, which can serve as possible start of season metrics.](inst/extdata/figures/Fig2.png)
+![Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with start/end of season metrics annotated, calculated and visualized using the `BatchPlanet` package. Points are EVI values calculated from PlanetScope reflectances at the coordinates of the trees of interest, summarized with smoothed lines. Green shades indicate the periods from minimum EVI in the winter to maximum EVI in the summer. Sets of three vertical green lines are the time points when smoothed EVI crosses 30%, 40%, and 50 % (from left to right) of the range between minimum and maximum EVI, which can serve as possible start of season metrics.](inst/extdata/figures/Fig2.png)
 
 # Example Usage
 
