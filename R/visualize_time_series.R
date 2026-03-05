@@ -104,10 +104,16 @@ visualize_time_series <- function(df_ts,
 
   if (interactive()) {
     g <- plotly::ggplotly(p, tooltip = "text")
-    # Disable hoverinfo for the DOY layers (background layers)
-    for (i in 2:length(g$x$data)) {
-      g$x$data[[i]]$hoverinfo <- "skip" # Skip hover for all layers except the first one
-    }
+
+    # Only keep hover for traces that are scatter points and skip hover for the "geom_segment" and "geom_rect" layers
+    g$x$data <- lapply(g$x$data, function(tr) {
+      if (!is.null(tr$mode) && grepl("markers", tr$mode)) {
+        tr$hoverinfo <- "text"
+      } else {
+        tr$hoverinfo <- "skip"
+      }
+      return(tr)
+    })
 
     g
   } else {

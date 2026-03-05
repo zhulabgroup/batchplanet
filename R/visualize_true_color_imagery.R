@@ -38,6 +38,7 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
 
   ui <- fluidPage(
     # titlePanel("PlanetScope true color imagery viewer"),
+    tags$style(HTML(".row { margin-bottom: -10px; } .shiny-plot-output { margin-top: -20px; }")),
 
     # First row: site + brightness
     fluidRow(
@@ -262,7 +263,9 @@ visualize_true_color_imagery <- function(file, df_coordinates = NULL, brightness
     scale_fill_identity() +
     labs(x = "Longitude", y = "Latitude") +
     theme_minimal() +
-    coord_equal()
+    coord_equal() +
+    scale_x_continuous(expand = c(0, 0)) +
+    scale_y_continuous(expand = c(0, 0))
 
   if (!is.null(df_coordinates)) {
     p <- p +

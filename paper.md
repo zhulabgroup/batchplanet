@@ -52,11 +52,11 @@ Existing options include the official [Planet Python SDK](https://planet-sdk-for
 
 | Feature / Tool | **Planet Python SDK** | **Sentinel Hub** | **Google Earth Engine (GEE)** | **planetR (Bevington)** | **BatchPlanet** |
 |------------|------------|------------|------------|------------|------------|
-| **Primary Language** | Python | Python | JavaScript / Python | R | R |
-| **Processing Environment** | Local/Cloud | Cloud | Cloud | Local | Local |
-| **Data Control & Reproducibility** | High | Moderate | Low | High | High |
-| **Batch Processing** | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
-| **Time Series Analysis Tools** | Not supported | Limited | Supported | Not supported | Supported |
+| **Primary Language**<br> | Python | Python | JavaScript / Python | R | R |
+| **Processing Environment**<br> | Local/Cloud | Cloud | Cloud | Local | Local |
+| **Data Control & Reproducibility**<br> | High | Moderate | Low | High | High |
+| **Batch Processing**<br> | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
+| **Time Series Analysis Tools**<br> | Not supported | Limited | Supported | Not supported | Supported |
 | **Interactive Visualization** | Not supported | Limited | Supported | Not supported | Supported |
 
 : **Table 1.** Comparison of `BatchPlanet` with existing tools for PlanetScope data access and processing.
@@ -79,7 +79,7 @@ These batch functions significantly accelerate the process. For example, images 
 
 ![**Figure 1.** A screenshot of the interactive PlanetScope imagery viewer in the `BatchPlanet` package, showing a true color image in part of Austin, USA, captured on May 21, 2025.](inst/extdata/figures/Fig1.png)
 
-![**Figure 2.** Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with start/end of season metrics annotated, calculated and visualized using the `BatchPlanet` package. Points are EVI values calculated from PlanetScope reflectances at the coordinates of the trees of interest, summarized with smoothed lines. Green shades indicate the periods from minimum EVI in the winter to maximum EVI in the summer. Sets of three vertical green lines are the time points when smoothed EVI crosses 30%, 40%, and 50 % of the range between minimum and maximum EVI, which can serve as possible start of season metrics.](inst/extdata/figures/Fig2.png)
+![**Figure 2.** Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with start/end of season metrics annotated, calculated and visualized using the `BatchPlanet` package. Points are EVI values calculated from PlanetScope reflectances at the coordinates of the trees of interest, summarized with smoothed lines. Green shades indicate the periods from minimum EVI in the winter to maximum EVI in the summer. Sets of three vertical green lines are the time points when smoothed EVI crosses 30%, 40%, and 50 % (from left to right) of the range between minimum and maximum EVI, which can serve as possible start of season metrics.](inst/extdata/figures/Fig2.png)
 
 # Example Usage
 
