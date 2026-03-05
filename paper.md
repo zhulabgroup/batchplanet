@@ -40,7 +40,14 @@ reproducibility in scientific data pipelines. This package has supported
 peer-reviewed research in predicting reproductive phenology in
 wind-pollinated trees \[@song2025phenology\].
 
-[TABLE]
+| Feature / Tool                                                                                                                                 | **Planet Python** \| **Sentinel Hub** \| **Google Earth** \| **planetR** \| **BatchPlanet** \| **SDK** \| \| **Engine (GEE)** \| **(Bevington)** \| \| |     |     |     |     |
+|------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|-----|-----|-----|-----|
+| **Primary Language** \| Python \| Python \| JavaScript / \| R \| R \| \| \| \| Python \| \|                                                    |                                                                                                                                                        |     |     |     |     |
+| **Processing Environment** \| Local/Cloud \| Cloud \| Cloud \| Local \| Local \|                                                               |                                                                                                                                                        |     |     |     |     |
+| **Data Control &** \| High \| Moderate \| Low \| High \| High \| **Reproducibility** \| \| \| \| \| \|                                         |                                                                                                                                                        |     |     |     |     |
+| **Batch Processing** \| Via scripting/CLI \| Supported for \| Via scripting \| Via scripting \| Streamlined \| \| \| enterprise users \| \| \| |                                                                                                                                                        |     |     |     |     |
+| **Time Series Analysis Tools** \| Not supported \| Limited \| Supported \| Not supported \| Supported \|                                       |                                                                                                                                                        |     |     |     |     |
+| **Interactive Visualization** \| Not supported \| Limited \| Supported \| Not supported \| Supported \|                                        |                                                                                                                                                        |     |     |     |     |
 
 Comparison of `BatchPlanet` with existing tools for PlanetScope data
 access and processing.
@@ -91,11 +98,11 @@ parallelized across sites and coordinate groups.
 
 ![A screenshot of the interactive PlanetScope imagery viewer in the
 BatchPlanet package, showing a true color image in part of Austin, USA,
-captured on May 21, 2025.](inst/extdata/figures/Fig1.png)
+captured on May 11, 2025.](inst/extdata/figures/Fig1.png)
 
 A screenshot of the interactive PlanetScope imagery viewer in the
 `BatchPlanet` package, showing a true color image in part of Austin,
-USA, captured on May 21, 2025.
+USA, captured on May 11, 2025.
 
 ![Enhanced Vegetation Index (EVI) for three trees in San Joaquin
 Experimental range (SJER) NEON site with start/end of season metrics
@@ -104,9 +111,9 @@ Points are EVI values calculated from PlanetScope reflectances at the
 coordinates of the trees of interest, summarized with smoothed lines.
 Green shades indicate the periods from minimum EVI in the winter to
 maximum EVI in the summer. Sets of three vertical green lines are the
-time points when smoothed EVI crosses 30%, 40%, and 50 % of the range
-between minimum and maximum EVI, which can serve as possible start of
-season metrics.](inst/extdata/figures/Fig2.png)
+time points when smoothed EVI crosses 30%, 40%, and 50 % (from left to
+right) of the range between minimum and maximum EVI, which can serve as
+possible start of season metrics.](inst/extdata/figures/Fig2.png)
 
 Enhanced Vegetation Index (EVI) for three trees in San Joaquin
 Experimental range (SJER) NEON site with start/end of season metrics
@@ -115,9 +122,9 @@ Points are EVI values calculated from PlanetScope reflectances at the
 coordinates of the trees of interest, summarized with smoothed lines.
 Green shades indicate the periods from minimum EVI in the winter to
 maximum EVI in the summer. Sets of three vertical green lines are the
-time points when smoothed EVI crosses 30%, 40%, and 50 % of the range
-between minimum and maximum EVI, which can serve as possible start of
-season metrics.
+time points when smoothed EVI crosses 30%, 40%, and 50 % (from left to
+right) of the range between minimum and maximum EVI, which can serve as
+possible start of season metrics.
 
 # Example Usage
 
