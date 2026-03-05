@@ -46,7 +46,7 @@ wind-pollinated trees \[@song2025phenology\].
 | **Processing Environment**         | Local/Cloud           | Cloud                          | Cloud                         | Local                   | Local           |
 | **Data Control & Reproducibility** | High                  | Moderate                       | Low                           | High                    | High            |
 | **Batch Processing**               | Via scripting/CLI     | Supported for enterprise users | Via scripting                 | Via scripting           | Streamlined     |
-| **Time Series Analysis Tools**     | Not supported         | Limited                        | Supported                     | Not supported           | Supported       |
+| **Time Series Analysis**           | Not supported         | Limited                        | Supported                     | Not supported           | Supported       |
 | **Interactive Visualization**      | Not supported         | Limited                        | Supported                     | Not supported           | Supported       |
 
 Comparison of `BatchPlanet` with existing tools for PlanetScope data
