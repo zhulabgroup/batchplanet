@@ -57,7 +57,7 @@ Existing options include the official [Planet Python SDK](https://planet-sdk-for
 | **Primary Language** \newline | Python | Python | JavaScript / Python | R | R |
 | **Processing Environment** \newline | Local/Cloud | Cloud | Cloud | Local | Local |
 | **Data Control & Reproducibility** \newline | High | Moderate | Low | High | High |
-| **Batch Processing** \newline | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
+| **Batch Processing** \newline \newline | Via scripting/CLI | Supported for enterprise users | Via scripting | Via scripting | Streamlined |
 | **Time Series Analysis Tools** \newline | Not supported | Limited | Supported | Not supported | Supported |
 | **Interactive Visualization** | Not supported | Limited | Supported | Not supported | Supported |
 
