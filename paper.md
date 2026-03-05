@@ -14,9 +14,9 @@ authors:
   - name: Alexandre R. Bevington
     orcid: 0000-0003-1587-3317
     affiliation: "3, 4"
-  - name: Ken Reid
+  - name: Kenneth N. Reid
     orcid: 0000-0001-8654-2430
-    affiliation: 1
+    affiliation: 5
   - name: Jiali Zhu
     orcid: 0009-0009-7339-557X
     affiliation: 2
@@ -35,6 +35,8 @@ affiliations:
     index: 3
   - name: Ministry of Forests, Province of British Columbia, Prince George, BC, Canada
     index: 4
+  - name: Honorary Fellow - University of Stirling, Scotland, UK
+    index: 5
 date: 2025-07-25
 repository: https://github.com/zhulabgroup/BatchPlanet
 bibliography: paper.bib
