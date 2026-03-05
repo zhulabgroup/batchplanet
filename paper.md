@@ -40,7 +40,7 @@ repository: https://github.com/zhulabgroup/BatchPlanet
 bibliography: paper.bib
 header-includes:
    - \usepackage{array}
-   - \renewcommand{\arraystretch}{1.75}
+   - \renewcommand{\arraystretch}{1.4}
 ---
 
 # Summary
