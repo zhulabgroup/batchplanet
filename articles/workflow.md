@@ -264,9 +264,7 @@ visualize_true_color_imagery_batch(
 ```
 
 This app might take a while to start. Here we show a screenshot of the
-app.
-
-![](../../../_temp/Library/BatchPlanet/extdata/figures/Fig1.png)
+app. ![](figures/Fig1.png)
 
 ## 3 Retrieve and process time series
 
@@ -360,7 +358,7 @@ df_ts <- read_data_product(dir = dir_data_NEON, v_site = c("HARV", "SJER"), v_gr
 visualize_time_series(df_ts, var = "green", ylab = "Green reflectance", facet_var = "group", smooth = F)
 ```
 
-![](workflow_files/figure-html/unnamed-chunk-12-1.png)
+![](workflow_files/figure-html/unnamed-chunk-11-1.png)
 
 ### 3.2 Clean time series
 
@@ -404,7 +402,7 @@ df_clean <- read_data_product(dir = dir_data_NEON, v_site = c("HARV", "SJER"), v
 visualize_time_series(df_clean, var = "evi", ylab = "EVI", facet_var = "site", smooth = T)
 ```
 
-![](workflow_files/figure-html/unnamed-chunk-14-1.png)
+![](workflow_files/figure-html/unnamed-chunk-13-1.png)
 
 ### 3.3 Calculate start/end of season metrics
 
@@ -500,4 +498,4 @@ df_evi_sample <- read_data_product(dir = dir_data_NEON, v_site = "SJER", v_group
 visualize_time_series(df_ts = df_evi_sample, df_doy = df_doy_sample, var = "evi", ylab = "EVI", facet_var = "id", smooth = T)
 ```
 
-![](workflow_files/figure-html/unnamed-chunk-16-1.png)
+![](workflow_files/figure-html/unnamed-chunk-15-1.png)

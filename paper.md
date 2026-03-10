@@ -98,7 +98,7 @@ parallelized across sites and coordinate groups.
 
 ![A screenshot of the interactive PlanetScope imagery viewer in the
 BatchPlanet package, showing a true color image in part of Austin, USA,
-captured on May 11, 2025.](inst/extdata/figures/Fig1.png)
+captured on May 11, 2025.](articles/figures/Fig1.png)
 
 A screenshot of the interactive PlanetScope imagery viewer in the
 `BatchPlanet` package, showing a true color image in part of Austin,
@@ -113,7 +113,7 @@ Green shades indicate the periods from minimum EVI in the winter to
 maximum EVI in the summer. Sets of three vertical green lines are the
 time points when smoothed EVI crosses 30%, 40%, and 50 % (from left to
 right) of the range between minimum and maximum EVI, which can serve as
-possible start of season metrics.](inst/extdata/figures/Fig2.png)
+possible start of season metrics.](articles/figures/Fig2.png)
 
 Enhanced Vegetation Index (EVI) for three trees in San Joaquin
 Experimental range (SJER) NEON site with start/end of season metrics
