@@ -82,9 +82,9 @@ In addition to ordering and downloading, `BatchPlanet` facilitates the entire R-
 
 These batch functions significantly accelerate the process. For example, images for an approximately 9 km^2^ area over one month were downloaded in 6.7 seconds. The total downloading time for a year's worth of images is comparable, due to parallelization across months. Time series retrieval (reflectances, quality masks, and metadata) for 100 coordinates from one month of downloaded images took only 20.9 seconds, which can be parallelized across sites and coordinate groups.
 
-![A screenshot of the interactive PlanetScope imagery viewer in the `BatchPlanet` package, showing a true color image in part of Austin, USA, captured on May 11, 2025.](inst/extdata/figures/Fig1.png)
+![A screenshot of the interactive PlanetScope imagery viewer in the `BatchPlanet` package, showing a true color image in part of Austin, USA, captured on May 11, 2025.](vignettes/figures/Fig1.png)
 
-![Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with start/end of season metrics annotated, calculated and visualized using the `BatchPlanet` package. Points are EVI values calculated from PlanetScope reflectances at the coordinates of the trees of interest, summarized with smoothed lines. Green shades indicate the periods from minimum EVI in the winter to maximum EVI in the summer. Sets of three vertical green lines are the time points when smoothed EVI crosses 30%, 40%, and 50 % (from left to right) of the range between minimum and maximum EVI, which can serve as possible start of season metrics.](inst/extdata/figures/Fig2.png)
+![Enhanced Vegetation Index (EVI) for three trees in San Joaquin Experimental range (SJER) NEON site with start/end of season metrics annotated, calculated and visualized using the `BatchPlanet` package. Points are EVI values calculated from PlanetScope reflectances at the coordinates of the trees of interest, summarized with smoothed lines. Green shades indicate the periods from minimum EVI in the winter to maximum EVI in the summer. Sets of three vertical green lines are the time points when smoothed EVI crosses 30%, 40%, and 50 % (from left to right) of the range between minimum and maximum EVI, which can serve as possible start of season metrics.](vignettes/figures/Fig2.png)
 
 # Example Usage
 
