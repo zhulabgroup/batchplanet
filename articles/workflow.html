@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">BatchPlanet</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@
                         <h4 data-toc-skip class="author">Yiluan
 Song</h4>
             
-            <h4 data-toc-skip class="date">2026-03-05</h4>
+            <h4 data-toc-skip class="date">2026-03-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/zhulabgroup/BatchPlanet/blob/release/vignettes/workflow.Rmd" class="external-link"><code>vignettes/workflow.Rmd</code></a></small>
       <div class="d-none name"><code>workflow.Rmd</code></div>
@@ -128,10 +128,10 @@ representing individual trees.</p>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">2000</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span> <span class="co"># Multiple sites across continental US</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="700"></p>
+<p><img src="workflow_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="1152"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/visualize_coordinates.html">visualize_coordinates</a></span><span class="op">(</span><span class="va">df_coordinates_urban</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">site</span> <span class="op">==</span> <span class="st">"AT"</span><span class="op">)</span><span class="op">)</span> <span class="co"># Zoom in to one site Austin</span></span></code></pre></div>
-<p><img src="workflow_files/figure-html/unnamed-chunk-3-2.png" class="r-plt" alt="" width="700"></p>
+<p><img src="workflow_files/figure-html/unnamed-chunk-3-2.png" class="r-plt" alt="" width="1152"></p>
 <p>Why is it important to label the coordinates with sites? If we treat
 all coordinates as a single set and try to download PlanetScope imagery
 that cover them, we will end up with a tremendous amount of imagery that
@@ -296,7 +296,7 @@ toggle brightness.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>This app might take a while to start. Here we show a screenshot of
 the app.</p>
-<p><img src="../../../_temp/Library/BatchPlanet/extdata/figures/Fig1.png" class="r-plt" alt="" width="453"></p>
+<p><img src="../../../_temp/Library/BatchPlanet/extdata/figures/Fig1.png" class="r-plt" alt="" width="448"></p>
 </div>
 </div>
 <div class="section level2">

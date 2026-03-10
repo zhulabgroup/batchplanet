@@ -10,7 +10,7 @@
   Arbor, MI, USA
 
 - **Alexandre R. Bevington**. Author.
-  [](https://orcid.org/0000-0003-1587-3317)  
+  [](https://orcid.org/0000-0002-9249-4444)  
   Department of Geography, Earth and Environmental Sciences, University
   of Northern British Columbia, Prince George, BC, Canada; Ministry of
   Forests, Province of British Columbia, Prince George, BC, Canada
@@ -29,7 +29,9 @@
 
 - **Kai Zhu**. Author. [](https://orcid.org/0000-0003-1587-3317)  
   School for Environment and Sustainability and Institute for Global
-  Change Biology, University of Michigan, Ann Arbor, MI, USA
+  Change Biology, University of Michigan, Ann Arbor, MI, USA; Michigan
+  Institute for Data and AI in Society, University of Michigan, Ann
+  Arbor, MI, USA
 
 ## Citation
 
