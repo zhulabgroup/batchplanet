@@ -12,7 +12,7 @@ authors:
     orcid: 0000-0003-3660-3797
     affiliation: "1, 2"
   - name: Alexandre R. Bevington
-    orcid: 0000-0003-1587-3317
+    orcid: 0000-0002-9249-4444
     affiliation: "3, 4"
   - name: Ken Reid
     orcid: 0000-0001-8654-2430
@@ -25,7 +25,7 @@ authors:
     affiliation: 2
   - name: Kai Zhu
     orcid: 0000-0003-1587-3317
-    affiliation: 2
+    affiliation: "2, 1"
 affiliations:
   - name: Michigan Institute for Data and AI in Society, University of Michigan, Ann Arbor, MI, USA
     index: 1
