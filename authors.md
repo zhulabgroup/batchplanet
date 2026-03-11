@@ -12,8 +12,7 @@
 - **Alexandre R. Bevington**. Author.
   [](https://orcid.org/0000-0002-9249-4444)  
   Department of Geography, Earth and Environmental Sciences, University
-  of Northern British Columbia, Prince George, BC, Canada; Ministry of
-  Forests, Province of British Columbia, Prince George, BC, Canada
+  of Northern British Columbia, Prince George, BC, Canada
 
 - **Kenneth N. Reid**. Author.
   [](https://orcid.org/0000-0001-8654-2430)  
