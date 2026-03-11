@@ -13,10 +13,10 @@ authors:
     affiliation: "1, 2"
   - name: Alexandre R. Bevington
     orcid: 0000-0002-9249-4444
-    affiliation: "3, 4"
+    affiliation: "3"
   - name: Kenneth N. Reid
     orcid: 0000-0001-8654-2430
-    affiliation: 5
+    affiliation: 4
   - name: Jiali Zhu
     orcid: 0009-0009-7339-557X
     affiliation: 2
@@ -33,11 +33,9 @@ affiliations:
     index: 2
   - name: Department of Geography, Earth and Environmental Sciences, University of Northern British Columbia, Prince George, BC, Canada
     index: 3
-  - name: Ministry of Forests, Province of British Columbia, Prince George, BC, Canada
-    index: 4
   - name: Honorary Fellow - University of Stirling, Scotland, UK
-    index: 5
-date: 2025-07-25
+    index: 4
+date: 2026-03-11
 repository: https://github.com/zhulabgroup/BatchPlanet
 bibliography: paper.bib
 header-includes:
