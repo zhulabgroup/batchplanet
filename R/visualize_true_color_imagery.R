@@ -150,6 +150,15 @@ get_raster_metadata <- function(dir, v_site) {
   for (siteoi in v_site) {
     raster_files <- list.files(file.path(dir, "raw", siteoi), pattern = "\\SR_harmonized_clip.tif$", recursive = TRUE, full.names = TRUE)
     meta_files <- list.files(file.path(dir, "raw", siteoi), pattern = "\\metadata.json$", recursive = TRUE, full.names = TRUE)
+
+    # Throw an error if counts don't match
+    if (length(raster_files) != length(meta_files)) {
+      stop(sprintf(
+        "Data mismatch for site '%s': Found %d raster files but %d metadata files. Every raster must have a corresponding metadata.json.",
+        siteoi, length(raster_files), length(meta_files)
+      ), call. = FALSE)
+    }
+
     cloud_covers <- sapply(meta_files, function(mf) {
       if (file.exists(mf)) {
         meta <- tryCatch(jsonlite::fromJSON(mf), error = function(e) NULL)
