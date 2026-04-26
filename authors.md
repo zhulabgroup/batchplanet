@@ -35,7 +35,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/zhulabgroup/BatchPlanet/blob/v1.0.0/inst/CITATION)
+[`inst/CITATION`](https://github.com/zhulabgroup/BatchPlanet/blob/release/inst/CITATION)
 
 Song Y, Bevington A, Reid K, Liu Y, Zhu J, Zhu K (2025). *BatchPlanet:
 Batch access and processing of PlanetScope imagery for spatiotemporal
