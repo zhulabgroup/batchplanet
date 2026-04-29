@@ -148,8 +148,27 @@ visualize_true_color_imagery_batch <- function(dir, df_coordinates = NULL, cloud
 get_raster_metadata <- function(dir, v_site) {
   ls_df_metadata <- list()
   for (siteoi in v_site) {
-    raster_files <- list.files(file.path(dir, "raw", siteoi), pattern = "\\SR_harmonized_clip.tif$", recursive = TRUE, full.names = TRUE)
-    meta_files <- list.files(file.path(dir, "raw", siteoi), pattern = "\\metadata.json$", recursive = TRUE, full.names = TRUE)
+    raster_files_all <- list.files(file.path(dir, "raw", siteoi), pattern = ".*_SR_.*clip.tif$", recursive = TRUE, full.names = TRUE)
+    meta_files_all <- list.files(file.path(dir, "raw", siteoi), pattern = "_metadata.json$", recursive = TRUE, full.names = TRUE)
+
+    raster_ids <- raster_files_all |> remove_common_suffix()
+    meta_ids <- meta_files_all |> remove_common_suffix()
+
+    common_ids <- intersect(raster_ids, meta_ids)
+    skipped_ids <- setdiff(meta_ids, common_ids)
+
+    raster_files <- raster_files_all[raster_ids %in% common_ids]
+    meta_files <- meta_files_all[meta_ids %in% common_ids]
+
+    if (length(skipped_ids) > 0) {
+      message(sprintf(
+        "Skipped %d empty clips at site '%s': ",
+        length(skipped_ids),
+        siteoi
+      ))
+
+      cat(paste0(skipped_ids, collapse = "\n"), "\n")
+    }
 
     # Throw an error if counts don't match
     if (length(raster_files) != length(meta_files)) {

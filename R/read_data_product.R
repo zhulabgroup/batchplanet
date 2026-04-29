@@ -34,7 +34,7 @@
 #'
 #' @export
 read_data_product <- function(dir, v_site = NULL, v_group = NULL, product_type = "clean") {
-  dir_product <- list.files(dir, pattern = product_type, recursive = F, full.names = T)
+  dir_product <- list.files(dir, pattern = paste0("^", product_type, "$"), recursive = F, full.names = T)
 
   v_file <- list.files(dir_product, recursive = FALSE, full.names = FALSE) |>
     filter_file_names(v_site, v_group)

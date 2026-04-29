@@ -158,6 +158,7 @@ retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
   if (length(files) == 0) {
     return(NULL)
   }
+  file_ids <- files |> remove_common_suffix()
 
   v_id <- sf_coordinates$id
 
@@ -173,6 +174,8 @@ retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
     tryCatch(
       {
         file <- files[f]
+        file_id <- file_ids[f]
+
         message("Processing file: ", file)
         ras_ps <- terra::rast(file)
 
@@ -180,7 +183,7 @@ retrieve_raster_data <- function(dir_site, sf_coordinates, type, num_cores) {
         sf_points_reproj <- sf::st_transform(sf_coordinates, crs = sf::st_crs(ras_ps))
 
         # Extract raster values at point locations; remove ID column and add file index and point IDs
-        df_ps_f <- cbind(terra::extract(ras_ps, sf_points_reproj) |> dplyr::select(-ID), f, id = v_id)
+        df_ps_f <- cbind(terra::extract(ras_ps, sf_points_reproj) |> dplyr::select(-ID), f = file_id, id = v_id)
         df_ps_f |> tidyr::drop_na()
       },
       error = function(e) {
@@ -205,6 +208,7 @@ retrieve_metadata <- function(dir_site, num_cores) {
   if (length(files) == 0) {
     return(NULL)
   }
+  file_ids <- files |> remove_common_suffix()
 
   cl <- makeCluster(num_cores, outfile = "")
   registerDoSNOW(cl)
@@ -218,12 +222,14 @@ retrieve_metadata <- function(dir_site, num_cores) {
     tryCatch(
       {
         meta_file <- files[f]
+        meta_file_id <- file_ids[f]
+
         message("Processing file: ", meta_file)
         metadata <- fromJSON(meta_file)
         data.frame(
           time = metadata$properties$acquired |> lubridate::as_datetime(),
           sun_elevation = metadata$properties$sun_elevation,
-          f
+          f = meta_file_id
         ) |> tidyr::drop_na()
       },
       error = function(e) {
@@ -235,4 +241,31 @@ retrieve_metadata <- function(dir_site, num_cores) {
   stopCluster(cl)
 
   return(df_ps_meta)
+}
+
+remove_common_suffix <- function(file_list) {
+  names <- basename(file_list)
+
+  # Use only first n_sample to find the suffix
+  sample_names <- head(names)
+  chars_reversed <- lapply(sample_names, \(x) rev(strsplit(x, "")[[1]]))
+
+  min_len <- min(sapply(chars_reversed, length))
+  common_len <- 0
+
+  for (i in seq_len(min_len)) {
+    chars_at_i <- sapply(chars_reversed, `[`, i)
+    if (length(unique(chars_at_i)) == 1) {
+      common_len <- i
+    } else {
+      break
+    }
+  }
+
+  # Apply to the full list
+  if (common_len > 0) {
+    sub(paste0(strrep(".", common_len), "$"), "", names)
+  } else {
+    names
+  }
 }

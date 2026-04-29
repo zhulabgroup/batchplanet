@@ -60,3 +60,35 @@ test_that("retrieve_planetscope_time_series works with example data", {
   expect_true(all(c("id", "blue", "green", "red", "nir", "time", "lon", "lat") %in% names(df_ts_example)))
   expect_true(all(!is.na(df_ts_example$green)))
 })
+
+test_that("remove_common_suffix correctly removes shared suffix", {
+  # Basic case: clear shared suffix
+  files <- c(
+    "path/to/20210830_161008_07_2402_3B_AnalyticMS_SR_harmonized_clip.tif",
+    "path/to/20210902_122649_104b_3B_AnalyticMS_SR_harmonized_clip.tif",
+    "path/to/20210902_152245_50_2434_3B_AnalyticMS_SR_harmonized_clip.tif",
+    "path/to/20210903_152004_18_2429_3B_AnalyticMS_SR_harmonized_clip.tif",
+    "path/to/20210903_153132_71_2276_3B_AnalyticMS_SR_harmonized_clip.tif",
+    "path/to/20210904_161121_05_2307_3B_AnalyticMS_SR_harmonized_clip.tif"
+  )
+  result <- remove_common_suffix(files)
+  expect_equal(result, c(
+    "20210830_161008_07_2402",
+    "20210902_122649_104b",
+    "20210902_152245_50_2434",
+    "20210903_152004_18_2429",
+    "20210903_153132_71_2276",
+    "20210904_161121_05_2307"
+  ))
+
+  # No shared suffix: filenames returned unchanged
+  no_suffix_files <- c(
+    "path/to/abc.tif",
+    "path/to/xyz.png"
+  )
+  result_no_suffix <- remove_common_suffix(no_suffix_files)
+  expect_equal(result_no_suffix, c("abc.tif", "xyz.png"))
+
+  # Output length always matches input length
+  expect_equal(length(result), length(files))
+})
